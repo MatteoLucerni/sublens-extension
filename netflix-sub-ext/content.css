@@ -1,6 +1,6 @@
 .nse-overlay {
   position: absolute;
-  z-index: 2147483647;
+  z-index: 2147483646;
   pointer-events: all;
   filter: blur(6px);
   transition: filter 0.15s ease;
@@ -68,4 +68,40 @@
 .nse-error {
   font-size: 13px;
   color: #ccc;
+}
+
+.nse-definitions {
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  padding-top: 6px;
+  margin-top: 6px;
+  font-size: 12px;
+  color: #ccc;
+}
+
+.nse-definition {
+  margin-bottom: 6px;
+}
+
+.nse-def-example {
+  font-style: italic;
+  color: #999;
+  margin-top: 2px;
+  margin-left: 4px;
+}
+
+.nse-examples {
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  padding-top: 6px;
+  margin-top: 6px;
+  font-size: 12px;
+  color: #999;
+}
+
+.nse-example {
+  margin-bottom: 4px;
+}
+
+.nse-example b {
+  color: #fff;
+  font-weight: bold;
 }

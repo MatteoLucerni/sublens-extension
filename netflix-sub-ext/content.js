@@ -327,6 +327,8 @@
       popup.appendChild(translation);
 
       appendEntries(popup, result.entries);
+      appendDefinitions(popup, result.definitions);
+      appendExamples(popup, result.examples);
     }
 
     getAppendTarget().appendChild(popup);
@@ -358,6 +360,75 @@
     }
 
     popup.appendChild(list);
+  }
+
+  function appendDefinitions(popup, definitions) {
+    if (!Array.isArray(definitions)) return;
+
+    const list = document.createElement("div");
+    list.className = "nse-definitions";
+
+    for (const [partOfSpeech, defs] of definitions.slice(0, 2)) {
+      if (!partOfSpeech || !Array.isArray(defs)) continue;
+
+      for (const def of defs.slice(0, 2)) {
+        const [defText, , example] = def;
+        if (!defText) continue;
+
+        const row = document.createElement("div");
+        row.className = "nse-definition";
+
+        const pos = document.createElement("span");
+        pos.className = "nse-pos";
+        pos.textContent = partOfSpeech;
+        row.appendChild(pos);
+        row.appendChild(document.createTextNode(` ${defText}`));
+
+        if (example) {
+          const exampleEl = document.createElement("div");
+          exampleEl.className = "nse-def-example";
+          exampleEl.textContent = example;
+          row.appendChild(exampleEl);
+        }
+
+        list.appendChild(row);
+      }
+    }
+
+    if (list.children.length > 0) popup.appendChild(list);
+  }
+
+  function appendHighlighted(container, html) {
+    const parts = html.split(/(<b>.*?<\/b>)/g);
+    for (const part of parts) {
+      const match = part.match(/^<b>(.*?)<\/b>$/);
+      if (match) {
+        const b = document.createElement("b");
+        b.textContent = match[1];
+        container.appendChild(b);
+      } else if (part) {
+        container.appendChild(document.createTextNode(part));
+      }
+    }
+  }
+
+  function appendExamples(popup, examples) {
+    if (!Array.isArray(examples)) return;
+
+    const list = document.createElement("div");
+    list.className = "nse-examples";
+
+    for (const example of examples.slice(0, 3)) {
+      const html = example?.[0];
+      if (!html) continue;
+
+      const row = document.createElement("div");
+      row.className = "nse-example";
+      appendHighlighted(row, html);
+      list.appendChild(row);
+    }
+
+    if (list.children.length > 0) popup.appendChild(list);
   }
 
   function positionPopup(popup, anchorViewportRect) {

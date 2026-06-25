@@ -27,6 +27,8 @@ async function translate(word) {
   url.searchParams.set("tl", "it");
   url.searchParams.set("dt", "t");
   url.searchParams.append("dt", "bd");
+  url.searchParams.append("dt", "md");
+  url.searchParams.append("dt", "ex");
   url.searchParams.set("q", word);
 
   console.log("[NSE] fetching", url.toString());
@@ -34,9 +36,70 @@ async function translate(word) {
   if (!res.ok) throw new Error(`translate request failed: ${res.status}`);
 
   const data = await res.json();
+  const definitionsRaw = extractDefinitionGroups(data[12]);
+  let definitions = definitionsRaw;
+
+  if (definitionsRaw) {
+    try {
+      definitions = await translateDefinitionGroups(definitionsRaw);
+    } catch (err) {
+      console.log("[NSE] definitions translation failed", err);
+    }
+  }
+
   return {
     word,
     translation: data[0]?.[0]?.[0] ?? null,
-    entries: data[1] ?? null
+    entries: data[1] ?? null,
+    definitions,
+    examples: data[13]?.[0] ?? null
   };
+}
+
+function extractDefinitionGroups(raw, maxGroups = 2, maxPerGroup = 2) {
+  if (!Array.isArray(raw)) return null;
+
+  const groups = [];
+  for (const [partOfSpeech, defs] of raw.slice(0, maxGroups)) {
+    if (!partOfSpeech || !Array.isArray(defs)) continue;
+    groups.push([partOfSpeech, defs.slice(0, maxPerGroup)]);
+  }
+  return groups.length > 0 ? groups : null;
+}
+
+async function translateText(text) {
+  const url = new URL("https://translate.googleapis.com/translate_a/single");
+  url.searchParams.set("client", "gtx");
+  url.searchParams.set("sl", "en");
+  url.searchParams.set("tl", "it");
+  url.searchParams.set("dt", "t");
+  url.searchParams.set("q", text);
+
+  const res = await fetch(url.toString());
+  if (!res.ok) throw new Error(`translate request failed: ${res.status}`);
+
+  const data = await res.json();
+  return data[0]?.map((segment) => segment[0]).join("") ?? text;
+}
+
+async function translateDefinitionGroups(groups) {
+  const texts = [];
+  for (const [, defs] of groups) {
+    for (const def of defs) texts.push(def[0] ?? "");
+  }
+  if (texts.length === 0) return groups;
+
+  const delimiter = "\n||\n";
+  const translatedJoined = await translateText(texts.join(delimiter));
+  const translatedTexts = translatedJoined.split("||").map((text) => text.trim());
+
+  let i = 0;
+  return groups.map(([partOfSpeech, defs]) => [
+    partOfSpeech,
+    defs.map((def) => {
+      const translated = translatedTexts[i] ?? def[0];
+      i += 1;
+      return [translated, def[1], def[2], def[3]];
+    })
+  ]);
 }

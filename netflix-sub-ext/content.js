@@ -651,12 +651,14 @@
     const subtitleBounds = getSubtitleBoundsRect();
 
     const blockTop = subtitleBounds ? Math.min(subtitleBounds.top, anchor.top) : anchor.top;
-    const blockBottom = subtitleBounds ? Math.max(subtitleBounds.bottom, anchor.bottom) : anchor.bottom;
+    const centerX = subtitleBounds
+      ? subtitleBounds.left + subtitleBounds.width / 2
+      : window.scrollX + window.innerWidth / 2;
 
     let top = blockTop - popupRect.height - 8;
-    let left = anchor.left;
+    let left = centerX - popupRect.width / 2;
 
-    if (top < window.scrollY + 8) top = blockBottom + 8;
+    if (top < window.scrollY + 8) top = window.scrollY + 8;
     if (left + popupRect.width > window.scrollX + window.innerWidth - 8) {
       left = window.scrollX + window.innerWidth - popupRect.width - 8;
     }

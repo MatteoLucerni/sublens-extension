@@ -1,10 +1,22 @@
+console.log("[NSE] background service worker loaded");
+
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+  console.log("[NSE] background received message", msg);
   if (msg?.type !== "translate") return;
   if (typeof msg.word !== "string" || !msg.word.trim()) {
+    console.log("[NSE] invalid word, rejecting");
     sendResponse({ error: true });
     return;
   }
-  translate(msg.word).then(sendResponse).catch(() => sendResponse({ error: true }));
+  translate(msg.word)
+    .then((result) => {
+      console.log("[NSE] translate succeeded", result);
+      sendResponse(result);
+    })
+    .catch((err) => {
+      console.log("[NSE] translate failed", err);
+      sendResponse({ error: true });
+    });
   return true;
 });
 
@@ -17,6 +29,7 @@ async function translate(word) {
   url.searchParams.append("dt", "bd");
   url.searchParams.set("q", word);
 
+  console.log("[NSE] fetching", url.toString());
   const res = await fetch(url.toString());
   if (!res.ok) throw new Error(`translate request failed: ${res.status}`);
 

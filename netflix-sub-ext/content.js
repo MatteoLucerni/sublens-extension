@@ -1,4 +1,11 @@
 (() => {
+  const DEBUG = true;
+  function log(...args) {
+    if (DEBUG) console.log("[NSE]", ...args);
+  }
+
+  log("content script loaded", location.href);
+
   const SELECTOR_CHAIN = [".player-timedtext", '[class*="timedtext"]'];
   const STYLE_PROPS = [
     "font-family",
@@ -43,14 +50,22 @@
   function findSubtitleContainer() {
     for (const selector of SELECTOR_CHAIN) {
       const el = document.querySelector(selector);
-      if (el) return el;
+      if (el) {
+        log("container found via selector", selector, el);
+        return el;
+      }
     }
-    return findStructuralFallback();
+    const fallback = findStructuralFallback();
+    if (fallback) log("container found via structural fallback", fallback);
+    return fallback;
   }
 
   function findStructuralFallback() {
     const video = getVideo();
-    if (!video) return null;
+    if (!video) {
+      log("structural fallback: no video element found");
+      return null;
+    }
     const videoRect = video.getBoundingClientRect();
 
     for (const div of document.querySelectorAll("div")) {
@@ -77,6 +92,17 @@
     const matches = container.querySelectorAll('[class*="timedtext-text-container"]');
     if (matches.length > 0) return Array.from(matches);
     return container.textContent.trim() ? [container] : [];
+  }
+
+  function logDomSnapshot(container) {
+    log("container.outerHTML", container.outerHTML);
+    log("container.textContent", JSON.stringify(container.textContent));
+  }
+
+  function findStyleSource(lineEl) {
+    const walker = document.createTreeWalker(lineEl, NodeFilter.SHOW_TEXT);
+    const textNode = walker.nextNode();
+    return textNode?.parentElement ?? lineEl;
   }
 
   function copyComputedStyles(target, source) {
@@ -118,9 +144,10 @@
   }
 
   function createOverlay(lineEl) {
+    log("creating overlay for line", lineEl);
     const overlay = document.createElement("div");
     overlay.className = "nse-overlay";
-    copyComputedStyles(overlay, lineEl);
+    copyComputedStyles(overlay, findStyleSource(lineEl));
 
     overlay.addEventListener("mouseenter", () => {
       overlay.classList.add("revealed");
@@ -148,11 +175,14 @@
       return;
     }
 
+    log("renderOverlayForLine: new/changed text", JSON.stringify(text));
+
     const overlay = state?.overlay ?? createOverlay(lineEl);
     overlay.replaceChildren(...buildTokens(text));
 
     lineEl.style.visibility = "hidden";
     positionOverlay(overlay, lineEl);
+    log("overlay positioned", overlay.getBoundingClientRect());
 
     lineState.set(lineEl, { overlay, lastText: text });
   }
@@ -170,12 +200,17 @@
   }
 
   function processSubtitle(container) {
+    log("processSubtitle fired");
+    logDomSnapshot(container);
+
     if (hasImageSubtitles(container)) {
+      log("image subtitles detected, skipping");
       removeAllOverlays();
       return;
     }
 
     const lineContainers = getLineContainers(container);
+    log("lineContainers found", lineContainers.length, lineContainers);
     if (lineContainers.length === 0) {
       removeAllOverlays();
       return;
@@ -187,13 +222,18 @@
   }
 
   async function onWordClick(e) {
+    log("overlay click", e.target);
     const span = e.target.closest(".nse-word");
-    if (!span) return;
+    if (!span) {
+      log("click target is not a .nse-word span, ignoring");
+      return;
+    }
 
     e.stopPropagation();
     pauseForInteraction();
 
     const word = span.dataset.word.replace(NON_WORD_CHAR_REGEX, "");
+    log("word clicked", word);
     if (!word) return;
 
     const anchorRect = span.getBoundingClientRect();
@@ -201,7 +241,9 @@
     let result;
     try {
       result = await chrome.runtime.sendMessage({ type: "translate", word });
-    } catch {
+      log("translate response", result);
+    } catch (err) {
+      log("translate request threw", err);
       result = { error: true };
     }
     showPopup(anchorRect, result);
@@ -303,24 +345,28 @@
   }
 
   function watchContainer(container) {
+    log("watchContainer started", container);
     const observer = new MutationObserver(() => processSubtitle(container));
     observer.observe(container, { childList: true, subtree: true, characterData: true });
     processSubtitle(container);
   }
 
   function init() {
+    log("init() called");
     const existing = findSubtitleContainer();
     if (existing) {
       watchContainer(existing);
       return;
     }
 
+    log("no existing container, starting bodyObserver fallback scan");
     let debounceTimer = null;
     const bodyObserver = new MutationObserver(() => {
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {
         const container = findSubtitleContainer();
         if (!container) return;
+        log("bodyObserver found container, switching to watchContainer");
         bodyObserver.disconnect();
         watchContainer(container);
       }, 150);

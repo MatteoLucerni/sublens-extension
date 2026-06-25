@@ -5,9 +5,7 @@
   filter: blur(6px);
   transition: filter 0.15s ease;
   cursor: default;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
   text-align: center;
   white-space: pre-wrap;
   box-sizing: border-box;

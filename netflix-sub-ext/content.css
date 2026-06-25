@@ -1,0 +1,73 @@
+.nse-overlay {
+  position: absolute;
+  z-index: 2147483647;
+  pointer-events: all;
+  filter: blur(6px);
+  transition: filter 0.15s ease;
+  cursor: default;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  white-space: pre-wrap;
+  box-sizing: border-box;
+}
+
+.nse-overlay.revealed {
+  filter: none;
+}
+
+.nse-word {
+  cursor: pointer;
+}
+
+.nse-word:hover {
+  text-decoration: underline;
+}
+
+#nse-popup {
+  position: absolute;
+  z-index: 2147483647;
+  background: rgba(20, 20, 20, 0.95);
+  color: #fff;
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  max-width: 280px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.nse-word-label {
+  font-weight: bold;
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.nse-translation {
+  font-size: 16px;
+  color: #46d369;
+  margin-bottom: 6px;
+}
+
+.nse-entries {
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  padding-top: 6px;
+  font-size: 12px;
+  color: #ccc;
+}
+
+.nse-entry {
+  margin-bottom: 2px;
+}
+
+.nse-pos {
+  font-style: italic;
+  color: #999;
+  margin-right: 4px;
+}
+
+.nse-error {
+  font-size: 13px;
+  color: #ccc;
+}

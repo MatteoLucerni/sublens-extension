@@ -27,9 +27,41 @@
 
   let extensionPaused = false;
   let wasPlayingBeforePause = false;
+  let controlsKeepAliveInterval = null;
 
   function getVideo() {
     return document.querySelector("video");
+  }
+
+  function getAppendTarget() {
+    return document.fullscreenElement ?? document.body;
+  }
+
+  function reparentToCurrentTarget(el) {
+    const target = getAppendTarget();
+    if (el.parentElement !== target) target.appendChild(el);
+  }
+
+  function startControlsKeepAlive() {
+    if (controlsKeepAliveInterval) return;
+    controlsKeepAliveInterval = setInterval(() => {
+      const video = getVideo();
+      if (!video) return;
+      const rect = video.getBoundingClientRect();
+      video.dispatchEvent(
+        new MouseEvent("mousemove", {
+          bubbles: true,
+          cancelable: true,
+          clientX: rect.left + rect.width / 2,
+          clientY: rect.top + rect.height / 2
+        })
+      );
+    }, 2000);
+  }
+
+  function stopControlsKeepAlive() {
+    clearInterval(controlsKeepAliveInterval);
+    controlsKeepAliveInterval = null;
   }
 
   function pauseForInteraction() {
@@ -130,6 +162,13 @@
     overlay.style.height = `${rect.height}px`;
   }
 
+  function repositionAllOverlays() {
+    for (const [lineEl, state] of lineState) {
+      if (!lineEl.isConnected) continue;
+      positionOverlay(state.overlay, lineEl);
+    }
+  }
+
   function buildTokens(text) {
     const parts = text.match(TOKEN_REGEX) ?? [];
     return parts.map((part) => {
@@ -162,7 +201,7 @@
 
     overlay.addEventListener("click", onWordClick);
 
-    document.body.appendChild(overlay);
+    getAppendTarget().appendChild(overlay);
     return overlay;
   }
 
@@ -274,11 +313,12 @@
       appendEntries(popup, result.entries);
     }
 
-    document.body.appendChild(popup);
+    getAppendTarget().appendChild(popup);
     positionPopup(popup, anchorRect);
 
     document.addEventListener("click", onOutsideClick, { capture: true });
     document.addEventListener("keydown", onEscape);
+    startControlsKeepAlive();
   }
 
   function appendEntries(popup, entries) {
@@ -329,6 +369,7 @@
     popup.remove();
     document.removeEventListener("click", onOutsideClick, { capture: true });
     document.removeEventListener("keydown", onEscape);
+    stopControlsKeepAlive();
 
     for (const [, state] of lineState) state.overlay.classList.remove("revealed");
     releaseInteraction();
@@ -347,8 +388,23 @@
   function watchContainer(container) {
     log("watchContainer started", container);
     const observer = new MutationObserver(() => processSubtitle(container));
-    observer.observe(container, { childList: true, subtree: true, characterData: true });
+    observer.observe(container, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+      attributes: true,
+      attributeFilter: ["style"]
+    });
     processSubtitle(container);
+    observeVideoResize();
+  }
+
+  function observeVideoResize() {
+    const video = getVideo();
+    if (!video || video.dataset.nseResizeObserved) return;
+    video.dataset.nseResizeObserved = "true";
+    const resizeObserver = new ResizeObserver(() => repositionAllOverlays());
+    resizeObserver.observe(video);
   }
 
   function init() {
@@ -374,8 +430,13 @@
     bodyObserver.observe(document.body, { childList: true, subtree: true });
   }
 
-  window.addEventListener("resize", () => {
-    for (const [lineEl, state] of lineState) positionOverlay(state.overlay, lineEl);
+  window.addEventListener("resize", repositionAllOverlays);
+
+  document.addEventListener("fullscreenchange", () => {
+    log("fullscreenchange", document.fullscreenElement);
+    for (const [, state] of lineState) reparentToCurrentTarget(state.overlay);
+    removePopup();
+    repositionAllOverlays();
   });
 
   init();

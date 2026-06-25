@@ -16,7 +16,6 @@
     "text-shadow",
     "line-height",
     "text-align",
-    "white-space",
     "letter-spacing"
   ];
   const WORD_CHAR_CLASS = "A-Za-z'";
@@ -27,7 +26,6 @@
 
   let extensionPaused = false;
   let wasPlayingBeforePause = false;
-  let controlsKeepAliveInterval = null;
 
   function getVideo() {
     return document.querySelector("video");
@@ -42,26 +40,8 @@
     if (el.parentElement !== target) target.appendChild(el);
   }
 
-  function startControlsKeepAlive() {
-    if (controlsKeepAliveInterval) return;
-    controlsKeepAliveInterval = setInterval(() => {
-      const video = getVideo();
-      if (!video) return;
-      const rect = video.getBoundingClientRect();
-      video.dispatchEvent(
-        new MouseEvent("mousemove", {
-          bubbles: true,
-          cancelable: true,
-          clientX: rect.left + rect.width / 2,
-          clientY: rect.top + rect.height / 2
-        })
-      );
-    }, 2000);
-  }
-
-  function stopControlsKeepAlive() {
-    clearInterval(controlsKeepAliveInterval);
-    controlsKeepAliveInterval = null;
+  function isPopupOpen() {
+    return !!document.getElementById("nse-popup");
   }
 
   function pauseForInteraction() {
@@ -75,8 +55,28 @@
   }
 
   function releaseInteraction() {
+    if (!extensionPaused) return;
     extensionPaused = false;
     if (wasPlayingBeforePause) getVideo()?.play();
+  }
+
+  function revealAllOverlays() {
+    for (const [, state] of lineState) state.overlay.classList.add("revealed");
+  }
+
+  function blurUnheldOverlays() {
+    for (const [, state] of lineState) {
+      if (state.overlay.dataset.hovered === "true") continue;
+      if (isPopupOpen()) continue;
+      state.overlay.classList.remove("revealed");
+    }
+  }
+
+  function attachVideoListeners(video) {
+    if (video.dataset.nseListenersAttached) return;
+    video.dataset.nseListenersAttached = "true";
+    video.addEventListener("pause", revealAllOverlays);
+    video.addEventListener("play", blurUnheldOverlays);
   }
 
   function findSubtitleContainer() {
@@ -137,6 +137,17 @@
     return textNode?.parentElement ?? lineEl;
   }
 
+  function getLineText(lineEl) {
+    const walker = document.createTreeWalker(lineEl, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
+    let text = "";
+    let node = walker.currentNode;
+    while ((node = walker.nextNode())) {
+      if (node.nodeType === Node.TEXT_NODE) text += node.nodeValue;
+      else if (node.nodeName === "BR") text += "\n";
+    }
+    return text;
+  }
+
   function copyComputedStyles(target, source) {
     const computed = getComputedStyle(source);
     for (const prop of STYLE_PROPS) {
@@ -156,10 +167,11 @@
 
   function positionOverlay(overlay, lineEl) {
     const rect = toDocumentRect(lineEl.getBoundingClientRect());
-    overlay.style.top = `${rect.top}px`;
+    overlay.style.top = `${rect.bottom}px`;
     overlay.style.left = `${rect.left}px`;
     overlay.style.width = `${rect.width}px`;
-    overlay.style.height = `${rect.height}px`;
+    overlay.style.height = "auto";
+    overlay.style.transform = "translateY(-100%)";
   }
 
   function repositionAllOverlays() {
@@ -189,24 +201,28 @@
     copyComputedStyles(overlay, findStyleSource(lineEl));
 
     overlay.addEventListener("mouseenter", () => {
+      overlay.dataset.hovered = "true";
       overlay.classList.add("revealed");
       pauseForInteraction();
     });
 
     overlay.addEventListener("mouseleave", () => {
-      if (document.getElementById("nse-popup")) return;
-      overlay.classList.remove("revealed");
+      delete overlay.dataset.hovered;
+      if (isPopupOpen()) return;
       releaseInteraction();
+      if (!getVideo()?.paused) overlay.classList.remove("revealed");
     });
 
     overlay.addEventListener("click", onWordClick);
+
+    if (isPopupOpen() || getVideo()?.paused) overlay.classList.add("revealed");
 
     getAppendTarget().appendChild(overlay);
     return overlay;
   }
 
   function renderOverlayForLine(lineEl) {
-    const text = lineEl.textContent;
+    const text = getLineText(lineEl);
     const state = lineState.get(lineEl);
 
     if (state && state.lastText === text) {
@@ -318,7 +334,6 @@
 
     document.addEventListener("click", onOutsideClick, { capture: true });
     document.addEventListener("keydown", onEscape);
-    startControlsKeepAlive();
   }
 
   function appendEntries(popup, entries) {
@@ -369,10 +384,9 @@
     popup.remove();
     document.removeEventListener("click", onOutsideClick, { capture: true });
     document.removeEventListener("keydown", onEscape);
-    stopControlsKeepAlive();
 
-    for (const [, state] of lineState) state.overlay.classList.remove("revealed");
     releaseInteraction();
+    if (!getVideo()?.paused) blurUnheldOverlays();
   }
 
   function onOutsideClick(e) {
@@ -401,7 +415,9 @@
 
   function observeVideoResize() {
     const video = getVideo();
-    if (!video || video.dataset.nseResizeObserved) return;
+    if (!video) return;
+    attachVideoListeners(video);
+    if (video.dataset.nseResizeObserved) return;
     video.dataset.nseResizeObserved = "true";
     const resizeObserver = new ResizeObserver(() => repositionAllOverlays());
     resizeObserver.observe(video);

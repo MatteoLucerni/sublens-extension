@@ -248,8 +248,8 @@
     for (const { line, rect } of rects) {
       line.overlay.style.top = `${rect.bottom + delta}px`;
       line.overlay.style.left = `${rect.left}px`;
-      line.overlay.style.width = `${rect.width}px`;
-      line.overlay.style.height = `${rect.height}px`;
+      line.overlay.style.width = "auto";
+      line.overlay.style.height = "auto";
       line.overlay.style.transform = "translateY(-100%)";
     }
   }

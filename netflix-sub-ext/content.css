@@ -9,6 +9,7 @@
   text-align: center;
   white-space: pre-wrap;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .nse-overlay.revealed {

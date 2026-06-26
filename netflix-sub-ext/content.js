@@ -229,13 +229,13 @@
     const rects = connected.map((line) => ({ line, rect: toDocumentRect(line.lineEl.getBoundingClientRect()) }));
     const naturalBottommost = Math.max(...rects.map(({ rect }) => rect.bottom));
     const pinnedBottom = getPinnedBottom();
-    const delta = pinnedBottom !== null ? pinnedBottom - naturalBottommost : 0;
+    const delta = pinnedBottom !== null ? Math.min(0, pinnedBottom - naturalBottommost) : 0;
 
     for (const { line, rect } of rects) {
       line.overlay.style.top = `${rect.bottom + delta}px`;
       line.overlay.style.left = `${rect.left}px`;
       line.overlay.style.width = `${rect.width}px`;
-      line.overlay.style.height = "auto";
+      line.overlay.style.height = `${rect.height}px`;
       line.overlay.style.transform = "translateY(-100%)";
     }
   }

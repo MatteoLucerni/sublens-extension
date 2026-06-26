@@ -2,7 +2,7 @@
   position: absolute;
   z-index: 2147483646;
   pointer-events: all;
-  filter: blur(6px);
+  filter: blur(var(--nse-blur, 6px));
   transition: filter 0.15s ease;
   cursor: default;
   display: block;

@@ -14,6 +14,9 @@
     '[class*="PlayerControlsNeo"]'
   ];
   const FALLBACK_CONTROLS_HEIGHT = 110;
+  const BLUR_RATIO = 0.24;
+  const MIN_BLUR_PX = 6;
+  const MAX_BLUR_PX = 22;
   const STYLE_PROPS = [
     "font-family",
     "font-size",
@@ -186,6 +189,12 @@
     const computed = getComputedStyle(source);
     for (const prop of STYLE_PROPS) {
       target.style.setProperty(prop, computed.getPropertyValue(prop));
+    }
+
+    const fontSize = parseFloat(computed.getPropertyValue("font-size"));
+    if (!Number.isNaN(fontSize)) {
+      const blur = Math.min(MAX_BLUR_PX, Math.max(MIN_BLUR_PX, fontSize * BLUR_RATIO));
+      target.style.setProperty("--nse-blur", `${blur}px`);
     }
   }
 

@@ -111,3 +111,89 @@
   color: #fff;
   font-weight: bold;
 }
+
+.nse-onboard-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.7);
+  font-family: Arial, sans-serif;
+}
+
+.nse-onboard-card {
+  width: 360px;
+  max-width: calc(100vw - 32px);
+  background: #202124;
+  color: #e8eaed;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  box-sizing: border-box;
+}
+
+.nse-onboard-title {
+  margin: 0 0 10px;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+}
+
+.nse-onboard-accent {
+  color: #46d369;
+}
+
+.nse-onboard-desc {
+  margin: 0 0 18px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #9aa0a6;
+}
+
+.nse-onboard-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #e8eaed;
+}
+
+.nse-onboard-select {
+  width: 100%;
+  background: #35363a;
+  color: #e8eaed;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.nse-onboard-select:focus {
+  outline: none;
+  border-color: rgba(70, 211, 105, 0.6);
+}
+
+.nse-onboard-btn {
+  margin-top: 18px;
+  width: 100%;
+  background: #46d369;
+  color: #0a0a0a;
+  border: none;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  font-family: inherit;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.nse-onboard-btn:hover {
+  filter: brightness(1.08);
+}

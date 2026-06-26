@@ -4,7 +4,7 @@ const NSE_SETTINGS_DEFAULTS = {
   subtitleBlurEnabled: true,
   autoRemoveBlurOnPause: true,
   subtitleSourceLang: "auto",
-  translationTargetLang: "it"
+  translationTargetLang: "en"
 };
 
 const NSE_LANGUAGES = [
@@ -32,6 +32,16 @@ function nseGetSettings() {
 
 function nseSetSetting(key, value) {
   return chrome.storage.sync.set({ [key]: value });
+}
+
+function nseGetOnboarded() {
+  return new Promise((resolve) => {
+    chrome.storage.sync.get({ onboardingCompleted: false }, (stored) => resolve(!!stored.onboardingCompleted));
+  });
+}
+
+function nseSetOnboarded(value) {
+  return chrome.storage.sync.set({ onboardingCompleted: value });
 }
 
 function nseOnSettingsChanged(callback) {

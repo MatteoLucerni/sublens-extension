@@ -1008,6 +1008,74 @@
     resizeObserver.observe(video);
   }
 
+  function buildOnboarding() {
+    const backdrop = document.createElement("div");
+    backdrop.id = "nse-onboard";
+    backdrop.className = "nse-onboard-backdrop";
+
+    const card = document.createElement("div");
+    card.className = "nse-onboard-card";
+
+    const title = document.createElement("h1");
+    title.className = "nse-onboard-title";
+    title.appendChild(document.createTextNode("Subtitle "));
+    const accent = document.createElement("span");
+    accent.className = "nse-onboard-accent";
+    accent.textContent = "Lens";
+    title.appendChild(accent);
+    card.appendChild(title);
+
+    const desc = document.createElement("p");
+    desc.className = "nse-onboard-desc";
+    desc.textContent =
+      "Choose the language you want subtitles translated into. The subtitle language is detected automatically, and you can change everything later from the toolbar icon.";
+    card.appendChild(desc);
+
+    const label = document.createElement("label");
+    label.className = "nse-onboard-label";
+    label.textContent = "Translate to";
+    card.appendChild(label);
+
+    const select = document.createElement("select");
+    select.className = "nse-onboard-select";
+    for (const [code, name] of NSE_LANGUAGES) {
+      const option = document.createElement("option");
+      option.value = code;
+      option.textContent = name;
+      select.appendChild(option);
+    }
+    select.value = settings.translationTargetLang;
+    card.appendChild(select);
+
+    const button = document.createElement("button");
+    button.className = "nse-onboard-btn";
+    button.textContent = "Get started";
+    button.addEventListener("click", async () => {
+      const lang = select.value;
+      settings.translationTargetLang = lang;
+      await nseSetSetting("translationTargetLang", lang);
+      await nseSetOnboarded(true);
+      backdrop.remove();
+    });
+    card.appendChild(button);
+
+    backdrop.appendChild(card);
+    return backdrop;
+  }
+
+  async function showOnboardingIfFirstRun() {
+    if (document.getElementById("nse-onboard")) return;
+    if (await nseGetOnboarded()) return;
+    if (document.getElementById("nse-onboard")) return;
+    document.body.appendChild(buildOnboarding());
+  }
+
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === "sync" && changes.onboardingCompleted?.newValue) {
+      document.getElementById("nse-onboard")?.remove();
+    }
+  });
+
   function init() {
     log("init() called");
     const existing = findSubtitleContainer();
@@ -1059,4 +1127,5 @@
   });
 
   init();
+  showOnboardingIfFirstRun();
 })();

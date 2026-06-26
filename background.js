@@ -20,7 +20,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     return;
   }
   resolveSourceLang(sender.tab?.id, msg.sourceLang)
-    .then((sl) => translate(msg.word, sl, normalizeLang(msg.targetLang) || "it"))
+    .then((sl) => translate(msg.word, sl, normalizeLang(msg.targetLang) || "en"))
     .then((result) => {
       console.log("[NSE] translate succeeded", result);
       sendResponse(result);

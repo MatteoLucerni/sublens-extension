@@ -19,6 +19,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Changed
 - Flattened the repository: all extension files moved from `netflix-sub-ext/` to the repository root.
 
+### Fixed
+- Settings tooltips no longer get clipped by the popup's edge: they are now centered on their toggle row instead of anchored to the small "?" icon, so they always stay fully within the popup regardless of how far right the icon sits.
+
 ## [0.1.0]
 
 ### Added

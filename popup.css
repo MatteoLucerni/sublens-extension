@@ -81,6 +81,7 @@ body {
 }
 
 .nse-toggle-row {
+  position: relative;
   display: flex;
   align-items: flex-start;
   gap: 10px;
@@ -114,7 +115,6 @@ body {
 }
 
 .nse-help {
-  position: relative;
   width: 14px;
   height: 14px;
   flex-shrink: 0;
@@ -138,8 +138,9 @@ body {
 .nse-tooltip {
   display: none;
   position: absolute;
-  left: 0;
-  top: 20px;
+  left: 50%;
+  top: 26px;
+  transform: translateX(-50%);
   width: 210px;
   background: var(--nse-bg-2);
   color: var(--nse-text-primary);

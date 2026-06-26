@@ -2,8 +2,27 @@ const NSE_SETTINGS_DEFAULTS = {
   jumpToPreviousSubtitleOnBack: true,
   autoPauseOnHover: true,
   subtitleBlurEnabled: true,
-  autoRemoveBlurOnPause: true
+  autoRemoveBlurOnPause: true,
+  subtitleSourceLang: "auto",
+  translationTargetLang: "it"
 };
+
+const NSE_LANGUAGES = [
+  ["en", "English"],
+  ["it", "Italiano"],
+  ["es", "Español"],
+  ["fr", "Français"],
+  ["de", "Deutsch"],
+  ["pt", "Português"],
+  ["nl", "Nederlands"],
+  ["sv", "Svenska"],
+  ["pl", "Polski"],
+  ["ro", "Română"],
+  ["tr", "Türkçe"],
+  ["el", "Ελληνικά"],
+  ["ru", "Русский"],
+  ["uk", "Українська"]
+];
 
 function nseGetSettings() {
   return new Promise((resolve) => {

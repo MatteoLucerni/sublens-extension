@@ -28,9 +28,9 @@
     "text-align",
     "letter-spacing"
   ];
-  const WORD_CHAR_CLASS = "A-Za-z'";
-  const TOKEN_REGEX = new RegExp(`[${WORD_CHAR_CLASS}]+|[^${WORD_CHAR_CLASS}]+`, "g");
-  const NON_WORD_CHAR_REGEX = new RegExp(`[^${WORD_CHAR_CLASS}]`, "g");
+  const TOKEN_REGEX = /[\p{L}\p{M}'’]+|[^\p{L}\p{M}'’]+/gu;
+  const NON_WORD_CHAR_REGEX = /[^\p{L}\p{M}'’]/gu;
+  const LETTER_REGEX = /\p{L}/u;
 
   let activeLines = [];
   let currentContainer = null;
@@ -279,7 +279,7 @@
   function buildTokens(text) {
     const parts = text.match(TOKEN_REGEX) ?? [];
     return parts.map((part) => {
-      if (!/[A-Za-z]/.test(part)) return document.createTextNode(part);
+      if (!LETTER_REGEX.test(part)) return document.createTextNode(part);
 
       const span = document.createElement("span");
       span.className = "nse-word";
@@ -613,7 +613,12 @@
     translationPending = true;
     let result;
     try {
-      result = await chrome.runtime.sendMessage({ type: "translate", word: text });
+      result = await chrome.runtime.sendMessage({
+        type: "translate",
+        word: text,
+        sourceLang: settings.subtitleSourceLang,
+        targetLang: settings.translationTargetLang
+      });
       log("translate response", result);
     } catch (err) {
       log("translate request threw", err);

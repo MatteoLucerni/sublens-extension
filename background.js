@@ -19,7 +19,8 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     sendResponse({ error: true });
     return;
   }
-  translate(msg.word)
+  resolveSourceLang(sender.tab?.id, msg.sourceLang)
+    .then((sl) => translate(msg.word, sl, normalizeLang(msg.targetLang) || "it"))
     .then((result) => {
       console.log("[NSE] translate succeeded", result);
       sendResponse(result);
@@ -30,6 +31,50 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     });
   return true;
 });
+
+function normalizeLang(code) {
+  if (typeof code !== "string") return null;
+  const primary = code.trim().toLowerCase().split("-")[0];
+  return primary || null;
+}
+
+async function resolveSourceLang(tabId, sourceSetting) {
+  if (sourceSetting && sourceSetting !== "auto") return normalizeLang(sourceSetting) ?? "auto";
+
+  const track = await getNetflixSubtitleLang(tabId);
+  if (track && !track.isNoneTrack && track.bcp47) {
+    const lang = normalizeLang(track.bcp47);
+    if (lang) return lang;
+  }
+  return "auto";
+}
+
+async function getNetflixSubtitleLang(tabId) {
+  if (!tabId) return null;
+
+  try {
+    const results = await chrome.scripting.executeScript({
+      target: { tabId },
+      world: "MAIN",
+      func: () => {
+        try {
+          const videoPlayer = window.netflix?.appContext?.state?.playerApp?.getAPI()?.videoPlayer;
+          const sessionId = videoPlayer?.getAllPlayerSessionIds()?.[0];
+          const player = sessionId !== undefined ? videoPlayer.getVideoPlayerBySessionId(sessionId) : null;
+          const track = player?.getTimedTextTrack?.();
+          if (!track) return null;
+          return { bcp47: track.bcp47 ?? null, isNoneTrack: !!track.isNoneTrack };
+        } catch (err) {
+          return null;
+        }
+      }
+    });
+    return results?.[0]?.result ?? null;
+  } catch (err) {
+    console.log("[NSE] getNetflixSubtitleLang failed", err);
+    return null;
+  }
+}
 
 async function seekNetflixPlayer(tabId, timeMs) {
   if (!tabId) return { ok: false, error: "no tabId" };
@@ -55,11 +100,11 @@ async function seekNetflixPlayer(tabId, timeMs) {
   return results?.[0]?.result ?? { ok: false, error: "no result" };
 }
 
-async function translate(word) {
+async function translate(word, sl, tl) {
   const url = new URL("https://translate.googleapis.com/translate_a/single");
   url.searchParams.set("client", "gtx");
-  url.searchParams.set("sl", "en");
-  url.searchParams.set("tl", "it");
+  url.searchParams.set("sl", sl);
+  url.searchParams.set("tl", tl);
   url.searchParams.set("dt", "t");
   url.searchParams.append("dt", "bd");
   url.searchParams.append("dt", "md");
@@ -71,12 +116,13 @@ async function translate(word) {
   if (!res.ok) throw new Error(`translate request failed: ${res.status}`);
 
   const data = await res.json();
+  const detectedSl = data[2] ?? sl;
   const definitionsRaw = extractDefinitionGroups(data[12]);
   let definitions = definitionsRaw;
 
   if (definitionsRaw) {
     try {
-      definitions = await translateDefinitionGroups(definitionsRaw);
+      definitions = await translateDefinitionGroups(definitionsRaw, detectedSl, tl);
     } catch (err) {
       console.log("[NSE] definitions translation failed", err);
     }
@@ -102,11 +148,11 @@ function extractDefinitionGroups(raw, maxGroups = 2, maxPerGroup = 2) {
   return groups.length > 0 ? groups : null;
 }
 
-async function translateText(text) {
+async function translateText(text, sl, tl) {
   const url = new URL("https://translate.googleapis.com/translate_a/single");
   url.searchParams.set("client", "gtx");
-  url.searchParams.set("sl", "en");
-  url.searchParams.set("tl", "it");
+  url.searchParams.set("sl", sl);
+  url.searchParams.set("tl", tl);
   url.searchParams.set("dt", "t");
   url.searchParams.set("q", text);
 
@@ -117,7 +163,7 @@ async function translateText(text) {
   return data[0]?.map((segment) => segment[0]).join("") ?? text;
 }
 
-async function translateDefinitionGroups(groups) {
+async function translateDefinitionGroups(groups, sl, tl) {
   const texts = [];
   for (const [, defs] of groups) {
     for (const def of defs) texts.push(def[0] ?? "");
@@ -125,7 +171,7 @@ async function translateDefinitionGroups(groups) {
   if (texts.length === 0) return groups;
 
   const delimiter = "\n||\n";
-  const translatedJoined = await translateText(texts.join(delimiter));
+  const translatedJoined = await translateText(texts.join(delimiter), sl, tl);
   const translatedTexts = translatedJoined.split("||").map((text) => text.trim());
 
   let i = 0;

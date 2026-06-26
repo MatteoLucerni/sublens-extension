@@ -68,6 +68,49 @@ body {
   border: 1px solid var(--nse-border);
 }
 
+.nse-languages {
+  display: flex;
+  flex-direction: column;
+}
+
+.nse-lang-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--nse-border);
+}
+
+.nse-lang-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.nse-select {
+  flex-shrink: 0;
+  min-width: 120px;
+  background: var(--nse-bg-2);
+  color: var(--nse-text-primary);
+  border: 1px solid var(--nse-border);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.nse-select:hover {
+  border-color: rgba(70, 211, 105, 0.4);
+}
+
+.nse-select:focus {
+  outline: none;
+  border-color: rgba(70, 211, 105, 0.6);
+}
+
 .nse-toggles {
   display: flex;
   flex-direction: column;

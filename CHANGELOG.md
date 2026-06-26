@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Shared `settings.js` module exposing `chrome.storage.sync` helpers to both the content script and the popup.
 - New icon set (16/32/48/128 px): a magnifying-glass "lens" mark over subtitle lines, green on dark gray.
 - New extension name ("Subtitle Lens") and Chrome Web Store description, deliberately platform-agnostic so other streaming sites can be supported later without a rebrand.
-- Popup redesign: layered Google-style dark gray palette instead of flat black, decorated header with title/tagline and a version badge pinned bottom-right, and a toned-down switch style (muted track, green knob) using the same brand green as the rest of the UI.
+- Popup redesign: layered Google-style dark gray palette instead of flat black, a bolder header with the "Lens" word picked out in green and the version badge pinned top-right, and a toned-down switch style (muted track, green knob) using the same brand green as the rest of the UI.
 - `README.md`, this changelog, and a project-level `CLAUDE.md` (untracked) with the versioning policy.
 - `storage` permission, required for `chrome.storage.sync`.
 

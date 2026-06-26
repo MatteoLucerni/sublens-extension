@@ -27,11 +27,10 @@ body {
 }
 
 .nse-header {
-  position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 14px 16px 18px;
+  padding: 16px;
   background: var(--nse-bg-1);
   border-bottom: 1px solid var(--nse-border);
 }
@@ -44,29 +43,23 @@ body {
   box-shadow: 0 0 0 1px var(--nse-border);
 }
 
-.nse-header-text {
+.nse-title {
   flex: 1;
   min-width: 0;
-}
-
-.nse-title {
   margin: 0;
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: 0.2px;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
   color: var(--nse-text-primary);
 }
 
-.nse-tagline {
-  margin: 2px 0 0;
-  font-size: 11px;
-  color: var(--nse-text-secondary);
+.nse-title-accent {
+  color: var(--nse-green);
 }
 
 .nse-version {
-  position: absolute;
-  right: 12px;
-  bottom: 8px;
+  align-self: flex-start;
+  flex-shrink: 0;
   font-size: 10px;
   color: var(--nse-text-secondary);
   background: var(--nse-bg-2);

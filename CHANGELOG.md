@@ -5,6 +5,21 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.6.2]
+
+### Fixed
+- The popup header logo (`.nse-logo`) no longer rounds its bottom-right corner via CSS, which was masking the icon's intentionally squared-off corner.
+
+### Changed
+- Toolbar icon (16/32/48/128): the two center bars now read like wrapped text, left-aligned with the first (top) line the longest and the second (bottom) line half its length.
+- Re-added a small magnifying-glass handle in the bottom-right corner, sized to fit the space left by the squared-off background corner, without changing the ring's size.
+
+## [0.6.1]
+
+### Changed
+- Toolbar icon background (16/32/48/128) is now a circle rounded on three corners, with the bottom-right corner squared off to meet the canvas edge instead of being rounded.
+- The shorter of the two center bars (the first line) is now half the width of the second.
+
 ## [0.6.0]
 
 ### Changed

@@ -38,7 +38,7 @@ body {
 .nse-logo {
   width: 32px;
   height: 32px;
-  border-radius: 8px;
+  border-radius: 8px 8px 0 8px;
   flex-shrink: 0;
   box-shadow: 0 0 0 1px var(--nse-border);
 }

@@ -149,7 +149,6 @@ function reconcileLines(lineContainers) {
   const incoming = lineContainers.map((lineEl) => ({ lineEl, text: getLineText(lineEl) }));
   const usedOldIndexes = new Set();
   const newActiveLines = [];
-  const wasEmpty = activeLines.length === 0;
   let hasNewCue = false;
   let hasRemovedCue = false;
 
@@ -194,12 +193,8 @@ function reconcileLines(lineContainers) {
   activeLines = newActiveLines;
   positionOverlayGroup(activeLines);
 
-  if (PLATFORM.cueBoundaryMode === "window") {
-    if (wasEmpty && newActiveLines.length > 0) recordCueStart();
-  } else {
-    if (hasRemovedCue) markCueEnded();
-    if (hasNewCue) recordCueStart();
-  }
+  if (hasRemovedCue) markCueEnded();
+  if (hasNewCue) recordCueStart();
 }
 
 function removeAllOverlays() {

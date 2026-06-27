@@ -11,7 +11,6 @@ const NSE_PLATFORMS = {
     ],
     lineContainerSelector: '[class*="timedtext-text-container"]',
     cueRootSelector: '[class*="timedtext-text-container"]',
-    cueBoundaryMode: "perLine",
     usesBackgroundSeek: true,
     processDebounceMs: 0
   },
@@ -23,7 +22,6 @@ const NSE_PLATFORMS = {
     lineContainerSelector: ".caption-visual-line",
     lineContainerFallbackSelector: ".caption-window",
     cueRootSelector: ".caption-window",
-    cueBoundaryMode: "window",
     usesBackgroundSeek: false,
     processDebounceMs: 180
   }

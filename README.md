@@ -6,13 +6,14 @@ Currently supports Netflix. The extension is built so other streaming platforms 
 
 ## Features
 
-- **Subtitle blur** — subtitles are blurred by default; hover over a line to reveal it.
-- **Auto-pause on hover** — hovering a subtitle pauses the video so you can read it.
-- **Auto-reveal on pause** — pausing the video reveals all blurred subtitles.
-- **Jump to previous subtitle** — pressing the Left Arrow key replays the previous subtitle line (instead of Netflix's default 10-second rewind).
-- **Word translation and dictionary** — click a word for its translation and dictionary entry, Ctrl+click to add more words to the selection, or click-and-drag to select a phrase.
+- **Subtitle blur**: subtitles are blurred by default; hover over a line to reveal it.
+- **Auto-pause on hover**: hovering a subtitle pauses the video so you can read it.
+- **Auto-reveal on pause**: pausing the video reveals all blurred subtitles.
+- **Jump to previous subtitle**: pressing the Left Arrow key replays the previous subtitle line (instead of Netflix's default 10-second rewind).
+- **Word translation and dictionary**: click a word for its translation and dictionary entry, Ctrl+click to add more words to the selection, or click-and-drag to select a phrase.
+- **Language selection**: choose the subtitle (source) language, or leave it on "Auto" to detect it from the Netflix track, and the language to translate into.
 
-All four behaviors above are toggleable from the extension's toolbar popup, and default to enabled (matching the extension's original always-on behavior).
+The four behaviors above are toggleable from the extension's toolbar popup and default to enabled (matching the extension's original always-on behavior); the subtitle and translation languages are configurable in the same popup.
 
 ## File structure
 
@@ -48,13 +49,13 @@ runs top-level code.
 
 ## Permissions
 
-- `scripting` — used to inject a script into the Netflix page's main world to call the internal player API for seeking.
-- `storage` — used by `chrome.storage.sync` to persist the 4 settings toggles.
+- `scripting`: used to inject a script into the Netflix page's main world to call the internal player API for seeking.
+- `storage`: used by `chrome.storage.sync` to persist the settings.
 - `host_permissions` for `netflix.com` (content script) and `translate.googleapis.com` (background fetches for translation/dictionary data).
 
 ## Settings popup
 
-Click the extension icon in the toolbar to open the settings popup. Each toggle has a short description and a "?" icon with a hover tooltip explaining its effect in detail. Settings are stored via `chrome.storage.sync` and applied live, no page reload required.
+Click the extension icon in the toolbar to open the settings popup. It holds the subtitle and translation language selects, plus the four behavior toggles under "advanced options". Each control has a "?" icon with a hover tooltip explaining its effect in detail. Settings are stored via `chrome.storage.sync` and applied live, no page reload required.
 
 ## Word interaction guide
 

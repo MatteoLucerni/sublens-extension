@@ -1019,10 +1019,10 @@
 
     const title = document.createElement("h1");
     title.className = "nse-onboard-title";
-    title.appendChild(document.createTextNode("Subtitle "));
+    title.appendChild(document.createTextNode("Sub"));
     const accent = document.createElement("span");
     accent.className = "nse-onboard-accent";
-    accent.textContent = "Lens";
+    accent.textContent = "lens";
     title.appendChild(accent);
     card.appendChild(title);
 

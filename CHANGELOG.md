@@ -5,6 +5,13 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.8.0]
+
+### Changed
+- Extension renamed from "Subtitle Lens" to "Sublens - Translate & Learn from Subtitles" (short name "Sublens"), to better surface the translation/language-learning value proposition in the Chrome Web Store. Updated everywhere the name appears: manifest, toolbar tooltip, popup header, and onboarding overlay.
+- Removed the short description text under each language/toggle row in the popup, since the existing "?" tooltip already explains each setting in detail. Reduces visual clutter and lets toggle rows center their content instead of top-aligning.
+- Popup header title given a slightly larger, more decorated treatment (bigger font, subtle glow on the accent word) to better carry the new name now that it stands alone without a subtitle line nearby.
+
 ## [0.7.3]
 
 ### Changed

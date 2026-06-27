@@ -48,14 +48,15 @@ body {
   flex: 1;
   min-width: 0;
   margin: 0;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 800;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.4px;
   color: var(--nse-text-primary);
 }
 
 .nse-title-accent {
   color: var(--nse-blue);
+  text-shadow: 0 0 14px rgba(56, 189, 248, 0.35);
 }
 
 .nse-version {
@@ -165,7 +166,7 @@ body {
 .nse-toggle-row {
   position: relative;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 12px;
   padding: 16px 18px;
   border-bottom: 1px solid var(--nse-border);
@@ -188,13 +189,6 @@ body {
   font-size: 13px;
   font-weight: bold;
   color: var(--nse-text-primary);
-}
-
-.nse-toggle-desc {
-  font-size: 11px;
-  color: var(--nse-text-secondary);
-  line-height: 1.5;
-  margin: 6px 0 0;
 }
 
 .nse-help {
@@ -247,7 +241,6 @@ body {
   width: 36px;
   height: 20px;
   flex-shrink: 0;
-  margin-top: 2px;
 }
 
 .nse-switch input {

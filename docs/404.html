@@ -25,7 +25,7 @@
         width: 88px;
         height: 88px;
         border-radius: 20px;
-        box-shadow: 0 10px 40px rgba(56, 189, 248, 0.25);
+        box-shadow: 0 12px 32px rgba(2, 132, 199, 0.22);
       }
       .nf h1 {
         font-size: 4rem;
@@ -37,11 +37,17 @@
       }
       .nf a {
         background: var(--accent);
-        color: var(--accent-deep);
+        color: #fff;
         padding: 12px 28px;
         border-radius: 8px;
         font-weight: 600;
         text-decoration: none;
+        box-shadow: var(--shadow-sm);
+        transition: background 0.2s ease, transform 0.2s ease;
+      }
+      .nf a:hover {
+        background: var(--accent-hover);
+        transform: translateY(-1px);
       }
     </style>
   </head>

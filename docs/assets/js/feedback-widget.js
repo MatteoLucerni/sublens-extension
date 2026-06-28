@@ -7,9 +7,10 @@
 
     .fb-widget-fab {
       width: 56px; height: 56px; border-radius: 50%; border: none; cursor: pointer;
-      background: #38bdf8; color: #06283d; display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 4px 14px rgba(0,0,0,.35); transition: transform .2s, background .2s;
+      background: #0284c7; color: #fff; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 6px 18px rgba(2,132,199,.4); transition: transform .2s, background .2s;
     }
+    .fb-widget-fab:hover { background: #0369a1; }
     .fb-widget-fab:hover { transform: scale(1.08); }
     .fb-widget-fab svg { width: 26px; height: 26px; fill: currentColor; transition: transform .25s; }
     .fb-widget-fab.fb-open svg { transform: rotate(90deg); }
@@ -27,11 +28,12 @@
 
     .fb-widget-card {
       display: flex; align-items: center; gap: 14px; padding: 14px 16px;
-      border: 1px solid #eee; border-radius: 10px; text-decoration: none;
-      color: inherit; transition: border-color .2s, box-shadow .2s; margin-bottom: 10px;
+      border: 1px solid #b0b0b0; border-radius: 10px; text-decoration: none;
+      color: inherit; background: #dcdcdc;
+      transition: border-color .2s, box-shadow .2s, transform .2s, background .2s; margin-bottom: 10px;
     }
     .fb-widget-card:last-child { margin-bottom: 0; }
-    .fb-widget-card:hover { border-color: #ccc; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+    .fb-widget-card:hover { border-color: #0284c7; background: #e8e8e8; box-shadow: 0 4px 12px rgba(15,23,42,.12); transform: translateY(-1px); }
 
     .fb-widget-icon {
       width: 42px; height: 42px; min-width: 42px; border-radius: 10px;

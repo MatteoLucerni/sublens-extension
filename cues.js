@@ -68,6 +68,10 @@ function schedulePauseBeforeTime(endTime) {
   }, PAUSE_SCHEDULE_SAFETY_MS);
 }
 
+function hasPreviousCue() {
+  return cueIndex > 0;
+}
+
 async function jumpToPreviousCue() {
   log("jumpToPreviousCue: called, cueIndex", cueIndex, "historyLength", cueHistory.length);
   if (cueIndex <= 0) {

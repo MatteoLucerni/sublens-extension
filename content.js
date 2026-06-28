@@ -307,6 +307,7 @@ function onGlobalKeydown(e) {
     if (tag === "INPUT" || tag === "TEXTAREA") return;
   }
   if (!getVideo()) return;
+  if (!hasPreviousCue()) return;
 
   e.preventDefault();
   e.stopPropagation();

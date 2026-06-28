@@ -5,6 +5,11 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.12.3]
+
+### Fixed
+- Back arrow: when the current video has no subtitles available or captions are turned off, pressing the Left Arrow key now performs the player's native rewind again instead of being swallowed with no effect. The override only takes over when there is an earlier subtitle to jump back to (works the same on Netflix and YouTube). Previously the key was always intercepted, so on subtitle-less videos the back arrow did nothing.
+
 ## [0.12.2]
 
 ### Fixed

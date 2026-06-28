@@ -10,6 +10,7 @@ Supports Netflix and YouTube. The extension is built around a platform adapter s
 - **Auto-pause on hover**: hovering a subtitle pauses the video so you can read it.
 - **Auto-reveal on pause**: pausing the video reveals all blurred subtitles.
 - **Jump to previous subtitle**: pressing the Left Arrow key replays the previous subtitle line (instead of the player's default rewind).
+- **Per-platform on/off**: master toggles to enable or disable the extension on Netflix and on YouTube independently (turn both off to disable it everywhere).
 - **Word translation and dictionary**: click a word for its translation and dictionary entry, Ctrl+click to add more words to the selection, or click-and-drag to select a phrase.
 - **Language selection**: choose the subtitle (source) language, or leave it on "Auto" to detect it from the active player caption track, and the language to translate into.
 
@@ -58,7 +59,7 @@ runs top-level code.
 
 ## Settings popup
 
-Click the extension icon in the toolbar to open the settings popup. It holds the subtitle and translation language selects, plus the four behavior toggles under "advanced options". Each control has a "?" icon with a hover tooltip explaining its effect in detail. Settings are stored via `chrome.storage.sync` and applied live, no page reload required.
+Click the extension icon in the toolbar to open the settings popup. It holds the subtitle and translation language selects, the **Enable on Netflix** / **Enable on YouTube** master toggles (which turn the extension on or off per platform), and the four behavior toggles under "advanced options". Each control has a "?" icon with a hover tooltip explaining its effect in detail. Settings are stored via `chrome.storage.sync` and applied live, no page reload required.
 
 ## Word interaction guide
 

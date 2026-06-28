@@ -5,6 +5,11 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.10.0]
+
+### Added
+- Two master toggles in the popup, shown above the advanced options: "Enable on Netflix" and "Enable on YouTube". Each turns the whole extension on or off for that platform; turning both off disables it everywhere. When a platform is disabled, its page plays with its normal subtitles and the extension does nothing (no overlay, no blur, no key handling). The toggles apply live with no page reload, default to enabled, and are stored in `chrome.storage.sync` as `netflixEnabled` / `youtubeEnabled`.
+
 ## [0.9.0]
 
 ### Added

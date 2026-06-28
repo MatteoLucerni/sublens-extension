@@ -20,7 +20,7 @@
             <span class="nse-toggle-title">Subtitle language</span>
             <span class="nse-help" tabindex="0">
               ?
-              <span class="nse-tooltip">The language of the Netflix subtitles. "Auto" reads the subtitle track you selected on Netflix; pick a language to force it instead.</span>
+              <span class="nse-tooltip">The language of the subtitles. "Auto" reads the active subtitle track from the player (Netflix or YouTube); pick a language to force it instead.</span>
             </span>
           </div>
         </div>
@@ -38,6 +38,40 @@
           </div>
         </div>
         <select class="nse-select"></select>
+      </div>
+    </section>
+
+    <section class="nse-platforms">
+      <div class="nse-toggle-row" data-setting="netflixEnabled">
+        <div class="nse-toggle-text">
+          <div class="nse-toggle-title-line">
+            <span class="nse-toggle-title">Enable on Netflix</span>
+            <span class="nse-help" tabindex="0">
+              ?
+              <span class="nse-tooltip">Turn the extension on or off for Netflix. When off, Netflix plays with its normal subtitles and the extension does nothing.</span>
+            </span>
+          </div>
+        </div>
+        <label class="nse-switch">
+          <input type="checkbox" />
+          <span class="nse-slider"></span>
+        </label>
+      </div>
+
+      <div class="nse-toggle-row" data-setting="youtubeEnabled">
+        <div class="nse-toggle-text">
+          <div class="nse-toggle-title-line">
+            <span class="nse-toggle-title">Enable on YouTube</span>
+            <span class="nse-help" tabindex="0">
+              ?
+              <span class="nse-tooltip">Turn the extension on or off for YouTube (watch pages). When off, YouTube plays with its normal captions and the extension does nothing.</span>
+            </span>
+          </div>
+        </div>
+        <label class="nse-switch">
+          <input type="checkbox" />
+          <span class="nse-slider"></span>
+        </label>
       </div>
     </section>
 

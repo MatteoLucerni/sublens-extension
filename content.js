@@ -1,3 +1,7 @@
+let nseStarted = false;
+let subtitleObserver = null;
+let bodyScanObserver = null;
+
 async function seekPlayer(timeMs) {
   if (!PLATFORM.usesBackgroundSeek) {
     const video = getVideo();
@@ -115,8 +119,8 @@ function watchContainer(container) {
     processTimer = setTimeout(() => processSubtitle(container), debounceMs);
   };
 
-  const observer = new MutationObserver(scheduleProcess);
-  observer.observe(container, {
+  subtitleObserver = new MutationObserver(scheduleProcess);
+  subtitleObserver.observe(container, {
     childList: true,
     subtree: true,
     characterData: true,
@@ -209,21 +213,63 @@ function init() {
 
   log("no existing container, starting bodyObserver fallback scan");
   let debounceTimer = null;
-  const bodyObserver = new MutationObserver(() => {
+  bodyScanObserver = new MutationObserver(() => {
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(() => {
       const container = findSubtitleContainer();
       if (!container) return;
       log("bodyObserver found container, switching to watchContainer");
-      bodyObserver.disconnect();
+      bodyScanObserver.disconnect();
+      bodyScanObserver = null;
       watchContainer(container);
     }, 150);
   });
-  bodyObserver.observe(document.body, { childList: true, subtree: true });
+  bodyScanObserver.observe(document.body, { childList: true, subtree: true });
+}
+
+function isCurrentPlatformEnabled() {
+  return PLATFORM.name === "youtube" ? settings.youtubeEnabled : settings.netflixEnabled;
+}
+
+function startExtension() {
+  if (nseStarted) return;
+  nseStarted = true;
+  log("startExtension");
+  document.documentElement.classList.add(`nse-platform-${PLATFORM.name}`);
+  init();
+  showOnboardingIfFirstRun();
+}
+
+function stopExtension() {
+  if (!nseStarted) return;
+  nseStarted = false;
+  log("stopExtension");
+  document.documentElement.classList.remove(`nse-platform-${PLATFORM.name}`);
+  if (subtitleObserver) {
+    subtitleObserver.disconnect();
+    subtitleObserver = null;
+  }
+  if (bodyScanObserver) {
+    bodyScanObserver.disconnect();
+    bodyScanObserver = null;
+  }
+  cancelSelection();
+  removePopup();
+  removeAllOverlays();
+  document.getElementById("nse-onboard")?.remove();
+  currentContainer = null;
+  cueHistory = [];
+  cueIndex = -1;
+}
+
+function applyEnabledState() {
+  if (isCurrentPlatformEnabled()) startExtension();
+  else stopExtension();
 }
 
 function onGlobalKeydown(e) {
   if (e.key !== "ArrowLeft") return;
+  if (!nseStarted) return;
   log("onGlobalKeydown: ArrowLeft detected", "repeat", e.repeat, "target", e.target);
   if (!settings.jumpToPreviousSubtitleOnBack) return;
   if (e.repeat) return;
@@ -240,16 +286,16 @@ function onGlobalKeydown(e) {
 
 log("content script loaded", location.href);
 
-document.documentElement.classList.add(`nse-platform-${PLATFORM.name}`);
-
 nseGetSettings().then((loaded) => {
   settings = loaded;
   applyBlurSettingToAllOverlays();
+  applyEnabledState();
 });
 
 nseOnSettingsChanged((changed) => {
   Object.assign(settings, changed);
   if ("subtitleBlurEnabled" in changed) applyBlurSettingToAllOverlays();
+  if ("netflixEnabled" in changed || "youtubeEnabled" in changed) applyEnabledState();
 });
 
 chrome.storage.onChanged.addListener((changes, area) => {
@@ -272,13 +318,19 @@ document.addEventListener("fullscreenchange", () => {
 
 window.addEventListener("yt-navigate-finish", () => {
   log("yt-navigate-finish", location.href);
+  if (!nseStarted) return;
   if (currentContainer?.isConnected) return;
+  if (subtitleObserver) {
+    subtitleObserver.disconnect();
+    subtitleObserver = null;
+  }
+  if (bodyScanObserver) {
+    bodyScanObserver.disconnect();
+    bodyScanObserver = null;
+  }
   removeAllOverlays();
   cueHistory = [];
   cueIndex = -1;
   currentContainer = null;
   init();
 });
-
-init();
-showOnboardingIfFirstRun();

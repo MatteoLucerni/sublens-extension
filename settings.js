@@ -1,4 +1,6 @@
 const NSE_SETTINGS_DEFAULTS = {
+  netflixEnabled: true,
+  youtubeEnabled: true,
   jumpToPreviousSubtitleOnBack: true,
   autoPauseOnHover: true,
   subtitleBlurEnabled: true,

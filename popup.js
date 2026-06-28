@@ -1,4 +1,6 @@
 const TOGGLE_KEYS = [
+  "netflixEnabled",
+  "youtubeEnabled",
   "jumpToPreviousSubtitleOnBack",
   "autoPauseOnHover",
   "subtitleBlurEnabled",
@@ -19,7 +21,7 @@ function populateSelect(select, includeAuto) {
   if (includeAuto) {
     const option = document.createElement("option");
     option.value = "auto";
-    option.textContent = "Auto (from Netflix)";
+    option.textContent = "Auto (detect)";
     select.appendChild(option);
   }
   for (const [code, label] of NSE_LANGUAGES) {

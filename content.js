@@ -1,6 +1,6 @@
 let nseStarted = false;
 let subtitleObserver = null;
-let bodyScanObserver = null;
+let containerWatchdog = null;
 
 async function seekPlayer(timeMs) {
   if (!PLATFORM.usesBackgroundSeek) {
@@ -31,6 +31,14 @@ function findSubtitleContainer() {
   const fallback = findStructuralFallback();
   if (fallback) log("container found via structural fallback", fallback);
   return fallback;
+}
+
+function findCanonicalContainer() {
+  for (const selector of SELECTOR_CHAIN) {
+    const el = document.querySelector(selector);
+    if (el) return el;
+  }
+  return null;
 }
 
 function findStructuralFallback() {
@@ -203,28 +211,37 @@ async function showOnboardingIfFirstRun() {
   document.body.appendChild(buildOnboarding());
 }
 
+function syncSubtitleContainer() {
+  const found = findCanonicalContainer();
+  if (!found) return;
+  if (found === currentContainer && subtitleObserver) return;
+
+  log("syncSubtitleContainer: (re)attaching to current container", found);
+  if (subtitleObserver) {
+    subtitleObserver.disconnect();
+    subtitleObserver = null;
+  }
+  if (currentContainer && currentContainer !== found) {
+    removeAllOverlays();
+    cueHistory = [];
+    cueIndex = -1;
+  }
+  watchContainer(found);
+}
+
 function init() {
   log("init() called");
   const existing = findSubtitleContainer();
-  if (existing) {
-    watchContainer(existing);
-    return;
-  }
+  if (existing) watchContainer(existing);
 
-  log("no existing container, starting bodyObserver fallback scan");
-  let debounceTimer = null;
-  bodyScanObserver = new MutationObserver(() => {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => {
-      const container = findSubtitleContainer();
-      if (!container) return;
-      log("bodyObserver found container, switching to watchContainer");
-      bodyScanObserver.disconnect();
-      bodyScanObserver = null;
-      watchContainer(container);
-    }, 150);
-  });
-  bodyScanObserver.observe(document.body, { childList: true, subtree: true });
+  if (!containerWatchdog) {
+    let debounceTimer = null;
+    containerWatchdog = new MutationObserver(() => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(syncSubtitleContainer, 200);
+    });
+    containerWatchdog.observe(document.body, { childList: true, subtree: true });
+  }
 }
 
 function isCurrentPlatformEnabled() {
@@ -249,9 +266,9 @@ function stopExtension() {
     subtitleObserver.disconnect();
     subtitleObserver = null;
   }
-  if (bodyScanObserver) {
-    bodyScanObserver.disconnect();
-    bodyScanObserver = null;
+  if (containerWatchdog) {
+    containerWatchdog.disconnect();
+    containerWatchdog = null;
   }
   cancelSelection();
   removePopup();
@@ -319,18 +336,8 @@ document.addEventListener("fullscreenchange", () => {
 window.addEventListener("yt-navigate-finish", () => {
   log("yt-navigate-finish", location.href);
   if (!nseStarted) return;
-  if (currentContainer?.isConnected) return;
-  if (subtitleObserver) {
-    subtitleObserver.disconnect();
-    subtitleObserver = null;
-  }
-  if (bodyScanObserver) {
-    bodyScanObserver.disconnect();
-    bodyScanObserver = null;
-  }
   removeAllOverlays();
   cueHistory = [];
   cueIndex = -1;
-  currentContainer = null;
-  init();
+  syncSubtitleContainer();
 });

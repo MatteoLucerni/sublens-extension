@@ -5,6 +5,11 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.10.1]
+
+### Fixed
+- Netflix: the extension no longer fails to attach the first time you start a movie or episode (subtitles staying unblurred and unclickable until a manual page reload). Netflix mounts a placeholder subtitle container before playback and replaces it when playback starts, leaving the old MutationObserver attached to a detached node. A persistent, lightweight container watchdog now re-attaches to the current subtitle container whenever it is replaced, which also makes the extension survive Netflix's in-app (SPA) navigation from browse to watch. The one-shot body scan was replaced by this watchdog.
+
 ## [0.10.0]
 
 ### Added

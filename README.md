@@ -1,4 +1,4 @@
-# Subtitle Lens
+# Sublens
 
 A Chrome extension (Manifest V3) that blurs subtitles until you want to read them, and turns subtitle words into clickable translations, dictionary lookups and pronunciation.
 
@@ -11,7 +11,7 @@ Supports Netflix and YouTube. The extension is built around a platform adapter s
 - **Auto-reveal on pause**: pausing the video reveals all blurred subtitles.
 - **Jump to previous subtitle**: pressing the Left Arrow key replays the previous subtitle line (instead of the player's default rewind).
 - **Per-platform on/off**: master toggles to enable or disable the extension on Netflix and on YouTube independently (turn both off to disable it everywhere).
-- **Word translation and dictionary**: click a word for its translation and dictionary entry, Ctrl+click to add more words to the selection, or click-and-drag to select a phrase.
+- **Word translation and dictionary**: click a word for its translation and dictionary entry, Ctrl/Cmd+click to add more words to the selection, or click-and-drag to select a phrase.
 - **Pronunciation**: the selected word or phrase is pronounced automatically in the subtitle language when the popup opens, and a speaker button lets you replay it.
 - **Language selection**: choose the subtitle (source) language, or leave it on "Auto" to detect it from the active player caption track, and the language to translate into.
 
@@ -89,7 +89,7 @@ Click the extension icon in the toolbar to open the settings popup. It holds the
 ## Word interaction guide
 
 - **Click** a word to see its translation and dictionary definition.
-- **Ctrl+Click** additional words to combine them into one selection before looking them up.
+- **Ctrl/Cmd+Click** additional words to combine them into one selection before looking them up.
 - **Click and drag** across multiple words to select a phrase.
 
 ## Versioning

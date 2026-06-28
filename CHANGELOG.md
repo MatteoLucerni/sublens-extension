@@ -5,6 +5,16 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.0.1]
+
+### Fixed
+- macOS: Ctrl+Click multi-word selection now also responds to Cmd+Click. Previously only `ctrlKey` was checked, so on macOS the multi-select combined-lookup gesture (where Ctrl opens the context menu) was unreachable.
+
+### Changed
+- Shortened the Chrome Web Store `description` in the manifest to fit the 132-character limit (it was 186) and reframed it around the language-learning value proposition.
+- Updated the "Ctrl+Click" wording to "Ctrl/Cmd + Click" in the popup help section, the welcome and landing pages, and the README, to reflect macOS support.
+- Marketing site: upgraded the Twitter card to `summary_large_image`, added a Frequently Asked Questions section with matching `FAQPage` structured data, and renamed the README title from "Subtitle Lens" to "Sublens".
+
 ## [1.0.0]
 
 ### Added

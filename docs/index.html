@@ -35,7 +35,7 @@
     />
     <meta property="og:site_name" content="Sublens" />
 
-    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Sublens - Translate & Learn from Subtitles" />
     <meta
       name="twitter:description"
@@ -85,6 +85,47 @@
           "url": "https://www.linkedin.com/in/matteo-lucerni-0725a526b/"
         },
         "url": "https://getsublens.com/"
+      }
+    </script>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Is Sublens free?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Sublens is completely free, with no account, no sign-in and no ads."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does it work with auto-generated captions?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. On YouTube both manual and auto-generated captions are supported on youtube.com/watch pages, as long as captions are turned on with the CC button. On Netflix it uses the title's subtitle track."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Which languages does it support?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The subtitle (source) language is auto-detected from the active caption track, or you can set it manually. Translations and dictionary definitions can be shown in any of the supported target languages, picked in the settings popup."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is my data private?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Sublens collects no personal data and has no tracking or analytics. Only the word or phrase you actively click is sent to Google Translate to return its translation and pronunciation."
+            }
+          }
+        ]
       }
     </script>
 
@@ -341,6 +382,41 @@
         line-height: 1.6;
       }
 
+      .faq {
+        padding: 80px 20px;
+        background: var(--bg-secondary);
+        border-top: 1px solid var(--border-color);
+      }
+
+      .faq .faq-list {
+        max-width: 760px;
+        margin: 0 auto;
+      }
+
+      .faq-item {
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 22px 24px;
+        margin-bottom: 16px;
+      }
+
+      .faq-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .faq-item h3 {
+        font-size: 1.05rem;
+        margin: 0 0 8px;
+      }
+
+      .faq-item p {
+        color: var(--text-secondary);
+        line-height: 1.6;
+        font-size: 0.96rem;
+        margin: 0;
+      }
+
       .cta-section {
         padding: 80px 20px;
         background: linear-gradient(135deg, #0ea5e9, #38bdf8);
@@ -509,8 +585,9 @@
               <div class="feature-icon"><i class="fas fa-language"></i></div>
               <h3>Click to translate</h3>
               <p>
-                Click a word for its translation and dictionary entry, Ctrl+click
-                to add more words, or click-and-drag to select a whole phrase.
+                Click a word for its translation and dictionary entry,
+                Ctrl/Cmd+click to add more words, or click-and-drag to select a
+                whole phrase.
               </p>
             </div>
           </div>
@@ -590,6 +667,49 @@
                 definition and pronunciation.
               </p>
             </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="faq">
+      <div class="container">
+        <h2 class="section-title">Frequently asked questions</h2>
+        <p class="section-subtitle">Everything you might want to know before installing.</p>
+        <div class="faq-list">
+          <div class="faq-item">
+            <h3>Is Sublens free?</h3>
+            <p>
+              Yes. Sublens is completely free, with no account, no sign-in and no
+              ads.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3>Does it work with auto-generated captions?</h3>
+            <p>
+              Yes. On YouTube both manual and auto-generated captions are
+              supported on <code>youtube.com/watch</code> pages, as long as
+              captions are turned on with the CC button. On Netflix it uses the
+              title's subtitle track.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3>Which languages does it support?</h3>
+            <p>
+              The subtitle (source) language is auto-detected from the active
+              caption track, or you can set it manually. Translations and
+              dictionary definitions can be shown in any of the supported target
+              languages, picked in the settings popup.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3>Is my data private?</h3>
+            <p>
+              Yes. Sublens collects no personal data and has no tracking or
+              analytics. Only the word or phrase you actively click is sent to
+              Google Translate to return its translation and pronunciation. See
+              the <a href="privacy.html">Privacy Policy</a> for details.
+            </p>
           </div>
         </div>
       </div>

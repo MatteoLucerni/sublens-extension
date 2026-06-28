@@ -179,7 +179,7 @@ function stopDragTracking() {
 }
 
 function onWordMouseDown(e) {
-  if (e.button !== 0 || e.ctrlKey) return;
+  if (e.button !== 0 || e.ctrlKey || e.metaKey) return;
   const span = e.target.closest(".nse-word");
   if (!span) return;
 
@@ -268,7 +268,7 @@ async function onWordClick(e) {
 
   e.stopPropagation();
 
-  if (e.ctrlKey) {
+  if (e.ctrlKey || e.metaKey) {
     onWordCtrlClick(span);
     return;
   }

@@ -5,6 +5,12 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.3.1]
+
+### Fixed
+- Prime Video: subtitle overlays no longer flicker between the readable native caption and the blurred overlay. Prime periodically rewrites the caption's inline style, which was wiping the JS-applied hide; the native caption (`.atvwebplayersdk-captions-text`) is now hidden with a persistent CSS rule, matching how YouTube's native captions are hidden.
+- Prime Video: overlays no longer shift when the player controls appear or disappear, so the clickable words stay put under the cursor. Overlay positions are now recomputed only when the cue content changes (same behavior as YouTube); Netflix still repositions on every reconcile.
+
 ## [1.3.0]
 
 ### Added

@@ -24,6 +24,7 @@ const NSE_PLATFORMS = {
     lineContainerFallbackSelector: ".caption-window",
     cueRootSelector: ".caption-window",
     usesBackgroundSeek: false,
+    repositionOnlyOnChange: true,
     processDebounceMs: 180,
     cleanLineText: (text) =>
       text
@@ -41,6 +42,7 @@ const NSE_PLATFORMS = {
     usesBackgroundSeek: false,
     usesImageSubtitleGuard: false,
     allowContainerTextFallback: false,
+    repositionOnlyOnChange: true,
     processDebounceMs: 150,
     cleanLineText: (text) => text,
     selectVideo: () => {

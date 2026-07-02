@@ -204,7 +204,7 @@ function reconcileLines(lineContainers) {
 
   activeLines = newActiveLines;
   const layoutChanged = hasNewCue || hasRemovedCue || textChanged;
-  if (PLATFORM.name !== "youtube" || layoutChanged) positionOverlayGroup(activeLines);
+  if (!PLATFORM.repositionOnlyOnChange || layoutChanged) positionOverlayGroup(activeLines);
 
   if (hasRemovedCue) markCueEnded();
   if (hasNewCue) recordCueStart();

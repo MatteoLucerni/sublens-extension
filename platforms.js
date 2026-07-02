@@ -43,7 +43,10 @@ const NSE_PLATFORMS = {
     usesImageSubtitleGuard: false,
     allowContainerTextFallback: false,
     repositionOnlyOnChange: true,
-    processDebounceMs: 150,
+    cueBoundaryOnTextChange: true,
+    controlsReservedHeightRatio: 0.18,
+    pauseBeforeCueSec: 0.2,
+    processDebounceMs: 0,
     cleanLineText: (text) => text,
     selectVideo: () => {
       let best = null;

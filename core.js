@@ -28,6 +28,7 @@ const SELECTION_DEBOUNCE_MS = 1200;
 const CUE_HISTORY_EPSILON_SEC = 0.05;
 const PAUSE_BEFORE_NEXT_CUE_SEC = 0.05;
 const PAUSE_SCHEDULE_SAFETY_MS = 15000;
+const PAUSE_CONFIRM_USER_MS = 600;
 
 let activeLines = [];
 let currentContainer = null;
@@ -62,6 +63,11 @@ function applyBlurSettingToAllOverlays() {
 function getVideo() {
   if (PLATFORM.selectVideo) return PLATFORM.selectVideo();
   return document.querySelector("video");
+}
+
+function captionTextNow() {
+  const el = document.querySelector(PLATFORM.lineContainerSelector);
+  return el ? JSON.stringify(el.textContent.slice(0, 60)) : "(none)";
 }
 
 function getAppendTarget() {

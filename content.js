@@ -94,6 +94,7 @@ function resyncSubtitles() {
 
 function processSubtitle(container) {
   log("processSubtitle fired");
+  observeVideoResize();
   logDomSnapshot(container);
 
   if (PLATFORM.usesImageSubtitleGuard !== false && hasImageSubtitles(container)) {
@@ -349,6 +350,24 @@ document.addEventListener("fullscreenchange", () => {
   for (const line of activeLines) reparentToCurrentTarget(line.overlay);
   removePopup();
   repositionAllOverlays();
+
+  const logFsPos = (tag) => {
+    const video = getVideo();
+    const vr = video && video.getBoundingClientRect();
+    const fsEl = document.fullscreenElement;
+    log("FSPOS", tag, "fullscreenElement", fsEl ? (fsEl.className || fsEl.tagName) : "(none)",
+      "videoRect", vr ? `top=${Math.round(vr.top)} bottom=${Math.round(vr.bottom)} h=${Math.round(vr.height)}` : "(no video)",
+      "activeLines", activeLines.length);
+    for (const line of activeLines) {
+      const r = line.overlay.getBoundingClientRect();
+      log("FSPOS", tag, "overlay parent", line.overlay.parentElement ? (line.overlay.parentElement.className || line.overlay.parentElement.tagName) : "(none)",
+        "styleTop", line.overlay.style.top, "styleLeft", line.overlay.style.left,
+        "rect", `top=${Math.round(r.top)} left=${Math.round(r.left)} w=${Math.round(r.width)} h=${Math.round(r.height)}`,
+        "connected", line.overlay.isConnected);
+    }
+  };
+  logFsPos("immediate");
+  setTimeout(() => logFsPos("delayed"), 500);
 });
 
 window.addEventListener("yt-navigate-finish", () => {

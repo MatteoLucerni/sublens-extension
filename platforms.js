@@ -30,6 +30,32 @@ const NSE_PLATFORMS = {
         .split("\n")
         .map((line) => line.replace(/>>+/g, " ").replace(/[ \t]+/g, " ").trim())
         .join("\n")
+  },
+  primevideo: {
+    name: "primevideo",
+    hostMatch: (host) => /(^|\.)primevideo\.com$/.test(host),
+    subtitleSelectors: [".atvwebplayersdk-player-container"],
+    controlsSelectors: [],
+    lineContainerSelector: ".atvwebplayersdk-captions-text",
+    cueRootSelector: ".atvwebplayersdk-captions-text",
+    usesBackgroundSeek: false,
+    usesImageSubtitleGuard: false,
+    allowContainerTextFallback: false,
+    processDebounceMs: 150,
+    cleanLineText: (text) => text,
+    selectVideo: () => {
+      let best = null;
+      let bestArea = -1;
+      for (const video of document.querySelectorAll("video")) {
+        const rect = video.getBoundingClientRect();
+        const area = rect.width * rect.height;
+        if (area > bestArea) {
+          bestArea = area;
+          best = video;
+        }
+      }
+      return best;
+    }
   }
 };
 

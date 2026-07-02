@@ -5,7 +5,7 @@
 <h1 align="center">Sublens</h1>
 
 <p align="center">
-  <strong>Blur subtitles until you want to read them, then click, Ctrl/Cmd+click or drag-select any word for instant translation, dictionary definitions and pronunciation on Netflix and YouTube.</strong>
+  <strong>Blur subtitles until you want to read them, then click, Ctrl/Cmd+click or drag-select any word for instant translation, dictionary definitions and pronunciation on Netflix, YouTube and Prime Video.</strong>
 </p>
 
 <p align="center">
@@ -48,15 +48,15 @@ Press the **Left Arrow** key to jump back to the start of the previous subtitle 
 
 ### Language Selection
 
-The subtitle (source) language is auto-detected from the active caption track on Netflix or YouTube, including auto-translated YouTube tracks (e.g. "English >> Italian" is detected as Italian, the language actually shown), or you can set it manually. Pick the language translations and dictionary definitions are shown in from a curated list of 14 Latin/Cyrillic languages. Both apply live, no page reload.
+The subtitle (source) language is auto-detected from the active caption track on Netflix or YouTube, including auto-translated YouTube tracks (e.g. "English >> Italian" is detected as Italian, the language actually shown), or you can set it manually. On Prime Video, whose player exposes no caption-track language, the source language is detected by Google Translate (the "Auto" default). Pick the language translations and dictionary definitions are shown in from a curated list of 14 Latin/Cyrillic languages. Both apply live, no page reload.
 
 ### Per-Platform Enable/Disable
 
-Independent **Enable on Netflix** / **Enable on YouTube** master toggles in the popup. When a platform is disabled, its page plays with normal native subtitles and Sublens does nothing on it; turn both off to disable the extension everywhere.
+Independent **Enable on Netflix** / **Enable on YouTube** / **Enable on Prime Video** master toggles in the popup. When a platform is disabled, its page plays with normal native subtitles and Sublens does nothing on it; turn them all off to disable the extension everywhere.
 
-### Netflix & YouTube Support
+### Netflix, YouTube & Prime Video Support
 
-Built around a platform adapter (`platforms.js`) that isolates every platform-specific detail, so the same overlay, blur, translation and navigation logic runs on both sites. On YouTube, both manual and auto-generated (rollup) captions are supported on `youtube.com/watch` pages; the `>>` speaker-change markers YouTube adds are stripped before words become clickable, the overlay gets a semi-transparent background so white captions stay readable over bright scenes, and the overlay position stays stable while the player controls show or hide.
+Built around a platform adapter (`platforms.js`) that isolates every platform-specific detail, so the same overlay, blur, translation and navigation logic runs on all three sites. On YouTube, both manual and auto-generated (rollup) captions are supported on `youtube.com/watch` pages; the `>>` speaker-change markers YouTube adds are stripped before words become clickable, the overlay gets a semi-transparent background so white captions stay readable over bright scenes, and the overlay position stays stable while the player controls show or hide. On Prime Video (`primevideo.com`), captions are read from the player's `.atvwebplayersdk-captions-text` lines and the extension drives the largest of the player's several `<video>` elements; titles that use image-based (bitmap) subtitles fall back to native rendering.
 
 ### Toolbar Settings Popup
 
@@ -87,7 +87,7 @@ Install directly from the **[Chrome Web Store](https://chromewebstore.google.com
 2. Open Chrome and navigate to `chrome://extensions/`
 3. Enable **Developer mode** (top-right corner)
 4. Click **Load unpacked** and select the repository's root folder
-5. Open a Netflix video, or a YouTube `/watch` video with captions turned on (CC button)
+5. Open a Netflix video, a YouTube `/watch` video with captions turned on (CC button), or a Prime Video title with subtitles on
 
 > **Tip:** To filter only this extension's logs in Chrome DevTools console, use:
 > `url:chrome-extension://EXTENSION_ID`
@@ -128,7 +128,7 @@ subtitles-translate-extension
 │           └── feedback-widget.js  Floating feedback/bug-report widget
 ├── env.js                 Sets self.DEV_MODE (logging flag); loaded first
 ├── settings.js            Shared chrome.storage.sync helpers + language list
-├── platforms.js           Platform adapter (Netflix/YouTube): selectors, seek, language detection
+├── platforms.js           Platform adapter (Netflix/YouTube/Prime Video): selectors, seek, language detection
 ├── core.js                Config constants, shared state, base helpers
 ├── overlay.js             Subtitle overlay: styles, positioning, tokenizing, reconcile, blur/reveal
 ├── cues.js                Cue history + Left Arrow back-jump navigation
@@ -147,11 +147,11 @@ subtitles-translate-extension
 
 ## How It Works
 
-1. **Content scripts** (`env.js` through `content.js`) load on Netflix and YouTube in the exact order declared in `manifest.json`, sharing one isolated-world scope. Only `content.js`, loaded last, runs top-level execution (settings loading, event wiring, `init()`); the other files are declarations only, so every symbol they reference already exists.
+1. **Content scripts** (`env.js` through `content.js`) load on Netflix, YouTube and Prime Video in the exact order declared in `manifest.json`, sharing one isolated-world scope. Only `content.js`, loaded last, runs top-level execution (settings loading, event wiring, `init()`); the other files are declarations only, so every symbol they reference already exists.
 2. `platforms.js` detects the current platform from the page hostname and exposes a single `PLATFORM` object holding every platform-specific detail (selectors, debounce timing, caption cleanup, seek strategy), so `core.js`, `overlay.js`, `cues.js`, `interaction.js` and `content.js` stay platform-agnostic.
-3. A **MutationObserver** watches the subtitle/caption container and a lightweight container watchdog re-attaches it whenever the player replaces it (Netflix mounts a placeholder before playback; YouTube re-renders on SPA navigation).
+3. A **MutationObserver** watches the subtitle/caption container and a lightweight container watchdog re-attaches it whenever the player replaces it (Netflix mounts a placeholder before playback; YouTube re-renders on SPA navigation; Prime Video captions live inside the stable `.atvwebplayersdk-player-container`).
 4. **Settings** are stored in `chrome.storage.sync` and applied live via `chrome.storage.onChanged`, no page reload required.
-5. The **background service worker** injects a small MAIN-world script via `chrome.scripting.executeScript` to call each platform's internal player API (Netflix seek and source-language detection; YouTube source-language detection), and proxies translation/pronunciation requests to Google Translate.
+5. The **background service worker** injects a small MAIN-world script via `chrome.scripting.executeScript` to call each platform's internal player API (Netflix seek and source-language detection; YouTube source-language detection; Prime Video seeks directly on the `<video>` and resolves to Google auto-detect), and proxies translation/pronunciation requests to Google Translate.
 
 ### Logging
 
@@ -161,7 +161,8 @@ All logging is gated behind a single flag defined in `env.js` (`self.DEV_MODE`),
 
 - `scripting`: used to inject a script into the page's main world to call the internal player API (Netflix seek and source-language detection, YouTube source-language detection).
 - `storage`: used by `chrome.storage.sync` to persist the settings.
-- `host_permissions` for `netflix.com` and `youtube.com` (content script), `translate.googleapis.com` (background fetches for translation/dictionary data), and `translate.google.com` (background fetches for text-to-speech audio).
+- Content scripts run on `netflix.com`, `youtube.com` and `primevideo.com` (declared under `content_scripts.matches`; Prime Video needs no host permission because the background never injects into it).
+- `host_permissions` for `netflix.com` and `youtube.com` (MAIN-world player API access), `translate.googleapis.com` (background fetches for translation/dictionary data), and `translate.google.com` (background fetches for text-to-speech audio).
 
 ## Versioning
 

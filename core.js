@@ -60,6 +60,7 @@ function applyBlurSettingToAllOverlays() {
 }
 
 function getVideo() {
+  if (PLATFORM.selectVideo) return PLATFORM.selectVideo();
   return document.querySelector("video");
 }
 

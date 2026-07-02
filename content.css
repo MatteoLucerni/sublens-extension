@@ -30,6 +30,11 @@ html.nse-platform-youtube .nse-overlay {
   padding: 0 0.4em;
 }
 
+html.nse-platform-primevideo .nse-overlay {
+  background-color: rgba(8, 8, 8, 0.6);
+  padding: 0 0.4em;
+}
+
 .nse-word {
   cursor: pointer;
 }

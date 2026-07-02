@@ -5,6 +5,14 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.3.0]
+
+### Added
+- Amazon Prime Video support (`primevideo.com`). The same blur-until-reveal subtitles and clickable word translation/dictionary/pronunciation now run on Prime Video, driven by the existing platform adapter. A new **Enable on Prime Video** master toggle sits alongside the Netflix and YouTube toggles in the popup.
+
+### Notes
+- Prime Video's player exposes no caption-track language API, so the subtitle source language is auto-detected by Google Translate (the "Auto" default) rather than read from the player; pronunciation still uses the detected language. Prime Video renders three `<video>` elements (main plus ad/preview slots), so the extension drives the largest visible one. Titles that use image-based (bitmap) subtitles fall back to Prime Video's native rendering.
+
 ## [1.2.0]
 
 ### Changed

@@ -5,7 +5,6 @@ function markCueEnded() {
   if (!entry || entry.endTime != null) return;
   entry.endTime = video.currentTime;
   log("markCueEnded: endTime", entry.endTime, "for cue started at", entry.time);
-  log("BACKJUMP markCueEnded endTime", entry.endTime.toFixed(3), "startTime", entry.time.toFixed(3), "duration", (entry.endTime - entry.time).toFixed(3), "caption", captionTextNow());
 }
 
 function recordCueStart() {
@@ -51,7 +50,6 @@ function schedulePauseBeforeTime(endTime) {
   if (!video) return;
   clearPauseSchedule();
   const margin = PLATFORM.pauseBeforeCueSec ?? PAUSE_BEFORE_NEXT_CUE_SEC;
-  log("BACKJUMP schedule armed endTime", endTime.toFixed(3), "currentTime", video.currentTime.toFixed(3), "margin", margin, "caption", captionTextNow());
 
   let rafId = null;
   const check = () => {
@@ -59,7 +57,6 @@ function schedulePauseBeforeTime(endTime) {
       clearPauseSchedule();
       video.pause();
       log("schedulePauseBeforeTime: paused at end of previous cue", video.currentTime);
-      log("BACKJUMP paused currentTime", video.currentTime.toFixed(3), "endTime", endTime.toFixed(3), "overshoot", (video.currentTime - endTime).toFixed(3), "caption", captionTextNow());
       return;
     }
     rafId = requestAnimationFrame(check);
@@ -95,7 +92,6 @@ async function jumpToPreviousCue() {
   cueIndex -= 1;
   const target = cueHistory[cueIndex];
   log("jumpToPreviousCue: target", target, "new cueIndex", cueIndex);
-  log("BACKJUMP jump target.time", target.time.toFixed(3), "target.endTime", target.endTime == null ? "null" : target.endTime.toFixed(3), "cueDuration", target.endTime == null ? "null" : (target.endTime - target.time).toFixed(3), "currentTime", video.currentTime.toFixed(3));
 
   cancelSelection();
   removePopup();

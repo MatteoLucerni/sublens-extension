@@ -65,11 +65,6 @@ function getVideo() {
   return document.querySelector("video");
 }
 
-function captionTextNow() {
-  const el = document.querySelector(PLATFORM.lineContainerSelector);
-  return el ? JSON.stringify(el.textContent.slice(0, 60)) : "(none)";
-}
-
 function getAppendTarget() {
   return document.fullscreenElement ?? document.body;
 }

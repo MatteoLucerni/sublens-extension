@@ -11,14 +11,14 @@ function blurUnheldOverlays() {
 }
 
 function onVideoPause() {
-  if (!extensionPaused) {
-    if (isPauseScheduled()) {
-      setTimeout(() => {
-        if (getVideo()?.paused) clearPauseSchedule();
-      }, PAUSE_CONFIRM_USER_MS);
-    } else {
-      clearPauseSchedule();
-    }
+  if (extensionPaused) {
+    clearPauseSchedule();
+  } else if (isPauseScheduled()) {
+    setTimeout(() => {
+      if (getVideo()?.paused) clearPauseSchedule();
+    }, PAUSE_CONFIRM_USER_MS);
+  } else {
+    clearPauseSchedule();
   }
   if (settings.autoRemoveBlurOnPause) revealAllOverlays();
 }

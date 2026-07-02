@@ -5,6 +5,11 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.3.7]
+
+### Changed
+- Back-arrow replay: pausing by hovering a subtitle (auto-pause on hover) now also cancels the scheduled auto-pause at the end of the replayed line, the same way an explicit pause does. Previously only an explicit player pause cancelled it, so after hovering during a replay the video still stopped again at the line end. Interaction pauses cancel the schedule immediately (no confirmation delay), since they are deliberate extension-driven pauses.
+
 ## [1.3.6]
 
 ### Fixed

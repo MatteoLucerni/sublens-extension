@@ -10,12 +10,13 @@ function blurUnheldOverlays() {
   }
 }
 
-function onVideoPause() {
+function onVideoPause(e) {
+  const video = e?.target;
   if (extensionPaused) {
     clearPauseSchedule();
   } else if (isPauseScheduled()) {
     setTimeout(() => {
-      if (getVideo()?.paused) clearPauseSchedule();
+      if (video?.paused) clearPauseSchedule();
     }, PAUSE_CONFIRM_USER_MS);
   } else {
     clearPauseSchedule();

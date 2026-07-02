@@ -5,6 +5,14 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.3.8]
+
+### Fixed
+- Fullscreen: the translation/dictionary popup no longer overlaps the subtitle. When the page behind the player was scrolled, the popup positioning mixed viewport and document coordinates in fullscreen and pushed a tall popup down onto the subtitle; the subtitle-vs-popup layout now uses viewport coordinates consistently in fullscreen, so the popup always sits fully above the subtitle when it is low on screen and below it when it is high (never overlapping, including multi-line subtitles).
+
+### Changed
+- Internal robustness/efficiency on Prime Video: the active `<video>` selection is cached within a synchronous batch to avoid repeated layout reads, the resize/pause listeners now move cleanly to the current video instead of leaking observers across Prime's multiple video elements, and the back-arrow pause-confirm now checks the exact video that emitted the pause event.
+
 ## [1.3.7]
 
 ### Changed

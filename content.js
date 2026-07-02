@@ -2,6 +2,7 @@ let nseStarted = false;
 let subtitleObserver = null;
 let containerWatchdog = null;
 let videoResizeObserver = null;
+let observedVideo = null;
 
 async function seekPlayer(timeMs) {
   if (!PLATFORM.usesBackgroundSeek) {
@@ -142,10 +143,11 @@ function watchContainer(container) {
 
 function observeVideoResize() {
   const video = getVideo();
-  if (!video) return;
+  if (!video || video === observedVideo) return;
+  if (observedVideo) detachVideoListeners(observedVideo);
+  if (videoResizeObserver) videoResizeObserver.disconnect();
+  observedVideo = video;
   attachVideoListeners(video);
-  if (video.dataset.nseResizeObserved) return;
-  video.dataset.nseResizeObserved = "true";
   videoResizeObserver = new ResizeObserver(() => repositionAllOverlays());
   videoResizeObserver.observe(video);
 }
@@ -155,10 +157,9 @@ function teardownVideo() {
     videoResizeObserver.disconnect();
     videoResizeObserver = null;
   }
-  const video = getVideo();
-  if (video) {
-    delete video.dataset.nseResizeObserved;
-    detachVideoListeners(video);
+  if (observedVideo) {
+    detachVideoListeners(observedVideo);
+    observedVideo = null;
   }
 }
 

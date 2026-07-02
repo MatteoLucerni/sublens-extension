@@ -33,6 +33,7 @@ const PAUSE_CONFIRM_USER_MS = 600;
 let activeLines = [];
 let currentContainer = null;
 let maxControlsHeight = 0;
+let videoCache = null;
 
 let extensionPaused = false;
 let wasPlayingBeforePause = false;
@@ -61,8 +62,11 @@ function applyBlurSettingToAllOverlays() {
 }
 
 function getVideo() {
-  if (PLATFORM.selectVideo) return PLATFORM.selectVideo();
-  return document.querySelector("video");
+  if (!PLATFORM.selectVideo) return document.querySelector("video");
+  if (videoCache && videoCache.isConnected) return videoCache;
+  videoCache = PLATFORM.selectVideo();
+  if (videoCache) queueMicrotask(() => { videoCache = null; });
+  return videoCache;
 }
 
 function getAppendTarget() {

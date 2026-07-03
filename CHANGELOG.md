@@ -5,6 +5,11 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.3.9]
+
+### Changed
+- Marketing site (`docs/`): the landing page, welcome page and privacy policy now mention Prime Video alongside Netflix and YouTube, catching them up with the 1.3.0 Prime Video release. Updated meta tags, structured data, the FAQ and a new "On Prime Video" welcome card noting the image-based subtitle fallback.
+
 ## [1.3.8]
 
 ### Fixed

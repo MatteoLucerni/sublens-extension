@@ -71,6 +71,7 @@ function platformFromUrl(url) {
     const host = new URL(url).hostname;
     if (/(^|\.)youtube\.com$/.test(host)) return "youtube";
     if (/(^|\.)netflix\.com$/.test(host)) return "netflix";
+    if (/(^|\.)primevideo\.com$/.test(host)) return "primevideo";
   } catch (err) {
     return null;
   }
@@ -81,8 +82,11 @@ async function resolveSourceLang(tab, sourceSetting) {
   if (sourceSetting && sourceSetting !== "auto") return normalizeLang(sourceSetting) ?? "auto";
 
   const tabId = tab?.id;
+  const platform = platformFromUrl(tab?.url);
 
-  if (platformFromUrl(tab?.url) === "youtube") {
+  if (platform === "primevideo") return "auto";
+
+  if (platform === "youtube") {
     const lang = normalizeLang(await getYouTubeSubtitleLang(tabId));
     if (lang) return lang;
     return "auto";

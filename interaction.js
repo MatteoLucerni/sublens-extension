@@ -487,6 +487,8 @@ function appendExamples(popup, examples) {
 }
 
 function positionPopup(popup, anchorViewportRect) {
+  const scrollX = document.fullscreenElement ? 0 : window.scrollX;
+  const scrollY = document.fullscreenElement ? 0 : window.scrollY;
   const anchor = toDocumentRect(anchorViewportRect);
   const popupRect = popup.getBoundingClientRect();
   const subtitleBounds = getSubtitleBoundsRect();
@@ -495,11 +497,11 @@ function positionPopup(popup, anchorViewportRect) {
   const blockBottom = subtitleBounds ? Math.max(subtitleBounds.bottom, anchor.bottom) : anchor.bottom;
   const centerX = subtitleBounds
     ? subtitleBounds.left + subtitleBounds.width / 2
-    : window.scrollX + window.innerWidth / 2;
+    : scrollX + window.innerWidth / 2;
 
   const margin = 8;
-  const viewTop = window.scrollY + margin;
-  const viewBottom = window.scrollY + window.innerHeight - margin;
+  const viewTop = scrollY + margin;
+  const viewBottom = scrollY + window.innerHeight - margin;
 
   const video = getVideo();
   const referenceCenter = video
@@ -507,17 +509,17 @@ function positionPopup(popup, anchorViewportRect) {
         const vr = toDocumentRect(video.getBoundingClientRect());
         return vr.top + vr.height / 2;
       })()
-    : window.scrollY + window.innerHeight / 2;
+    : scrollY + window.innerHeight / 2;
   const placeBelow = (blockTop + blockBottom) / 2 < referenceCenter;
 
   let top = placeBelow ? blockBottom + margin : blockTop - popupRect.height - margin;
   top = Math.max(viewTop, Math.min(top, viewBottom - popupRect.height));
 
   let left = centerX - popupRect.width / 2;
-  if (left + popupRect.width > window.scrollX + window.innerWidth - margin) {
-    left = window.scrollX + window.innerWidth - popupRect.width - margin;
+  if (left + popupRect.width > scrollX + window.innerWidth - margin) {
+    left = scrollX + window.innerWidth - popupRect.width - margin;
   }
-  if (left < window.scrollX + margin) left = window.scrollX + margin;
+  if (left < scrollX + margin) left = scrollX + margin;
 
   popup.style.top = `${top}px`;
   popup.style.left = `${left}px`;

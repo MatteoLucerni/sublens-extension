@@ -2,6 +2,7 @@ let nseStarted = false;
 let subtitleObserver = null;
 let containerWatchdog = null;
 let videoResizeObserver = null;
+let observedVideo = null;
 
 async function seekPlayer(timeMs) {
   if (!PLATFORM.usesBackgroundSeek) {
@@ -75,6 +76,7 @@ function getLineContainers(container) {
     const fallback = container.querySelectorAll(PLATFORM.lineContainerFallbackSelector);
     if (fallback.length > 0) return Array.from(fallback);
   }
+  if (PLATFORM.allowContainerTextFallback === false) return [];
   return container.textContent.trim() ? [container] : [];
 }
 
@@ -93,9 +95,10 @@ function resyncSubtitles() {
 
 function processSubtitle(container) {
   log("processSubtitle fired");
+  observeVideoResize();
   logDomSnapshot(container);
 
-  if (hasImageSubtitles(container)) {
+  if (PLATFORM.usesImageSubtitleGuard !== false && hasImageSubtitles(container)) {
     log("image subtitles detected, skipping");
     if (!isInteractionLocked()) removeAllOverlays();
     return;
@@ -140,10 +143,11 @@ function watchContainer(container) {
 
 function observeVideoResize() {
   const video = getVideo();
-  if (!video) return;
+  if (!video || video === observedVideo) return;
+  if (observedVideo) detachVideoListeners(observedVideo);
+  if (videoResizeObserver) videoResizeObserver.disconnect();
+  observedVideo = video;
   attachVideoListeners(video);
-  if (video.dataset.nseResizeObserved) return;
-  video.dataset.nseResizeObserved = "true";
   videoResizeObserver = new ResizeObserver(() => repositionAllOverlays());
   videoResizeObserver.observe(video);
 }
@@ -153,10 +157,9 @@ function teardownVideo() {
     videoResizeObserver.disconnect();
     videoResizeObserver = null;
   }
-  const video = getVideo();
-  if (video) {
-    delete video.dataset.nseResizeObserved;
-    detachVideoListeners(video);
+  if (observedVideo) {
+    detachVideoListeners(observedVideo);
+    observedVideo = null;
   }
 }
 
@@ -256,7 +259,9 @@ function init() {
 }
 
 function isCurrentPlatformEnabled() {
-  return PLATFORM.name === "youtube" ? settings.youtubeEnabled : settings.netflixEnabled;
+  if (PLATFORM.name === "youtube") return settings.youtubeEnabled;
+  if (PLATFORM.name === "primevideo") return settings.primeVideoEnabled;
+  return settings.netflixEnabled;
 }
 
 function startExtension() {
@@ -327,7 +332,7 @@ nseGetSettings().then((loaded) => {
 nseOnSettingsChanged((changed) => {
   Object.assign(settings, changed);
   if ("subtitleBlurEnabled" in changed) applyBlurSettingToAllOverlays();
-  if ("netflixEnabled" in changed || "youtubeEnabled" in changed) applyEnabledState();
+  if ("netflixEnabled" in changed || "youtubeEnabled" in changed || "primeVideoEnabled" in changed) applyEnabledState();
 });
 
 chrome.storage.onChanged.addListener((changes, area) => {

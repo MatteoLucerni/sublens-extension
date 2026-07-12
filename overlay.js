@@ -10,8 +10,17 @@ function blurUnheldOverlays() {
   }
 }
 
-function onVideoPause() {
-  if (!extensionPaused) clearPauseSchedule();
+function onVideoPause(e) {
+  const video = e?.target;
+  if (extensionPaused) {
+    clearPauseSchedule();
+  } else if (isPauseScheduled()) {
+    setTimeout(() => {
+      if (video?.paused) clearPauseSchedule();
+    }, PAUSE_CONFIRM_USER_MS);
+  } else {
+    clearPauseSchedule();
+  }
   if (settings.autoRemoveBlurOnPause) revealAllOverlays();
 }
 
@@ -60,10 +69,12 @@ function copyComputedStyles(target, source) {
 }
 
 function toDocumentRect(rect) {
+  const offsetX = document.fullscreenElement ? 0 : window.scrollX;
+  const offsetY = document.fullscreenElement ? 0 : window.scrollY;
   return {
-    top: rect.top + window.scrollY,
-    left: rect.left + window.scrollX,
-    bottom: rect.bottom + window.scrollY,
+    top: rect.top + offsetY,
+    left: rect.left + offsetX,
+    bottom: rect.bottom + offsetY,
     width: rect.width,
     height: rect.height
   };
@@ -83,7 +94,15 @@ function getControlsReservedHeight() {
     const height = el.getBoundingClientRect().height;
     if (height > 0) maxControlsHeight = Math.max(maxControlsHeight, height);
   }
-  return maxControlsHeight > 0 ? maxControlsHeight : FALLBACK_CONTROLS_HEIGHT;
+  if (maxControlsHeight > 0) return maxControlsHeight;
+  if (PLATFORM.controlsReservedHeightRatio) {
+    const video = getVideo();
+    if (video) {
+      const ratioHeight = video.getBoundingClientRect().height * PLATFORM.controlsReservedHeightRatio;
+      if (ratioHeight > FALLBACK_CONTROLS_HEIGHT) return ratioHeight;
+    }
+  }
+  return FALLBACK_CONTROLS_HEIGHT;
 }
 
 function getPinnedBottom() {
@@ -204,10 +223,11 @@ function reconcileLines(lineContainers) {
 
   activeLines = newActiveLines;
   const layoutChanged = hasNewCue || hasRemovedCue || textChanged;
-  if (PLATFORM.name !== "youtube" || layoutChanged) positionOverlayGroup(activeLines);
+  if (!PLATFORM.repositionOnlyOnChange || layoutChanged) positionOverlayGroup(activeLines);
 
-  if (hasRemovedCue) markCueEnded();
-  if (hasNewCue) recordCueStart();
+  const textBoundary = !!PLATFORM.cueBoundaryOnTextChange && textChanged;
+  if (hasRemovedCue || textBoundary) markCueEnded();
+  if (hasNewCue || textBoundary) recordCueStart();
 }
 
 function removeAllOverlays() {

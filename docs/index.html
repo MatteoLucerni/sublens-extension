@@ -4,16 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
-      Sublens - Translate & Learn from Subtitles | Chrome Extension for Netflix
-      & YouTube
+      Sublens - Translate & Learn from Subtitles | Chrome Extension for
+      Netflix, YouTube & Prime Video
     </title>
     <meta
       name="description"
-      content="Sublens blurs subtitles until you want to read them, then turns any word into an instant translation, dictionary lookup and pronunciation. Learn languages on Netflix and YouTube."
+      content="Sublens blurs subtitles until you want to read them, then turns any word into an instant translation, dictionary lookup and pronunciation. Learn languages on Netflix, YouTube and Prime Video."
     />
     <meta
       name="keywords"
-      content="subtitles translation, learn languages Netflix, YouTube subtitles translate, language learning extension, subtitle blur, click to translate, Chrome extension, dictionary, pronunciation"
+      content="subtitles translation, learn languages Netflix, YouTube subtitles translate, Prime Video subtitles translate, language learning extension, subtitle blur, click to translate, Chrome extension, dictionary, pronunciation"
     />
     <meta name="author" content="Matteo Lucerni" />
 
@@ -25,7 +25,7 @@
     <meta property="og:title" content="Sublens - Translate & Learn from Subtitles" />
     <meta
       property="og:description"
-      content="Blur subtitles until you want to read them, then click any word for instant translation, dictionary and pronunciation on Netflix and YouTube."
+      content="Blur subtitles until you want to read them, then click any word for instant translation, dictionary and pronunciation on Netflix, YouTube and Prime Video."
     />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://getsublens.com/" />
@@ -39,7 +39,7 @@
     <meta name="twitter:title" content="Sublens - Translate & Learn from Subtitles" />
     <meta
       name="twitter:description"
-      content="Blur subtitles until you want to read them, then click any word for instant translation, dictionary and pronunciation on Netflix and YouTube."
+      content="Blur subtitles until you want to read them, then click any word for instant translation, dictionary and pronunciation on Netflix, YouTube and Prime Video."
     />
     <meta
       name="twitter:image"
@@ -71,7 +71,7 @@
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
         "name": "Sublens",
-        "description": "Chrome extension that blurs subtitles until you want to read them, then turns any word into an instant translation, dictionary lookup and pronunciation on Netflix and YouTube.",
+        "description": "Chrome extension that blurs subtitles until you want to read them, then turns any word into an instant translation, dictionary lookup and pronunciation on Netflix, YouTube and Prime Video.",
         "applicationCategory": "BrowserApplication",
         "operatingSystem": "Chrome",
         "offers": {
@@ -106,7 +106,7 @@
             "name": "Does it work with auto-generated captions?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes. On YouTube both manual and auto-generated captions are supported on youtube.com/watch pages, as long as captions are turned on with the CC button. On Netflix it uses the title's subtitle track."
+              "text": "Yes. On YouTube both manual and auto-generated captions are supported on youtube.com/watch pages, as long as captions are turned on with the CC button. On Netflix and Prime Video it uses the title's subtitle track; Prime Video titles with image-based (bitmap) subtitles fall back to native captions."
             }
           },
           {
@@ -114,7 +114,7 @@
             "name": "Which languages does it support?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "The subtitle (source) language is auto-detected from the active caption track, or you can set it manually. Translations and dictionary definitions can be shown in any of the supported target languages, picked in the settings popup."
+              "text": "The subtitle (source) language is auto-detected from the active caption track on Netflix and YouTube, or you can set it manually. Prime Video's player exposes no caption-track language, so its source language is auto-detected by Google Translate instead. Translations and dictionary definitions can be shown in any of the supported target languages, picked in the settings popup."
             }
           },
           {
@@ -603,8 +603,9 @@
         <i class="fab fa-chrome"></i> Add to Chrome
       </a>
       <p class="platforms">
-        Works on <i class="fab fa-youtube"></i> YouTube and
-        <i class="fas fa-film"></i> Netflix
+        Works on <i class="fab fa-youtube"></i> YouTube,
+        <i class="fas fa-film"></i> Netflix and
+        <i class="fab fa-amazon"></i> Prime Video
       </p>
     </section>
 
@@ -674,7 +675,7 @@
               <p>
                 Pick the subtitle (source) language or auto-detect it, choose
                 your translation language, and toggle Sublens per platform on
-                Netflix and YouTube independently.
+                Netflix, YouTube and Prime Video independently.
               </p>
             </div>
           </div>
@@ -697,7 +698,7 @@
           <div class="col-12 col-md-4">
             <div class="step">
               <div class="step-number">2</div>
-              <h3>Open Netflix or YouTube</h3>
+              <h3>Open Netflix, YouTube or Prime Video</h3>
               <p>
                 Play any title with subtitles on. On YouTube, turn captions on
                 with the CC button.
@@ -735,17 +736,20 @@
             <p>
               Yes. On YouTube both manual and auto-generated captions are
               supported on <code>youtube.com/watch</code> pages, as long as
-              captions are turned on with the CC button. On Netflix it uses the
-              title's subtitle track.
+              captions are turned on with the CC button. On Netflix and Prime
+              Video it uses the title's subtitle track; Prime Video titles with
+              image-based (bitmap) subtitles fall back to native captions.
             </p>
           </div>
           <div class="faq-item">
             <h3>Which languages does it support?</h3>
             <p>
               The subtitle (source) language is auto-detected from the active
-              caption track, or you can set it manually. Translations and
-              dictionary definitions can be shown in any of the supported target
-              languages, picked in the settings popup.
+              caption track on Netflix and YouTube, or you can set it manually.
+              Prime Video's player exposes no caption-track language, so its
+              source language is auto-detected by Google Translate instead.
+              Translations and dictionary definitions can be shown in any of the
+              supported target languages, picked in the settings popup.
             </p>
           </div>
           <div class="faq-item">

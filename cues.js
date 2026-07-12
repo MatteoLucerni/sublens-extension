@@ -32,6 +32,10 @@ function recordCueStart() {
   log("recordCueStart: pushed", time, "cueIndex", cueIndex, "historyLength", cueHistory.length);
 }
 
+function isPauseScheduled() {
+  return pauseScheduleTimer !== null || pauseScheduleCleanup !== null;
+}
+
 function clearPauseSchedule() {
   if (pauseScheduleCleanup) {
     pauseScheduleCleanup();
@@ -45,10 +49,11 @@ function schedulePauseBeforeTime(endTime) {
   const video = getVideo();
   if (!video) return;
   clearPauseSchedule();
+  const margin = PLATFORM.pauseBeforeCueSec ?? PAUSE_BEFORE_NEXT_CUE_SEC;
 
   let rafId = null;
   const check = () => {
-    if (video.currentTime >= endTime - PAUSE_BEFORE_NEXT_CUE_SEC) {
+    if (video.currentTime >= endTime - margin) {
       clearPauseSchedule();
       video.pause();
       log("schedulePauseBeforeTime: paused at end of previous cue", video.currentTime);

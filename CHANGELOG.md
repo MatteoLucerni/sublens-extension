@@ -5,6 +5,66 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.3.9]
+
+### Changed
+- Marketing site (`docs/`): the landing page, welcome page and privacy policy now mention Prime Video alongside Netflix and YouTube, catching them up with the 1.3.0 Prime Video release. Updated meta tags, structured data, the FAQ and a new "On Prime Video" welcome card noting the image-based subtitle fallback.
+
+## [1.3.8]
+
+### Fixed
+- Fullscreen: the translation/dictionary popup no longer overlaps the subtitle. When the page behind the player was scrolled, the popup positioning mixed viewport and document coordinates in fullscreen and pushed a tall popup down onto the subtitle; the subtitle-vs-popup layout now uses viewport coordinates consistently in fullscreen, so the popup always sits fully above the subtitle when it is low on screen and below it when it is high (never overlapping, including multi-line subtitles).
+
+### Changed
+- Internal robustness/efficiency on Prime Video: the active `<video>` selection is cached within a synchronous batch to avoid repeated layout reads, the resize/pause listeners now move cleanly to the current video instead of leaking observers across Prime's multiple video elements, and the back-arrow pause-confirm now checks the exact video that emitted the pause event.
+
+## [1.3.7]
+
+### Changed
+- Back-arrow replay: pausing by hovering a subtitle (auto-pause on hover) now also cancels the scheduled auto-pause at the end of the replayed line, the same way an explicit pause does. Previously only an explicit player pause cancelled it, so after hovering during a replay the video still stopped again at the line end. Interaction pauses cancel the schedule immediately (no confirmation delay), since they are deliberate extension-driven pauses.
+
+## [1.3.6]
+
+### Fixed
+- Prime Video: subtitle overlays no longer disappear in fullscreen. Overlay positions added the page scroll offset, but in fullscreen the overlay is anchored to the fullscreen element (fixed at the viewport origin), so the scroll offset pushed it off-screen when the page behind the player was scrolled. The scroll offset is now omitted while in fullscreen.
+- Prime Video: widened the back-arrow replay pre-cue pause margin so playback stops more comfortably inside the replayed line rather than right at its end.
+
+## [1.3.5]
+
+### Fixed
+- Prime Video: the back-arrow replay auto-pause no longer lands on the next subtitle. Console timing showed the recorded line end lags the on-screen transition by more than the 50 ms safety margin, so the pause fell after the next line had appeared. The Prime Video processing debounce is now 0 (the end is recorded closer to the real transition) and the pre-cue pause margin is widened to 120 ms for Prime Video, so playback stops about 100 ms before the next line shows.
+
+## [1.3.4]
+
+### Fixed
+- Prime Video: the back-arrow replay now pauses at the right moment for closely spaced subtitles. The end of a line is detected from the caption DOM change, so a large processing debounce was recording the end too late and the pause landed after the next line had already appeared; the Prime Video debounce was lowered so the auto-pause stops on the replayed line instead of the following one.
+
+## [1.3.3]
+
+### Fixed
+- Prime Video: the back-arrow previous-subtitle jump now works. Prime Video reuses a single caption element and rewrites its text in place for each new line (instead of creating a new element per cue), so the cue history was never advancing and the key fell back to the native 10-second rewind. Cue boundaries are now also detected when a reused line's text changes (`cueBoundaryOnTextChange`).
+- Prime Video: pausing now removes the subtitle blur again (when "Remove blur when paused" is on). Prime Video exposes several `<video>` elements and the pause/play listeners were bound once at startup to whichever was largest then, which could be an idle preview video; the listeners are now kept on the active video as playback proceeds.
+
+## [1.3.2]
+
+### Fixed
+- Prime Video: subtitle overlays are now positioned high enough to always clear the player controls, independently of whether the controls are currently visible. Because Prime Video's control bar has no stable selector, the reserved space is computed from the video height (`controlsReservedHeightRatio`) instead of the fixed fallback, so pausing and moving the pointer no longer makes the controls appear on top of the subtitle.
+- Prime Video: the back-arrow (previous-subtitle) replay now stops at the end of the line again. Prime Video's player emits transient `pause`/`play` events while it re-buffers after the seek, which was cancelling the scheduled auto-pause; the schedule is now only cancelled when the video stays paused (a real user pause), not on a momentary pause that resumes on its own.
+
+## [1.3.1]
+
+### Fixed
+- Prime Video: subtitle overlays no longer flicker between the readable native caption and the blurred overlay. Prime periodically rewrites the caption's inline style, which was wiping the JS-applied hide; the native caption (`.atvwebplayersdk-captions-text`) is now hidden with a persistent CSS rule, matching how YouTube's native captions are hidden.
+- Prime Video: overlays no longer shift when the player controls appear or disappear, so the clickable words stay put under the cursor. Overlay positions are now recomputed only when the cue content changes (same behavior as YouTube); Netflix still repositions on every reconcile.
+
+## [1.3.0]
+
+### Added
+- Amazon Prime Video support (`primevideo.com`). The same blur-until-reveal subtitles and clickable word translation/dictionary/pronunciation now run on Prime Video, driven by the existing platform adapter. A new **Enable on Prime Video** master toggle sits alongside the Netflix and YouTube toggles in the popup.
+
+### Notes
+- Prime Video's player exposes no caption-track language API, so the subtitle source language is auto-detected by Google Translate (the "Auto" default) rather than read from the player; pronunciation still uses the detected language. Prime Video renders three `<video>` elements (main plus ad/preview slots), so the extension drives the largest visible one. Titles that use image-based (bitmap) subtitles fall back to Prime Video's native rendering.
+
 ## [1.2.0]
 
 ### Changed

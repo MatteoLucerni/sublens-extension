@@ -4,7 +4,7 @@ const NSE_SETTINGS_DEFAULTS = {
   primeVideoEnabled: true,
   jumpToPreviousSubtitleOnBack: true,
   autoPauseOnHover: true,
-  subtitleBlurEnabled: true,
+  subtitleBlurEnabled: false,
   autoRemoveBlurOnPause: true,
   pronunciationEnabled: true,
   subtitleSourceLang: "auto",

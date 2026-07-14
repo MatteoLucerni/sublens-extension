@@ -5,6 +5,14 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.3.10]
+
+### Fixed
+- YouTube: subtitle overlays now reliably start on videos where YouTube swaps the caption container during player startup. When the container was briefly removed, the subtitle observer stayed attached to the detached element and never re-bound to the new one, so no overlays appeared; the container watchdog now drops the stale observer and clears its state when the container disappears, then re-attaches cleanly once the real container is inserted.
+
+### Changed
+- Subtitle blur is now off by default. New installs start with unblurred subtitles; enable "Blur subtitles" in the popup to hide each line until you hover it.
+
 ## [1.3.9]
 
 ### Changed

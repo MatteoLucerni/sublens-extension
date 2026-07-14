@@ -227,7 +227,19 @@ async function showOnboardingIfFirstRun() {
 
 function syncSubtitleContainer() {
   const found = findCanonicalContainer();
-  if (!found) return;
+  if (!found) {
+    if (subtitleObserver) {
+      subtitleObserver.disconnect();
+      subtitleObserver = null;
+    }
+    if (currentContainer || activeLines.length > 0) {
+      removeAllOverlays();
+      currentContainer = null;
+      cueHistory = [];
+      cueIndex = -1;
+    }
+    return;
+  }
   if (found === currentContainer && subtitleObserver) return;
 
   log("syncSubtitleContainer: (re)attaching to current container", found);

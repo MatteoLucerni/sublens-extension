@@ -28,7 +28,7 @@
 
 ### Subtitle Blur
 
-Subtitles are blurred by default, so you test your listening before reading. Hover over a line to reveal it; pausing the video reveals every blurred line at once. The blur amount scales with the subtitle's own font size. Toggle the default blur, and whether pausing auto-reveals, independently in the popup.
+Subtitles can be blurred so you test your listening before reading. Blur is off by default; turn it on in the popup. When enabled, hover over a line to reveal it; pausing the video reveals every blurred line at once. The blur amount scales with the subtitle's own font size. Toggle the blur, and whether pausing auto-reveals, independently in the popup.
 
 ### Click to Translate & Define
 

@@ -1,1 +1,1 @@
-self.DEV_MODE = true;
+self.DEV_MODE = false;

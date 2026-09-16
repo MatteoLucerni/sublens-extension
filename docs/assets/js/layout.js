@@ -4,17 +4,17 @@
   const nav = `
     <nav class="site-nav" aria-label="Main">
       <div class="container site-nav-inner">
-        <a class="brand" href="/" aria-label="Sublens home">
-          <img src="/assets/icons/sublens-logo.png" alt="" width="36" height="36" />
+        <a class="brand" href="index.html" aria-label="Sublens home">
+          <img src="assets/icons/sublens-logo.png" alt="" width="36" height="36" />
           <span class="brand-text">
             <span class="brand-name">Sub<span>lens</span></span>
             <span class="brand-sub">Chrome Extension</span>
           </span>
         </a>
         <ul class="nav-links">
-          <li><a href="/#features">Features</a></li>
-          <li><a href="/#how-it-works">How it works</a></li>
-          <li><a href="/#faq">FAQ</a></li>
+          <li><a href="index.html#features">Features</a></li>
+          <li><a href="index.html#how-it-works">How it works</a></li>
+          <li><a href="index.html#faq">FAQ</a></li>
         </ul>
         <div class="nav-actions">
           <button type="button" class="btn btn-soft" data-support-open aria-haspopup="dialog" aria-label="Support Sublens">
@@ -31,14 +31,14 @@
   const footer = `
     <footer class="site-footer">
       <div class="container">
-        <a class="brand footer-brand" href="/">
-          <img src="/assets/icons/sublens-logo.png" alt="" width="36" height="36" />
+        <a class="brand footer-brand" href="index.html">
+          <img src="assets/icons/sublens-logo.png" alt="" width="36" height="36" />
           <span class="brand-name">Sub<span>lens</span></span>
         </a>
         <p>Learn languages from the shows you already watch. Built by Matteo.</p>
         <ul class="footer-links">
-          <li><a href="/welcome.html"><i class="fas fa-book-open"></i>Getting started</a></li>
-          <li><a href="/privacy.html"><i class="fas fa-shield-halved"></i>Privacy</a></li>
+          <li><a href="welcome.html"><i class="fas fa-book-open"></i>Getting started</a></li>
+          <li><a href="privacy.html"><i class="fas fa-shield-halved"></i>Privacy</a></li>
           <li><a data-link="changelog" target="_blank" rel="noopener noreferrer"><i class="fas fa-list-check"></i>Changelog</a></li>
           <li><a data-link="github" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i>GitHub</a></li>
           <li><a data-link="linkedin" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i>LinkedIn</a></li>

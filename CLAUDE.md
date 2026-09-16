@@ -29,7 +29,7 @@ All platform-specific details live in `platforms.js`'s `PLATFORM` object. Keep n
   - **Links**: every external URL (Web Store listing and reviews, GitHub, changelog, Ko-fi, feedback forms, LinkedIn) is defined once in `docs/assets/js/config.js` (`window.SUBLENS.links`). In markup, use `data-link="<key>"` instead of a hard-coded `href`; `layout.js` fills it in.
   - **Layout**: `docs/assets/js/layout.js` renders the shared navigation bar and footer into the `<div data-site-nav>` / `<div data-site-footer>` placeholders. Change them there, never per page.
   - **Scripts**: pages load `config.js`, `layout.js`, `support-modal.js` and `feedback-widget.js` with `defer`, in this order (`config.js` must come first). `404.html` has no nav/footer and loads only `config.js` and `support-modal.js`.
-  - **Paths**: all asset and page links are root-relative (`/assets/...`, `/privacy.html`) so `404.html` also works when GitHub Pages serves it for a nested missing path.
+  - **Paths**: `index.html`, `welcome.html`, `privacy.html` and `layout.js` use relative paths (`assets/...`, `privacy.html`, `index.html#faq`), so the site also works when previewed from a subfolder (e.g. VS Code Live Server opened on the repository or a parent folder). Only `404.html` uses root-relative paths (`/assets/...`), because GitHub Pages serves it for nested missing paths too.
   - `support-modal.js` injects the same support dialog as the popup (`sl-` class prefix) and opens it from any element with the `data-support-open` attribute. `feedback-widget.js` injects the floating feedback button. Both only build markup; their styles are in `site.css`.
 
 ### Content scripts (injected into `netflix.com`, `youtube.com` and `primevideo.com`)

@@ -5,6 +5,14 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.4.1]
+
+### Fixed
+- YouTube: overlays were placed over the controls or below the player in theater mode and after a window resize, because YouTube can leave the `<video>` element larger than the visible player. The layout now uses the visible part of the video (the `<video>` box clipped by its overflow-hidden ancestors and by `#movie_player`).
+- YouTube: after entering fullscreen, overlays could keep their old position and font size for a couple of seconds, since YouTube re-lays out its captions after the settle window. The layout watcher now also re-lays out when the native caption font size or horizontal anchor changes (vertical-only shifts caused by the controls are still ignored).
+- YouTube: auto-generated (word-by-word) captions jumped sideways while growing, because overlays were centered on native text that updates before the overlay text. Overlays now keep the native alignment: left-aligned captions stay anchored to their left edge, centered captions stay centered.
+- YouTube: after turning captions back on, the current subtitle was missing for a couple of seconds. YouTube shows a "click the gear for settings" hint window with an icon next to the captions, and the image-subtitle guard treated the whole caption container as image-based, removing every overlay while the hint was visible. On YouTube the guard is now disabled and caption windows containing an icon are skipped, so the real captions render immediately and the hint is never tokenized.
+
 ## [1.4.0]
 
 ### Changed

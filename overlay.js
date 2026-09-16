@@ -110,22 +110,84 @@ function getControlsReservedHeight(frame) {
   return Math.min(reserved, maxReserved);
 }
 
-function getTextRect(lineEl) {
+function measureNativeLine(lineEl) {
+  const boxRect = lineEl.getBoundingClientRect();
   const range = document.createRange();
   range.selectNodeContents(lineEl);
   const textRect = range.getBoundingClientRect();
-  if (textRect.width > 0 && textRect.height > 0) return textRect;
-  const boxRect = lineEl.getBoundingClientRect();
-  if (boxRect.width > 0 && boxRect.height > 0) return boxRect;
-  return null;
+  const hasText = textRect.width > 0 && textRect.height > 0;
+  const hasBox = boxRect.width > 0 && boxRect.height > 0;
+  if (!hasText && !hasBox) return null;
+  const rect = hasText ? textRect : boxRect;
+  return { rect, align: hasText && hasBox ? getNativeAlignment(textRect, boxRect) : "center" };
+}
+
+function getNativeAlignment(textRect, boxRect) {
+  if (boxRect.width - textRect.width <= NATIVE_ALIGN_TOLERANCE_PX) return "center";
+  const leftGap = Math.abs(textRect.left - boxRect.left);
+  const rightGap = Math.abs(boxRect.right - textRect.right);
+  if (leftGap <= NATIVE_ALIGN_TOLERANCE_PX && rightGap > NATIVE_ALIGN_TOLERANCE_PX) return "left";
+  if (rightGap <= NATIVE_ALIGN_TOLERANCE_PX && leftGap > NATIVE_ALIGN_TOLERANCE_PX) return "right";
+  return "center";
+}
+
+function getVisibleVideoRect(video) {
+  const rect = video.getBoundingClientRect();
+  let { top, left, right, bottom } = rect;
+  const clipX = (clip) => {
+    left = Math.max(left, clip.left);
+    right = Math.min(right, clip.right);
+  };
+  const clipY = (clip) => {
+    top = Math.max(top, clip.top);
+    bottom = Math.min(bottom, clip.bottom);
+  };
+
+  let el = video.parentElement;
+  for (let depth = 0; el && el !== document.body && depth < FRAME_CLIP_MAX_DEPTH; depth++) {
+    const style = getComputedStyle(el);
+    const clipsX = style.overflowX !== "visible";
+    const clipsY = style.overflowY !== "visible";
+    if (clipsX || clipsY) {
+      const clip = el.getBoundingClientRect();
+      if (clipsX) clipX(clip);
+      if (clipsY) clipY(clip);
+    }
+    el = el.parentElement;
+  }
+
+  const player = PLATFORM.playerFrameSelector ? video.closest(PLATFORM.playerFrameSelector) : null;
+  if (player) {
+    const clip = player.getBoundingClientRect();
+    clipX(clip);
+    clipY(clip);
+  }
+
+  return { top, left, bottom, width: right - left, height: bottom - top };
 }
 
 function getLayoutFrame() {
   const video = getVideo();
   if (!video) return null;
-  const rect = video.getBoundingClientRect();
+  const rect = getVisibleVideoRect(video);
   if (rect.width < MIN_VIDEO_SIZE_PX || rect.height < MIN_VIDEO_SIZE_PX) return null;
   return toDocumentRect(rect);
+}
+
+function getNativeSignature(lineEl, measured) {
+  const fontSize = getComputedStyle(findStyleSource(lineEl)).getPropertyValue("font-size");
+  const { rect, align } = measured;
+  const anchor = align === "left" ? rect.left : align === "right" ? rect.right : rect.left + rect.width / 2;
+  return `${fontSize}|${align}|${Math.round(anchor)}`;
+}
+
+function hasNativeGeometryChanged() {
+  for (const line of activeLines) {
+    if (line.overlay.classList.contains("nse-unplaced") || !line.lineEl.isConnected) continue;
+    const measured = measureNativeLine(line.lineEl);
+    if (measured && getNativeSignature(line.lineEl, measured) !== line.nativeSignature) return true;
+  }
+  return false;
 }
 
 function getLayoutKey(frame) {
@@ -170,8 +232,14 @@ function layoutOverlays() {
   for (const line of activeLines) {
     if (frozen && !line.overlay.classList.contains("nse-unplaced")) continue;
     if (!line.lineEl.isConnected) continue;
-    const rect = getTextRect(line.lineEl);
-    if (rect) entries.push({ line, rect: toDocumentRect(rect) });
+    const measured = measureNativeLine(line.lineEl);
+    if (!measured) continue;
+    entries.push({
+      line,
+      rect: toDocumentRect(measured.rect),
+      align: measured.align,
+      signature: getNativeSignature(line.lineEl, measured)
+    });
   }
   layoutPending = frozen || entries.length < activeLines.length;
   if (entries.length === 0) return;
@@ -199,10 +267,12 @@ function layoutOverlays() {
     const bottom = adjacent
       ? upperLimit
       : Math.min(anchorBottom - (nativeBottom - entry.rect.bottom), upperLimit);
-    const centerX = entry.rect.left + entry.rect.width / 2;
+    let preferredLeft = entry.rect.left + entry.rect.width / 2 - entry.width / 2;
+    if (entry.align === "left") preferredLeft = entry.rect.left;
+    else if (entry.align === "right") preferredLeft = entry.rect.right - entry.width;
     const minLeft = frame.left + sidePadding;
     const maxLeft = frame.right - sidePadding - entry.width;
-    const left = Math.max(minLeft, Math.min(centerX - entry.width / 2, maxLeft));
+    const left = Math.max(minLeft, Math.min(preferredLeft, maxLeft));
 
     const overlay = entry.line.overlay;
     overlay.style.top = `${bottom}px`;
@@ -211,6 +281,7 @@ function layoutOverlays() {
     overlay.style.height = "auto";
     overlay.style.transform = "translateY(-100%)";
     overlay.classList.remove("nse-unplaced");
+    entry.line.nativeSignature = entry.signature;
     upperLimit = bottom - entry.height;
   }
 }
@@ -224,7 +295,8 @@ function checkOverlayLayout() {
   if (activeLines.length === 0) return;
   const frame = getLayoutFrame();
   const keyChanged = !!frame && getLayoutKey(frame) !== lastLayoutKey;
-  if (keyChanged || layoutPending || performance.now() < layoutSettleUntil) layoutOverlays();
+  const settling = performance.now() < layoutSettleUntil;
+  if (keyChanged || layoutPending || settling || hasNativeGeometryChanged()) layoutOverlays();
 }
 
 function buildTokens(text) {
@@ -317,7 +389,7 @@ function reconcileLines(lineContainers) {
   activeLines = newActiveLines;
   const layoutChanged = hasNewCue || hasRemovedCue || textChanged;
   const settling = performance.now() < layoutSettleUntil;
-  if (!PLATFORM.repositionOnlyOnChange || layoutChanged || settling) layoutOverlays();
+  if (!PLATFORM.repositionOnlyOnChange || layoutChanged || settling || hasNativeGeometryChanged()) layoutOverlays();
 
   const textBoundary = !!PLATFORM.cueBoundaryOnTextChange && textChanged;
   if (hasRemovedCue || textBoundary) markCueEnded();

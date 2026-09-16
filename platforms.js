@@ -33,6 +33,9 @@ const NSE_PLATFORMS = {
     repositionOnlyOnChange: true,
     snapToBottomBand: true,
     controlsGapRatio: 0.03,
+    playerFrameSelector: "#movie_player",
+    usesImageSubtitleGuard: false,
+    isIgnoredLine: (lineEl) => !!lineEl.closest(".caption-window")?.querySelector("svg, img"),
     processDebounceMs: 180,
     areCaptionsEnabled: () => {
       const button = document.querySelector("#movie_player .ytp-subtitles-button");

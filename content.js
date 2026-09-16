@@ -69,12 +69,17 @@ function hasImageSubtitles(container) {
   return !!container.querySelector("svg, img");
 }
 
+function filterIgnoredLines(lines) {
+  if (!PLATFORM.isIgnoredLine) return lines;
+  return lines.filter((lineEl) => !PLATFORM.isIgnoredLine(lineEl));
+}
+
 function getLineContainers(container) {
-  const matches = container.querySelectorAll(PLATFORM.lineContainerSelector);
-  if (matches.length > 0) return Array.from(matches);
+  const matches = filterIgnoredLines(Array.from(container.querySelectorAll(PLATFORM.lineContainerSelector)));
+  if (matches.length > 0) return matches;
   if (PLATFORM.lineContainerFallbackSelector) {
-    const fallback = container.querySelectorAll(PLATFORM.lineContainerFallbackSelector);
-    if (fallback.length > 0) return Array.from(fallback);
+    const fallback = filterIgnoredLines(Array.from(container.querySelectorAll(PLATFORM.lineContainerFallbackSelector)));
+    if (fallback.length > 0) return fallback;
   }
   if (PLATFORM.allowContainerTextFallback === false) return [];
   return container.textContent.trim() ? [container] : [];

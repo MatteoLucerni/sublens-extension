@@ -5,6 +5,12 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.6.1]
+
+### Changed
+- Website: getsublens.com has been reworked with a dark theme that matches the extension popup (same greys and `#38bdf8` accent), a new landing layout (hero with an illustrated subtitle and translation popup, feature grid, steps, collapsible FAQ, call to action) and a Features / How it works / FAQ navigation.
+- Website: the site is now simpler to maintain. All styles live in one stylesheet (`docs/assets/css/site.css`, replacing `welcome.css` and every per-page `<style>` block), every external link lives in `docs/assets/js/config.js`, and the navigation bar and footer are rendered on every page by `docs/assets/js/layout.js`. Bootstrap is no longer loaded, and `store-link.js` was removed (store links now use `data-link="store"`). The support dialog and the feedback widget no longer embed their own CSS.
+
 ## [1.6.0]
 
 ### Added

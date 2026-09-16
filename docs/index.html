@@ -3,10 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>
-      Sublens - Translate & Learn from Subtitles | Chrome Extension for
-      Netflix, YouTube & Prime Video
-    </title>
+    <title>Sublens - Translate & Learn from Subtitles | Chrome Extension for Netflix, YouTube & Prime Video</title>
     <meta
       name="description"
       content="Sublens blurs subtitles until you want to read them, then turns any word into an instant translation, dictionary lookup and pronunciation. Learn languages on Netflix, YouTube and Prime Video."
@@ -16,10 +13,9 @@
       content="subtitles translation, learn languages Netflix, YouTube subtitles translate, Prime Video subtitles translate, language learning extension, subtitle blur, click to translate, Chrome extension, dictionary, pronunciation"
     />
     <meta name="author" content="Matteo Lucerni" />
-
     <meta name="robots" content="index, follow" />
     <meta name="googlebot" content="index, follow" />
-
+    <meta name="theme-color" content="#1a1b1e" />
     <link rel="canonical" href="https://getsublens.com/" />
 
     <meta property="og:title" content="Sublens - Translate & Learn from Subtitles" />
@@ -29,10 +25,7 @@
     />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://getsublens.com/" />
-    <meta
-      property="og:image"
-      content="https://getsublens.com/assets/icons/sublens-logo.png"
-    />
+    <meta property="og:image" content="https://getsublens.com/assets/icons/sublens-logo.png" />
     <meta property="og:site_name" content="Sublens" />
 
     <meta name="twitter:card" content="summary_large_image" />
@@ -41,30 +34,14 @@
       name="twitter:description"
       content="Blur subtitles until you want to read them, then click any word for instant translation, dictionary and pronunciation on Netflix, YouTube and Prime Video."
     />
-    <meta
-      name="twitter:image"
-      content="https://getsublens.com/assets/icons/sublens-logo.png"
-    />
+    <meta name="twitter:image" content="https://getsublens.com/assets/icons/sublens-logo.png" />
 
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.7/css/bootstrap.min.css"
-      crossorigin="anonymous"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-      crossorigin="anonymous"
-    />
-    <link
-      rel="icon"
-      href="assets/icons/sublens-logo.png"
-      type="image/png"
-    />
+    <link rel="icon" href="/assets/icons/sublens-logo.png" type="image/png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" />
+    <link rel="stylesheet" href="/assets/css/site.css" />
 
     <script type="application/ld+json">
       {
@@ -84,7 +61,8 @@
           "name": "Matteo Lucerni",
           "url": "https://www.linkedin.com/in/matteo-lucerni-0725a526b/"
         },
-        "url": "https://getsublens.com/"
+        "url": "https://getsublens.com/",
+        "downloadUrl": "https://chromewebstore.google.com/detail/hkocpinnlehjpbobobnpocanjaaaiijh"
       }
     </script>
 
@@ -98,7 +76,7 @@
             "name": "Is Sublens free?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes. Sublens is completely free, with no account, no sign-in and no ads."
+              "text": "Yes. Sublens is completely free and open source, with no account, no sign-in and no ads."
             }
           },
           {
@@ -128,639 +106,151 @@
         ]
       }
     </script>
-
-    <style>
-      :root {
-        --bg: #ffffff;
-        --bg-alt: #f2f2f2;
-        --bg-card: #dcdcdc;
-        --text: #0f172a;
-        --text-secondary: #475569;
-        --text-tertiary: #94a3b8;
-        --border: #e0e0e0;
-        --card-border: #b0b0b0;
-        --accent: #0284c7;
-        --accent-hover: #0369a1;
-        --accent-soft: #cfecfb;
-        --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05),
-          0 10px 24px rgba(15, 23, 42, 0.09);
-        --shadow-md: 0 14px 32px rgba(15, 23, 42, 0.12),
-          0 4px 10px rgba(15, 23, 42, 0.06);
-        --shadow-lg: 0 22px 48px rgba(15, 23, 42, 0.16);
-      }
-
-      body {
-        margin: 0;
-        font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI",
-          Roboto, sans-serif;
-        overflow-x: hidden;
-        background-color: var(--bg);
-        color: var(--text);
-      }
-
-      .navbar {
-        position: fixed;
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 14px 24px;
-        background: rgba(240, 240, 240, 0.92);
-        z-index: 100;
-        backdrop-filter: blur(10px);
-        border-bottom: 1px solid var(--border);
-      }
-
-      .brand-mark {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        text-decoration: none;
-      }
-
-      .brand-mark img {
-        width: 38px;
-        height: 38px;
-      }
-
-      .brand-mark .brand-name {
-        color: var(--text);
-        font-weight: 700;
-        font-size: 1.3rem;
-        line-height: 1;
-      }
-
-      .brand-mark .brand-sub {
-        color: var(--text-tertiary);
-        font-size: 0.75rem;
-      }
-
-      .cta-compact {
-        background: var(--accent);
-        color: #fff;
-        padding: 9px 18px;
-        border: none;
-        border-radius: 8px;
-        text-decoration: none;
-        font-weight: 600;
-        box-shadow: var(--shadow-sm);
-        transition: transform 0.2s ease, box-shadow 0.2s ease,
-          background 0.2s ease;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-      }
-
-      .cta-compact:hover {
-        transform: translateY(-1px);
-        background: var(--accent-hover);
-        box-shadow: var(--shadow-md);
-        color: #fff;
-      }
-
-      .nav-actions {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-
-      .support-nav {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 16px;
-        background: var(--accent-soft);
-        color: var(--accent);
-        border: 1px solid rgba(2, 132, 199, 0.3);
-        border-radius: 8px;
-        font-family: inherit;
-        font-size: 1rem;
-        font-weight: 600;
-        line-height: 1.5;
-        cursor: pointer;
-        transition: transform 0.2s ease, box-shadow 0.2s ease,
-          background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-      }
-
-      .support-nav:hover {
-        transform: translateY(-1px);
-        background: #bae3f8;
-        border-color: rgba(2, 132, 199, 0.55);
-        color: var(--accent-hover);
-        box-shadow: var(--shadow-md);
-      }
-
-      .support-nav:focus-visible {
-        outline: 2px solid var(--accent);
-        outline-offset: 2px;
-      }
-
-      .hero {
-        text-align: center;
-        padding: 150px 20px 90px;
-        background:
-          radial-gradient(
-            circle at 50% 0%,
-            rgba(2, 132, 199, 0.1),
-            transparent 55%
-          ),
-          var(--bg);
-      }
-
-      .hero-logo {
-        width: 96px;
-        height: 96px;
-        filter: drop-shadow(0 14px 24px rgba(2, 132, 199, 0.25));
-        animation: fadeInDown 0.9s forwards;
-        opacity: 0;
-      }
-
-      .hero h1 {
-        font-size: 3rem;
-        font-weight: 700;
-        letter-spacing: -0.02em;
-        margin-top: 24px;
-        opacity: 0;
-        animation: fadeInDown 1s 0.15s forwards;
-      }
-
-      .hero h2 {
-        font-weight: 400;
-        font-size: 1.4rem;
-        color: var(--text-secondary);
-        opacity: 0;
-        animation: fadeInDown 1s 0.3s forwards;
-      }
-
-      .hero p.lead-text {
-        font-size: 1.15rem;
-        margin-top: 18px;
-        max-width: 620px;
-        margin-left: auto;
-        margin-right: auto;
-        color: var(--text-secondary);
-        opacity: 0;
-        animation: fadeInUp 1s 0.5s forwards;
-      }
-
-      .hero .btn-primary-cta {
-        margin-top: 32px;
-        padding: 14px 34px;
-        background: var(--accent);
-        color: #fff;
-        border: none;
-        border-radius: 10px;
-        font-size: 1.05rem;
-        font-weight: 600;
-        cursor: pointer;
-        opacity: 0;
-        animation: fadeInUp 1s 0.8s forwards;
-        box-shadow: var(--shadow-md);
-        transition: transform 0.25s ease, box-shadow 0.25s ease,
-          background 0.25s ease;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-      }
-
-      .hero .btn-primary-cta:hover {
-        background: var(--accent-hover);
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-lg);
-      }
-
-      .hero .platforms {
-        margin-top: 26px;
-        color: var(--text-tertiary);
-        font-size: 0.95rem;
-        opacity: 0;
-        animation: fadeInUp 1s 1s forwards;
-      }
-
-      .hero .platforms i {
-        margin: 0 6px;
-        color: var(--text-secondary);
-      }
-
-      .section-title {
-        font-size: 2.2rem;
-        font-weight: 700;
-        letter-spacing: -0.02em;
-        text-align: center;
-        margin-bottom: 14px;
-      }
-
-      .section-subtitle {
-        text-align: center;
-        color: var(--text-tertiary);
-        margin-bottom: 50px;
-        max-width: 640px;
-        margin-left: auto;
-        margin-right: auto;
-      }
-
-      .features {
-        padding: 90px 20px;
-        background: var(--bg-alt);
-        border-top: 1px solid var(--border);
-      }
-
-      .feature {
-        background: var(--bg-card);
-        padding: 28px;
-        border-radius: 16px;
-        border: 1px solid var(--card-border);
-        height: 100%;
-        box-shadow: var(--shadow-sm);
-        transition: transform 0.25s ease, border-color 0.25s ease,
-          box-shadow 0.25s ease;
-      }
-
-      .feature:hover {
-        transform: translateY(-5px);
-        border-color: rgba(2, 132, 199, 0.4);
-        box-shadow: var(--shadow-md);
-      }
-
-      .feature-icon {
-        width: 48px;
-        height: 48px;
-        border-radius: 12px;
-        background: var(--accent-soft);
-        color: var(--accent);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.4rem;
-        margin-bottom: 18px;
-      }
-
-      .feature h3 {
-        font-size: 1.2rem;
-        margin-bottom: 10px;
-        color: var(--text);
-      }
-
-      .feature p {
-        color: var(--text-secondary);
-        line-height: 1.6;
-        font-size: 0.96rem;
-        margin: 0;
-      }
-
-      .how {
-        padding: 90px 20px;
-        background: var(--bg);
-        border-top: 1px solid var(--border);
-      }
-
-      .step {
-        text-align: center;
-        padding: 20px;
-      }
-
-      .step-number {
-        width: 54px;
-        height: 54px;
-        border-radius: 50%;
-        background: var(--accent-soft);
-        border: 1px solid rgba(2, 132, 199, 0.3);
-        color: var(--accent);
-        font-weight: 700;
-        font-size: 1.3rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 18px;
-      }
-
-      .step h3 {
-        font-size: 1.15rem;
-        margin-bottom: 8px;
-        color: var(--text);
-      }
-
-      .step p {
-        color: var(--text-secondary);
-        font-size: 0.95rem;
-        line-height: 1.6;
-      }
-
-      .faq {
-        padding: 90px 20px;
-        background: var(--bg-alt);
-        border-top: 1px solid var(--border);
-      }
-
-      .faq .faq-list {
-        max-width: 760px;
-        margin: 0 auto;
-      }
-
-      .faq-item {
-        background: var(--bg-card);
-        border: 1px solid var(--card-border);
-        border-radius: 14px;
-        padding: 22px 24px;
-        margin-bottom: 14px;
-        box-shadow: var(--shadow-sm);
-        transition: transform 0.2s ease, border-color 0.2s ease,
-          box-shadow 0.2s ease;
-      }
-
-      .faq-item:hover {
-        transform: translateY(-2px);
-        border-color: rgba(2, 132, 199, 0.35);
-        box-shadow: var(--shadow-md);
-      }
-
-      .faq-item:last-child {
-        margin-bottom: 0;
-      }
-
-      .faq-item h3 {
-        font-size: 1.05rem;
-        margin: 0 0 8px;
-        color: var(--text);
-      }
-
-      .faq-item p {
-        color: var(--text-secondary);
-        line-height: 1.6;
-        font-size: 0.96rem;
-        margin: 0;
-      }
-
-      .cta-section {
-        padding: 90px 20px;
-        background: linear-gradient(135deg, var(--accent), #0ea5e9);
-        color: #fff;
-        text-align: center;
-        border-top: 1px solid var(--border);
-      }
-
-      .cta-section h2 {
-        font-size: 2.2rem;
-        font-weight: 700;
-        letter-spacing: -0.02em;
-        margin-bottom: 16px;
-        color: #fff;
-      }
-
-      .cta-section p {
-        font-size: 1.1rem;
-        margin-bottom: 32px;
-        opacity: 0.92;
-      }
-
-      .cta-section .btn {
-        background: #fff;
-        color: var(--accent);
-        padding: 14px 40px;
-        border: none;
-        border-radius: 10px;
-        font-size: 1.05rem;
-        font-weight: 600;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        box-shadow: var(--shadow-md);
-        transition: transform 0.25s ease, box-shadow 0.25s ease,
-          color 0.25s ease;
-      }
-
-      .cta-section .btn:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-lg);
-        color: var(--accent-hover);
-      }
-
-      .footer {
-        padding: 44px 20px;
-        text-align: center;
-        background: var(--bg);
-        color: var(--text-tertiary);
-        border-top: 1px solid var(--border);
-      }
-
-      .footer a {
-        color: var(--text-secondary);
-        text-decoration: none;
-      }
-
-      .footer a:hover {
-        color: var(--accent);
-      }
-
-      .footer .footer-links {
-        margin-top: 12px;
-      }
-
-      .footer-support {
-        margin-top: 24px;
-        display: flex;
-        justify-content: center;
-      }
-
-      @keyframes fadeInDown {
-        from {
-          opacity: 0;
-          transform: translateY(-40px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      @keyframes fadeInUp {
-        from {
-          opacity: 0;
-          transform: translateY(40px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      @media (max-width: 768px) {
-        .hero h1 {
-          font-size: 2.2rem;
-        }
-        .hero h2 {
-          font-size: 1.2rem;
-        }
-        .section-title {
-          font-size: 1.9rem;
-        }
-      }
-    </style>
   </head>
 
   <body>
-    <nav class="navbar">
-      <a class="brand-mark" href="/" aria-label="Sublens Home">
-        <img src="assets/icons/sublens-logo.png" alt="Sublens logo" width="38" height="38" />
-        <span class="d-flex flex-column">
-          <span class="brand-name">Sublens</span>
-          <span class="brand-sub">MV3 Chrome Extension</span>
-        </span>
-      </a>
-      <div class="nav-actions">
-        <button
-          type="button"
-          class="support-nav"
-          data-support-open
-          aria-haspopup="dialog"
-          aria-label="Support Sublens"
-        >
-          <i class="fas fa-heart"></i>
-          <span class="d-none d-sm-inline">Support</span>
-        </button>
-        <a
-          data-store-link
-          href="#"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="cta-compact"
-        >
-          <span class="d-none d-sm-inline">Add to Chrome</span>
-          <i class="fas fa-download d-sm-none"></i>
-        </a>
-      </div>
-    </nav>
+    <div data-site-nav></div>
 
-    <section class="hero">
-      <img
-        class="hero-logo"
-        src="assets/icons/sublens-logo.png"
-        alt="Sublens logo"
-        width="96"
-        height="96"
-      />
-      <h1 class="fw-bold">Sublens</h1>
-      <h2>Translate &amp; learn from subtitles</h2>
-      <p class="lead-text">
-        Blur subtitles until you want to read them, then click, Ctrl/Cmd+click or
-        drag-select any word for instant translation, dictionary definitions and
-        pronunciation.
-      </p>
-      <a
-        data-store-link
-        href="#"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="btn-primary-cta"
-      >
-        <i class="fab fa-chrome"></i> Add to Chrome
-      </a>
-      <p class="platforms">
-        Works on <i class="fab fa-youtube"></i> YouTube,
-        <i class="fas fa-film"></i> Netflix and
-        <i class="fab fa-amazon"></i> Prime Video
-      </p>
-    </section>
+    <main>
+      <section class="hero">
+        <div class="container hero-grid">
+          <div>
+            <span class="hero-badge fade-in"><i class="fas fa-circle-check"></i>Free, open source, no tracking</span>
+            <h1 class="fade-in delay-1">Sub<span class="gradient-text">lens</span></h1>
+            <p class="hero-tagline fade-in delay-1">Translate &amp; learn from subtitles</p>
+            <p class="hero-lead fade-in delay-2">
+              Blur subtitles until you want to read them, then click,
+              Ctrl/Cmd+click or drag-select any word for instant translation,
+              dictionary definitions and pronunciation.
+            </p>
+            <div class="hero-actions fade-in delay-3">
+              <a class="btn btn-primary btn-lg" data-link="store" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-chrome"></i>Add to Chrome
+              </a>
+              <a class="btn btn-ghost btn-lg" href="#how-it-works">How it works</a>
+            </div>
+            <div class="hero-platforms fade-in delay-4">
+              Works on
+              <span><i class="fas fa-film"></i>Netflix</span>
+              <span><i class="fab fa-youtube"></i>YouTube</span>
+              <span><i class="fab fa-amazon"></i>Prime Video</span>
+            </div>
+          </div>
 
-    <section class="features">
-      <div class="container">
-        <h2 class="section-title">Everything you need to learn while watching</h2>
-        <p class="section-subtitle">
-          Turn the subtitles you already watch into an active language lesson,
-          without leaving the player.
-        </p>
-        <div class="row g-4">
-          <div class="col-12 col-md-6 col-lg-4">
-            <div class="feature">
-              <div class="feature-icon"><i class="fas fa-eye-slash"></i></div>
+          <div class="demo fade-in delay-2" aria-hidden="true">
+            <div class="demo-scene"></div>
+            <span class="demo-label"><i class="fas fa-closed-captioning"></i>Spanish subtitles</span>
+            <div class="demo-stack">
+              <div class="demo-popup">
+                <div class="demo-popup-head">
+                  <span>estación</span>
+                  <i class="fas fa-volume-high"></i>
+                </div>
+                <div class="demo-translation">station</div>
+                <div class="demo-entries">
+                  <div><em>noun</em>station, season, stop</div>
+                </div>
+              </div>
+              <div class="demo-subtitle">
+                <span>¿Dónde está la <span class="demo-selected">estación</span> de tren?</span>
+                <span class="demo-line-blurred">Está al final de la calle.</span>
+              </div>
+            </div>
+            <div class="demo-controls">
+              <i class="fas fa-pause"></i>
+              <span class="demo-progress"></span>
+              <span>12:48</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-alt" id="features">
+        <div class="container">
+          <div class="section-head">
+            <span class="eyebrow">Features</span>
+            <h2 class="section-title">Everything you need to learn while watching</h2>
+            <p class="section-subtitle">
+              Turn the subtitles you already watch into an active language
+              lesson, without leaving the player.
+            </p>
+          </div>
+          <div class="grid grid-3">
+            <article class="card">
+              <div class="card-icon"><i class="fas fa-eye-slash"></i></div>
               <h3>Subtitle blur</h3>
               <p>
                 Turn on subtitle blur to test your listening first (off by
                 default). Hover a line to reveal it when you need help.
               </p>
-            </div>
-          </div>
-          <div class="col-12 col-md-6 col-lg-4">
-            <div class="feature">
-              <div class="feature-icon"><i class="fas fa-language"></i></div>
+            </article>
+            <article class="card">
+              <div class="card-icon"><i class="fas fa-language"></i></div>
               <h3>Click to translate</h3>
               <p>
                 Click a word for its translation and dictionary entry,
                 Ctrl/Cmd+click to add more words, or click-and-drag to select a
                 whole phrase.
               </p>
-            </div>
-          </div>
-          <div class="col-12 col-md-6 col-lg-4">
-            <div class="feature">
-              <div class="feature-icon"><i class="fas fa-volume-high"></i></div>
+            </article>
+            <article class="card">
+              <div class="card-icon"><i class="fas fa-volume-high"></i></div>
               <h3>Pronunciation</h3>
               <p>
-                The selected word or phrase is pronounced automatically in the
-                subtitle language, with a speaker button to replay it.
+                Hear the selected word or phrase in the subtitle language, with
+                a speaker button to replay it. Auto-play can be turned off in
+                the settings.
               </p>
-            </div>
-          </div>
-          <div class="col-12 col-md-6 col-lg-4">
-            <div class="feature">
-              <div class="feature-icon"><i class="fas fa-pause"></i></div>
+            </article>
+            <article class="card">
+              <div class="card-icon"><i class="fas fa-pause"></i></div>
               <h3>Auto-pause on hover</h3>
               <p>
                 Hovering a subtitle pauses the video so you have time to read,
                 and pausing reveals every blurred line at once.
               </p>
-            </div>
-          </div>
-          <div class="col-12 col-md-6 col-lg-4">
-            <div class="feature">
-              <div class="feature-icon"><i class="fas fa-arrow-rotate-left"></i></div>
+            </article>
+            <article class="card">
+              <div class="card-icon"><i class="fas fa-arrow-rotate-left"></i></div>
               <h3>Replay the last line</h3>
               <p>
                 Press the Left Arrow key to jump back to the previous subtitle
                 and hear it again, instead of the player's default rewind.
               </p>
-            </div>
-          </div>
-          <div class="col-12 col-md-6 col-lg-4">
-            <div class="feature">
-              <div class="feature-icon"><i class="fas fa-sliders"></i></div>
+            </article>
+            <article class="card">
+              <div class="card-icon"><i class="fas fa-sliders"></i></div>
               <h3>Your languages, your rules</h3>
               <p>
-                Pick the subtitle (source) language or auto-detect it, choose
-                your translation language, and toggle Sublens per platform on
-                Netflix, YouTube and Prime Video independently.
+                Pick the subtitle language or auto-detect it, choose your
+                translation language, and toggle Sublens on Netflix, YouTube
+                and Prime Video independently.
               </p>
-            </div>
+            </article>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section class="how">
-      <div class="container">
-        <h2 class="section-title">How it works</h2>
-        <p class="section-subtitle">Three steps, no setup.</p>
-        <div class="row g-4 justify-content-center">
-          <div class="col-12 col-md-4">
+      <section class="section" id="how-it-works">
+        <div class="container">
+          <div class="section-head">
+            <span class="eyebrow">How it works</span>
+            <h2 class="section-title">Three steps, no setup</h2>
+          </div>
+          <div class="grid grid-3">
             <div class="step">
               <div class="step-number">1</div>
               <h3>Install Sublens</h3>
               <p>Add the extension to Chrome. There is nothing to configure to get started.</p>
             </div>
-          </div>
-          <div class="col-12 col-md-4">
             <div class="step">
               <div class="step-number">2</div>
-              <h3>Open Netflix, YouTube or Prime Video</h3>
+              <h3>Press play</h3>
               <p>
-                Play any title with subtitles on. On YouTube, turn captions on
-                with the CC button.
+                Open any title with subtitles on Netflix, YouTube or Prime
+                Video. On YouTube, turn captions on with the CC button.
               </p>
             </div>
-          </div>
-          <div class="col-12 col-md-4">
             <div class="step">
               <div class="step-number">3</div>
               <h3>Click any word</h3>
@@ -771,104 +261,81 @@
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section class="faq">
-      <div class="container">
-        <h2 class="section-title">Frequently asked questions</h2>
-        <p class="section-subtitle">Everything you might want to know before installing.</p>
-        <div class="faq-list">
-          <div class="faq-item">
-            <h3>Is Sublens free?</h3>
-            <p>
-              Yes. Sublens is completely free, with no account, no sign-in and no
-              ads.
-            </p>
+      <section class="section section-alt" id="faq">
+        <div class="container">
+          <div class="section-head">
+            <span class="eyebrow">FAQ</span>
+            <h2 class="section-title">Frequently asked questions</h2>
+            <p class="section-subtitle">Everything you might want to know before installing.</p>
           </div>
-          <div class="faq-item">
-            <h3>Does it work with auto-generated captions?</h3>
-            <p>
-              Yes. On YouTube both manual and auto-generated captions are
-              supported on <code>youtube.com/watch</code> pages, as long as
-              captions are turned on with the CC button. On Netflix and Prime
-              Video it uses the title's subtitle track; Prime Video titles with
-              image-based (bitmap) subtitles fall back to native captions.
-            </p>
-          </div>
-          <div class="faq-item">
-            <h3>Which languages does it support?</h3>
-            <p>
-              The subtitle (source) language is auto-detected from the active
-              caption track on Netflix and YouTube, or you can set it manually.
-              Prime Video's player exposes no caption-track language, so its
-              source language is auto-detected by Google Translate instead.
-              Translations and dictionary definitions can be shown in any of the
-              supported target languages, picked in the settings popup.
-            </p>
-          </div>
-          <div class="faq-item">
-            <h3>Is my data private?</h3>
-            <p>
-              Yes. Sublens collects no personal data and has no tracking or
-              analytics. Only the word or phrase you actively click is sent to
-              Google Translate to return its translation and pronunciation. See
-              the <a href="privacy.html">Privacy Policy</a> for details.
-            </p>
+          <div class="faq-list">
+            <details class="faq-item">
+              <summary>Is Sublens free?</summary>
+              <p>
+                Yes. Sublens is completely free and open source, with no
+                account, no sign-in and no ads.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>Does it work with auto-generated captions?</summary>
+              <p>
+                Yes. On YouTube both manual and auto-generated captions are
+                supported on <code>youtube.com/watch</code> pages, as long as
+                captions are turned on with the CC button. On Netflix and Prime
+                Video it uses the title's subtitle track; Prime Video titles
+                with image-based (bitmap) subtitles fall back to native
+                captions.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>Which languages does it support?</summary>
+              <p>
+                The subtitle (source) language is auto-detected from the active
+                caption track on Netflix and YouTube, or you can set it
+                manually. Prime Video's player exposes no caption-track
+                language, so its source language is auto-detected by Google
+                Translate instead. Translations and dictionary definitions can
+                be shown in any of the supported target languages, picked in
+                the settings popup.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>Is my data private?</summary>
+              <p>
+                Yes. Sublens collects no personal data and has no tracking or
+                analytics. Only the word or phrase you actively click is sent
+                to Google Translate to return its translation and
+                pronunciation. See the <a href="/privacy.html">Privacy Policy</a>
+                for details.
+              </p>
+            </details>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section class="cta-section">
-      <div class="container">
-        <h2>Start learning from what you already watch</h2>
-        <p>Free, private, and works right inside the player.</p>
-        <a
-          data-store-link
-          href="#"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="btn"
-        >
-          <i class="fab fa-chrome"></i> Add Sublens to Chrome
-        </a>
-      </div>
-    </section>
+      <section class="section cta">
+        <div class="container">
+          <h2 class="section-title">Start learning from what you already watch</h2>
+          <p class="section-subtitle">Free, private, and works right inside the player.</p>
+          <div class="cta-actions">
+            <a class="btn btn-primary btn-lg" data-link="store" target="_blank" rel="noopener noreferrer">
+              <i class="fab fa-chrome"></i>Add Sublens to Chrome
+            </a>
+            <button type="button" class="btn btn-soft btn-lg" data-support-open aria-haspopup="dialog">
+              <i class="fas fa-heart"></i>Support the project
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
 
-    <footer class="footer">
-      <p>Built by Matteo &middot; <a href="privacy.html">Privacy Policy</a></p>
-      <div class="footer-links">
-        <a
-          href="https://www.linkedin.com/in/matteo-lucerni-0725a526b/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="me-2"
-          >LinkedIn <i class="fa-brands fa-linkedin ms-1"></i></a
-        >
-        |
-        <a
-          href="https://github.com/MatteoLucerni?tab=repositories"
-          target="_blank"
-          rel="noopener noreferrer"
-          >GitHub <i class="fa-brands fa-github ms-1"></i></a
-        >
-      </div>
-      <div class="footer-support">
-        <button
-          type="button"
-          class="sl-support-trigger"
-          data-support-open
-          aria-haspopup="dialog"
-        >
-          <i class="fas fa-heart"></i>
-          Support this project
-        </button>
-      </div>
-    </footer>
+    <div data-site-footer></div>
 
-    <script src="assets/js/store-link.js"></script>
-    <script src="assets/js/support-modal.js" defer></script>
-    <script src="assets/js/feedback-widget.js" defer></script>
+    <script src="/assets/js/config.js" defer></script>
+    <script src="/assets/js/layout.js" defer></script>
+    <script src="/assets/js/support-modal.js" defer></script>
+    <script src="/assets/js/feedback-widget.js" defer></script>
   </body>
 </html>

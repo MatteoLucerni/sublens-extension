@@ -130,9 +130,10 @@ subtitles-translate-extension
 │   ├── privacy.html       Privacy policy
 │   ├── 404.html
 │   └── assets/
-│       ├── css/welcome.css
+│       ├── css/site.css            Single stylesheet for the whole site (dark theme tokens + components)
 │       └── js/
-│           ├── store-link.js       Wires "Add to Chrome" buttons to the Web Store listing
+│           ├── config.js           All external links, defined once
+│           ├── layout.js           Shared navigation bar and footer, fills data-link hrefs
 │           ├── support-modal.js    Support dialog (Ko-fi, GitHub, Web Store review)
 │           └── feedback-widget.js  Floating feedback/bug-report widget
 ├── env.js                 Sets self.DEV_MODE (logging flag); loaded first

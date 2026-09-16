@@ -24,7 +24,13 @@ All platform-specific details live in `platforms.js`'s `PLATFORM` object. Keep n
 - `popup.html` / `popup.css` / `popup.js`: toolbar action popup with the settings controls. The header also holds a **Support** button (`#nse-support-button`) that opens the support dialog (`#nse-support-modal`, wired by `initSupportModal` in `popup.js`) with three external links: Ko-fi, the GitHub repository, and the Chrome Web Store reviews page.
 - `icons/`: icon16/32/48/128.png.
 - `build.ps1`: packages the extension into `dist/Sublens-<version>-<timestamp>.zip` for the Chrome Web Store, reading the file list from `manifest.json` and forcing `self.DEV_MODE = false` in `env.js`.
-- `docs/`: static marketing/documentation site (landing, `welcome.html`, `privacy.html`), published via GitHub Pages (deploy-from-branch `/docs`) on getsublens.com. `docs/assets/js/support-modal.js` injects the same support dialog as the popup (light site theme, `sl-` class prefix) and opens it from any element with the `data-support-open` attribute (navbar and footer buttons).
+- `docs/`: static marketing/documentation site (landing `index.html`, `welcome.html`, `privacy.html`, `404.html`), published via GitHub Pages (deploy-from-branch `/docs`) on getsublens.com. Dark theme only, no build step and no CSS framework. Maintenance rules:
+  - **Styles**: everything lives in `docs/assets/css/site.css`, driven by the design tokens in its `:root` block (same greys and `#38bdf8` accent as the popup). Do not add per-page `<style>` blocks or inline styles; reuse the existing components (`.btn` variants, `.section`/`.section-alt`, `.section-head`, `.card`/`.card-row`, `.grid-3`, `.step`, `.faq-item`, `.page`, `.prose`).
+  - **Links**: every external URL (Web Store listing and reviews, GitHub, changelog, Ko-fi, feedback forms, LinkedIn) is defined once in `docs/assets/js/config.js` (`window.SUBLENS.links`). In markup, use `data-link="<key>"` instead of a hard-coded `href`; `layout.js` fills it in.
+  - **Layout**: `docs/assets/js/layout.js` renders the shared navigation bar and footer into the `<div data-site-nav>` / `<div data-site-footer>` placeholders. Change them there, never per page.
+  - **Scripts**: pages load `config.js`, `layout.js`, `support-modal.js` and `feedback-widget.js` with `defer`, in this order (`config.js` must come first). `404.html` has no nav/footer and loads only `config.js` and `support-modal.js`.
+  - **Paths**: all asset and page links are root-relative (`/assets/...`, `/privacy.html`) so `404.html` also works when GitHub Pages serves it for a nested missing path.
+  - `support-modal.js` injects the same support dialog as the popup (`sl-` class prefix) and opens it from any element with the `data-support-open` attribute. `feedback-widget.js` injects the floating feedback button. Both only build markup; their styles are in `site.css`.
 
 ### Content scripts (injected into `netflix.com`, `youtube.com` and `primevideo.com`)
 

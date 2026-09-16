@@ -5,6 +5,11 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.4.3]
+
+### Fixed
+- After a subtitle hover had auto-paused the video and a word was clicked, clicking the player to close the popup made the video start and immediately pause again: the extension resumed playback in its capture-phase outside-click handler, then the player's own click handler toggled it back to paused. When the popup (or a pending multi-word selection) is closed by a click on the video area, that click is now consumed (it only closes the popup and never reaches the player) and playback resumes immediately, independently of when or how each player handles its own click-to-toggle. Clicks outside the video still pass through as before. As a side effect, while the popup is open a click on a player control only closes the popup; click again to use the control.
+
 ## [1.4.2]
 
 ### Changed

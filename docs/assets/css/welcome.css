@@ -143,6 +143,12 @@ body {
   text-decoration: underline;
 }
 
+.footer-support {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
 @media (max-width: 480px) {
   .welcome-card {
     flex-direction: column;

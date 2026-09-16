@@ -66,6 +66,10 @@ Built around a platform adapter (`platforms.js`) that isolates every platform-sp
 
 Click the toolbar icon to open the settings popup: the language selects, the platform toggles, and five behavior toggles tucked under "Show advanced options" to keep the default view simple. Every control has a "?" tooltip explaining its effect. A footer links out to **Give Feedback**, the **Changelog**, and the **Website**.
 
+### Support the Project
+
+A **Support** button in the popup header (and in the website's navigation bar and footers) opens a dialog with three ways to help: buy a coffee on [Ko-fi](https://ko-fi.com/D5Y424F3EB), contribute on [GitHub](https://github.com/MatteoLucerni/netflix-subtitles-translate), or [leave a review](https://chromewebstore.google.com/detail/hkocpinnlehjpbobobnpocanjaaaiijh/reviews) on the Chrome Web Store.
+
 ### Onboarding & Getting Started
 
 The first time you land on Netflix after installing, a centered overlay asks you to pick your translation language. On install, a getting-started page opens in a new tab walking through every feature.
@@ -129,6 +133,7 @@ subtitles-translate-extension
 │       ├── css/welcome.css
 │       └── js/
 │           ├── store-link.js       Wires "Add to Chrome" buttons to the Web Store listing
+│           ├── support-modal.js    Support dialog (Ko-fi, GitHub, Web Store review)
 │           └── feedback-widget.js  Floating feedback/bug-report widget
 ├── env.js                 Sets self.DEV_MODE (logging flag); loaded first
 ├── settings.js            Shared chrome.storage.sync helpers + language list
@@ -141,7 +146,7 @@ subtitles-translate-extension
 ├── netflix-bridge.js      Netflix-only MAIN-world script: reports whether captions are on to the content scripts
 ├── content.css            Styles for the subtitle overlay and dictionary popup
 ├── background.js          Service worker: platform-aware player seek + Google Translate requests
-├── popup.html/css/js      Toolbar action popup with the settings controls
+├── popup.html/css/js      Toolbar action popup with the settings controls and the support dialog
 ├── build.ps1              Packages the extension into a versioned zip for the Chrome Web Store
 ├── CHANGELOG.md           Version history
 ├── CLAUDE.md              Project instructions for Claude Code (architecture, conventions, versioning rules)

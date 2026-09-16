@@ -21,10 +21,10 @@ All platform-specific details live in `platforms.js`'s `PLATFORM` object. Keep n
 - `netflix-bridge.js`: Netflix-only content script declared in a second `content_scripts` entry with `"world": "MAIN"`. Listens for the `nse-captions-query` DOM event and writes the Netflix player's captions state (`on` / `off` / `unknown`) to `data-nse-captions` on `<html>`. Has no dependency on the isolated-world scripts.
 - `background.js`: service worker, handles platform-aware player seek (Netflix MAIN world script injection), Google Translate calls, and Google Translate text-to-speech (`tts` message / `fetchTts`). Also opens the welcome page on first install (`chrome.runtime.onInstalled`, reason `install`, `chrome.tabs.create` to `https://getsublens.com/welcome.html`). All its logs go through a local `log()` gated by `self.DEV_MODE`.
 - `content.css`: styles for the subtitle overlay and dictionary popup.
-- `popup.html` / `popup.css` / `popup.js`: toolbar action popup with the settings controls.
+- `popup.html` / `popup.css` / `popup.js`: toolbar action popup with the settings controls. The header also holds a **Support** button (`#nse-support-button`) that opens the support dialog (`#nse-support-modal`, wired by `initSupportModal` in `popup.js`) with three external links: Ko-fi, the GitHub repository, and the Chrome Web Store reviews page.
 - `icons/`: icon16/32/48/128.png.
 - `build.ps1`: packages the extension into `dist/Sublens-<version>-<timestamp>.zip` for the Chrome Web Store, reading the file list from `manifest.json` and forcing `self.DEV_MODE = false` in `env.js`.
-- `docs/`: static marketing/documentation site (landing, `welcome.html`, `privacy.html`), published via GitHub Pages (deploy-from-branch `/docs`) on getsublens.com.
+- `docs/`: static marketing/documentation site (landing, `welcome.html`, `privacy.html`), published via GitHub Pages (deploy-from-branch `/docs`) on getsublens.com. `docs/assets/js/support-modal.js` injects the same support dialog as the popup (light site theme, `sl-` class prefix) and opens it from any element with the `data-support-open` attribute (navbar and footer buttons).
 
 ### Content scripts (injected into `netflix.com`, `youtube.com` and `primevideo.com`)
 

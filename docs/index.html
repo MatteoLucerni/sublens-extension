@@ -218,6 +218,43 @@
         color: #fff;
       }
 
+      .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .support-nav {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        border: 1px solid rgba(2, 132, 199, 0.3);
+        border-radius: 8px;
+        font-family: inherit;
+        font-size: 1rem;
+        font-weight: 600;
+        line-height: 1.5;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease,
+          background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+      }
+
+      .support-nav:hover {
+        transform: translateY(-1px);
+        background: #bae3f8;
+        border-color: rgba(2, 132, 199, 0.55);
+        color: var(--accent-hover);
+        box-shadow: var(--shadow-md);
+      }
+
+      .support-nav:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+
       .hero {
         text-align: center;
         padding: 150px 20px 90px;
@@ -521,6 +558,12 @@
         margin-top: 12px;
       }
 
+      .footer-support {
+        margin-top: 24px;
+        display: flex;
+        justify-content: center;
+      }
+
       @keyframes fadeInDown {
         from {
           opacity: 0;
@@ -566,16 +609,28 @@
           <span class="brand-sub">MV3 Chrome Extension</span>
         </span>
       </a>
-      <a
-        data-store-link
-        href="#"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="cta-compact"
-      >
-        <span class="d-none d-sm-inline">Add to Chrome</span>
-        <i class="fas fa-download d-sm-none"></i>
-      </a>
+      <div class="nav-actions">
+        <button
+          type="button"
+          class="support-nav"
+          data-support-open
+          aria-haspopup="dialog"
+          aria-label="Support Sublens"
+        >
+          <i class="fas fa-heart"></i>
+          <span class="d-none d-sm-inline">Support</span>
+        </button>
+        <a
+          data-store-link
+          href="#"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="cta-compact"
+        >
+          <span class="d-none d-sm-inline">Add to Chrome</span>
+          <i class="fas fa-download d-sm-none"></i>
+        </a>
+      </div>
     </nav>
 
     <section class="hero">
@@ -799,9 +854,21 @@
           >GitHub <i class="fa-brands fa-github ms-1"></i></a
         >
       </div>
+      <div class="footer-support">
+        <button
+          type="button"
+          class="sl-support-trigger"
+          data-support-open
+          aria-haspopup="dialog"
+        >
+          <i class="fas fa-heart"></i>
+          Support this project
+        </button>
+      </div>
     </footer>
 
     <script src="assets/js/store-link.js"></script>
+    <script src="assets/js/support-modal.js" defer></script>
     <script src="assets/js/feedback-widget.js" defer></script>
   </body>
 </html>

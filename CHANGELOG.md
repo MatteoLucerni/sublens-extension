@@ -5,6 +5,12 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.6.0]
+
+### Added
+- Popup: a **Support** button in the header opens a support dialog with three ways to help the project: buy a coffee on Ko-fi, contribute on GitHub, or leave a review on the Chrome Web Store. The dialog closes with the close button, a click on the backdrop, the Escape key, or after picking an option.
+- Website: the same support dialog is available on getsublens.com, from a **Support** button in the navigation bar and a **Support this project** button in the footer of the landing, getting-started, privacy and 404 pages (`docs/assets/js/support-modal.js`).
+
 ## [1.5.0]
 
 ### Changed

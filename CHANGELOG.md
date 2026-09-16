@@ -5,6 +5,14 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.3.12]
+
+### Fixed
+- Netflix: the back-arrow subtitle jump is now disabled as soon as captions are turned off in the Netflix player (including the "Off" option that still shows forced narrative text). A small page-context script (`netflix-bridge.js`) reports the player's captions state to the extension.
+
+### Changed
+- The back-arrow jump now remembers the previous subtitle for 30 seconds of playback (was 10), so it still works across longer pauses in the dialogue.
+
 ## [1.3.11]
 
 ### Fixed

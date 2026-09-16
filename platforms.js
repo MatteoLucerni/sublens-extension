@@ -13,6 +13,12 @@ const NSE_PLATFORMS = {
     cueRootSelector: '[class*="timedtext-text-container"]',
     usesBackgroundSeek: true,
     processDebounceMs: 0,
+    areCaptionsEnabled: () => {
+      const root = document.documentElement;
+      root.removeAttribute("data-nse-captions");
+      document.dispatchEvent(new CustomEvent("nse-captions-query"));
+      return root.getAttribute("data-nse-captions") !== "off";
+    },
     cleanLineText: (text) => text
   },
   youtube: {

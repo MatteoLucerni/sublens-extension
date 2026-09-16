@@ -5,6 +5,11 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.3.13]
+
+### Fixed
+- Prime Video: the back-arrow subtitle jump is now disabled as soon as captions are turned off in the Prime Video player (the captions state is read from the player's stored caption preference).
+
 ## [1.3.12]
 
 ### Fixed

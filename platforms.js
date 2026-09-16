@@ -57,6 +57,13 @@ const NSE_PLATFORMS = {
     cueBoundaryOnTextChange: true,
     controlsReservedHeightRatio: 0.18,
     pauseBeforeCueSec: 0.2,
+    areCaptionsEnabled: () => {
+      try {
+        return localStorage.getItem("atvwebplayersdk_html5_previous_captions") !== null;
+      } catch (err) {
+        return true;
+      }
+    },
     processDebounceMs: 0,
     cleanLineText: (text) => text,
     selectVideo: () => {

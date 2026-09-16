@@ -44,7 +44,7 @@ Hovering a subtitle pauses the video so you have time to read or look up a word,
 
 ### Replay the Previous Subtitle
 
-Press the **Left Arrow** key to jump back to the start of the previous subtitle line and pause at its end, instead of the player's default rewind. The jump only happens when the previous subtitle disappeared less than 30 seconds of playback ago; otherwise (subtitles off, nothing played yet, after a manual seek, or after switching video/episode) the key falls back to the player's native rewind, so it never sends you to a stale subtitle. On YouTube and Netflix the extension also reads the player's captions state directly, so the jump is disabled as soon as captions are turned off. If you manually pause during the replay, the scheduled auto-pause at the end of the line is cancelled.
+Press the **Left Arrow** key to jump back to the start of the previous subtitle line and pause at its end, instead of the player's default rewind. The jump only happens when the previous subtitle disappeared less than 30 seconds of playback ago; otherwise (subtitles off, nothing played yet, after a manual seek, or after switching video/episode) the key falls back to the player's native rewind, so it never sends you to a stale subtitle. On YouTube, Netflix and Prime Video the extension also reads the player's captions state directly, so the jump is disabled as soon as captions are turned off. If you manually pause during the replay, the scheduled auto-pause at the end of the line is cancelled.
 
 ### Language Selection
 

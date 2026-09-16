@@ -5,6 +5,78 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.6.1]
+
+### Changed
+- Website: getsublens.com has been reworked with a dark theme that matches the extension popup (same greys and `#38bdf8` accent), a new landing layout (hero with an illustrated subtitle and translation popup, feature grid, steps, collapsible FAQ, call to action) and a Features / How it works / FAQ navigation.
+- Website: the site is now simpler to maintain. All styles live in one stylesheet (`docs/assets/css/site.css`, replacing `welcome.css` and every per-page `<style>` block), every external link lives in `docs/assets/js/config.js`, and the navigation bar and footer are rendered on every page by `docs/assets/js/layout.js`. Bootstrap is no longer loaded, and `store-link.js` was removed (store links now use `data-link="store"`). The support dialog and the feedback widget no longer embed their own CSS.
+
+## [1.6.0]
+
+### Added
+- Popup: a **Support** button in the header opens a support dialog with three ways to help the project: buy a coffee on Ko-fi, contribute on GitHub, or leave a review on the Chrome Web Store. The dialog closes with the close button, a click on the backdrop, the Escape key, or after picking an option.
+
+### Changed
+- Popup: the version badge moved from the header to the footer, next to the footer links. The header logo, title and Support button are now vertically centered on the same line.
+- Website: the same support dialog is available on getsublens.com, from a **Support** button in the navigation bar and a **Support this project** button in the footer of the landing, getting-started, privacy and 404 pages (`docs/assets/js/support-modal.js`).
+
+## [1.5.0]
+
+### Changed
+- Prime Video: subtitles shown in the lower part of the video are now pinned to a fixed baseline above the controls area (as on YouTube), so their height no longer changes between lines depending on whether the controls were visible when the line appeared (previously 165 to 200 px from the bottom at a 911 px tall player). The reserved controls area grows from 18% to 21% of the video height (minimum 110 px), which keeps the baseline at or above the position Prime itself uses for captions while the controls are visible.
+
+## [1.4.3]
+
+### Fixed
+- After a subtitle hover had auto-paused the video and a word was clicked, clicking the player to close the popup made the video start and immediately pause again: the extension resumed playback in its capture-phase outside-click handler, then the player's own click handler toggled it back to paused. When the popup (or a pending multi-word selection) is closed by a click on the video area, that click is now consumed (it only closes the popup and never reaches the player) and playback resumes immediately, independently of when or how each player handles its own click-to-toggle. Clicks outside the video still pass through as before. As a side effect, while the popup is open a click on a player control only closes the popup; click again to use the control.
+
+## [1.4.2]
+
+### Changed
+- `CLAUDE.md` (project instructions for Claude Code) is now tracked in the repository instead of being ignored, so contributors share the same architecture notes and conventions.
+
+## [1.4.1]
+
+### Fixed
+- YouTube: overlays were placed over the controls or below the player in theater mode and after a window resize, because YouTube can leave the `<video>` element larger than the visible player. The layout now uses the visible part of the video (the `<video>` box clipped by its overflow-hidden ancestors and by `#movie_player`).
+- YouTube: after entering fullscreen, overlays could keep their old position and font size for a couple of seconds, since YouTube re-lays out its captions after the settle window. The layout watcher now also re-lays out when the native caption font size or horizontal anchor changes (vertical-only shifts caused by the controls are still ignored).
+- YouTube: auto-generated (word-by-word) captions jumped sideways while growing, because overlays were centered on native text that updates before the overlay text. Overlays now keep the native alignment: left-aligned captions stay anchored to their left edge, centered captions stay centered.
+- YouTube: after turning captions back on, the current subtitle was missing for a couple of seconds. YouTube shows a "click the gear for settings" hint window with an icon next to the captions, and the image-subtitle guard treated the whole caption container as image-based, removing every overlay while the hint was visible. On YouTube the guard is now disabled and caption windows containing an icon are skipped, so the real captions render immediately and the hint is never tokenized.
+
+## [1.4.0]
+
+### Changed
+- Subtitle overlay positioning rewritten for robustness on all platforms:
+  - Each line is centered on the real text of the native caption (measured with a DOM `Range`) instead of the left edge of its container. On YouTube, where the caption line box is wider than the text, overlays were shifted to the left.
+  - Overlays stay inside the video: a line wider than the video is shrunk to fit and clamped between the video edges.
+  - Multi-line subtitles are stacked from their own measured heights, so lines no longer overlap or leave gaps.
+  - The overlay position never changes while you hover a subtitle, drag a selection or have the translation popup open; any pending update is applied once the interaction ends.
+  - YouTube: subtitles shown in the lower part of the video are pinned to a fixed baseline above the controls, so their height no longer depends on whether the controls were visible when the line appeared.
+
+### Fixed
+- After entering or leaving fullscreen, resizing the window or switching YouTube theater mode, overlays kept their old position and font size (sometimes ending up outside the player) until the next subtitle line. A layout watcher now detects video size/position changes and re-lays out the overlays, including the copied font size, while the player settles.
+- New overlays are hidden until they have a valid position, so they can no longer flash in the top-left corner when the native caption has no size yet (e.g. while its container is hidden).
+- A player controls element measured taller than 30% of the video is ignored, and the reserved controls height is re-measured whenever the video layout changes.
+
+## [1.3.13]
+
+### Fixed
+- Prime Video: the back-arrow subtitle jump is now disabled as soon as captions are turned off in the Prime Video player (the captions state is read from the player's stored caption preference).
+
+## [1.3.12]
+
+### Fixed
+- Netflix: the back-arrow subtitle jump is now disabled as soon as captions are turned off in the Netflix player (including the "Off" option that still shows forced narrative text). A small page-context script (`netflix-bridge.js`) reports the player's captions state to the extension.
+
+### Changed
+- The back-arrow jump now remembers the previous subtitle for 30 seconds of playback (was 10), so it still works across longer pauses in the dialogue.
+
+## [1.3.11]
+
+### Fixed
+- Back-arrow subtitle jump is now much stricter about when it overrides the player's native rewind. It no longer jumps when captions are turned off in the YouTube player, when the previous subtitle disappeared more than 10 seconds of playback ago, after you seek or scrub manually, or after the video/episode changes. In all these cases ArrowLeft falls back to the native rewind, so it never sends you back to an old subtitle (e.g. near the start of the video) or one from a different video.
+- A scheduled end-of-line pause from a back-arrow replay is cancelled when you seek elsewhere, so it no longer pauses the video right after a manual seek.
+
 ## [1.3.10]
 
 ### Fixed

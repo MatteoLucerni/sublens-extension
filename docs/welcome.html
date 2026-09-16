@@ -9,135 +9,133 @@
       content="Welcome to Sublens. Learn how to reveal subtitles, translate words, hear pronunciations and replay lines on Netflix, YouTube and Prime Video."
     />
     <meta name="robots" content="noindex, follow" />
+    <meta name="theme-color" content="#1a1b1e" />
     <link rel="icon" href="assets/icons/sublens-logo.png" type="image/png" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-      crossorigin="anonymous"
-    />
-    <link rel="stylesheet" href="assets/css/welcome.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" />
+    <link rel="stylesheet" href="assets/css/site.css" />
   </head>
 
   <body>
-    <div class="welcome-container">
-      <header class="welcome-header">
-        <img
-          class="welcome-logo"
-          src="assets/icons/sublens-logo.png"
-          alt="Sublens logo"
-          width="88"
-          height="88"
-        />
-        <h1 class="welcome-title">Welcome to Sublens</h1>
-        <p class="welcome-subtitle">
-          You are ready to turn subtitles into a language lesson. Here is how it
-          works.
-        </p>
-      </header>
+    <div data-site-nav></div>
 
-      <h2 class="welcome-section-title">The basics</h2>
-
-      <div class="welcome-card">
-        <div class="card-icon"><i class="fas fa-eye-slash"></i></div>
-        <div>
-          <h2>Reveal a blurred subtitle</h2>
-          <p>
-            Turn on subtitle blur in the popup to test your listening first
-            (it's off by default). Hover over a line to reveal it. Pausing the
-            video reveals all of them at once.
+    <main class="page">
+      <div class="container container-narrow">
+        <header class="page-header">
+          <img class="page-logo fade-in" src="assets/icons/sublens-logo.png" alt="Sublens logo" width="84" height="84" />
+          <h1 class="page-title fade-in delay-1">Welcome to Sub<span class="gradient-text">lens</span></h1>
+          <p class="page-subtitle fade-in delay-2">
+            You are ready to turn subtitles into a language lesson. Here is how
+            it works.
           </p>
+        </header>
+
+        <h2 class="page-section-title">The basics</h2>
+        <div class="card-list">
+          <article class="card card-row">
+            <div class="card-icon"><i class="fas fa-eye-slash"></i></div>
+            <div>
+              <h3>Reveal a blurred subtitle</h3>
+              <p>
+                Turn on subtitle blur in the popup to test your listening first
+                (it's off by default). Hover over a line to reveal it. Pausing
+                the video reveals all of them at once.
+              </p>
+            </div>
+          </article>
+
+          <article class="card card-row">
+            <div class="card-icon"><i class="fas fa-language"></i></div>
+            <div>
+              <h3>Translate a word or phrase</h3>
+              <p>
+                <strong>Click</strong> a word for its translation and dictionary
+                entry. <strong>Ctrl/Cmd+click</strong> to add more words to the
+                selection, or <strong>click and drag</strong> to select a whole
+                phrase.
+              </p>
+            </div>
+          </article>
+
+          <article class="card card-row">
+            <div class="card-icon"><i class="fas fa-volume-high"></i></div>
+            <div>
+              <h3>Hear the pronunciation</h3>
+              <p>
+                The selected word or phrase is pronounced automatically in the
+                subtitle language when the popup opens. Use the speaker button
+                to replay it.
+              </p>
+            </div>
+          </article>
+
+          <article class="card card-row">
+            <div class="card-icon"><i class="fas fa-arrow-rotate-left"></i></div>
+            <div>
+              <h3>Replay the previous line</h3>
+              <p>
+                Press <kbd>&larr;</kbd> (Left Arrow) to jump back to the
+                previous subtitle and hear it again. When there is no earlier
+                subtitle, the key performs the player's normal rewind.
+              </p>
+            </div>
+          </article>
         </div>
-      </div>
 
-      <div class="welcome-card">
-        <div class="card-icon"><i class="fas fa-language"></i></div>
-        <div>
-          <h2>Translate a word or phrase</h2>
-          <p>
-            <strong>Click</strong> a word for its translation and dictionary
-            entry. <strong>Ctrl/Cmd+click</strong> to add more words to the
-            selection, or <strong>click and drag</strong> to select a whole
-            phrase.
-          </p>
+        <h2 class="page-section-title">Make it yours</h2>
+        <div class="card-list">
+          <article class="card card-row">
+            <div class="card-icon"><i class="fas fa-sliders"></i></div>
+            <div>
+              <h3>Open the settings</h3>
+              <p>
+                Click the Sublens icon in the Chrome toolbar to choose your
+                subtitle (source) and translation languages, toggle the
+                behaviors above, and enable or disable Sublens on Netflix,
+                YouTube and Prime Video independently.
+              </p>
+            </div>
+          </article>
+
+          <article class="card card-row">
+            <div class="card-icon"><i class="fab fa-youtube"></i></div>
+            <div>
+              <h3>On YouTube</h3>
+              <p>
+                Turn captions on with the player's CC button. Both manual and
+                auto-generated captions are supported on
+                <code>youtube.com/watch</code> pages.
+              </p>
+            </div>
+          </article>
+
+          <article class="card card-row">
+            <div class="card-icon"><i class="fab fa-amazon"></i></div>
+            <div>
+              <h3>On Prime Video</h3>
+              <p>
+                Turn subtitles on in the player. Titles with image-based
+                (bitmap) subtitles are not supported yet and show Amazon's
+                native captions instead.
+              </p>
+            </div>
+          </article>
         </div>
-      </div>
 
-      <div class="welcome-card">
-        <div class="card-icon"><i class="fas fa-volume-high"></i></div>
-        <div>
-          <h2>Hear the pronunciation</h2>
-          <p>
-            The selected word or phrase is pronounced automatically in the
-            subtitle language when the popup opens. Use the speaker button to
-            replay it.
-          </p>
-        </div>
-      </div>
-
-      <div class="welcome-card">
-        <div class="card-icon"><i class="fas fa-arrow-rotate-left"></i></div>
-        <div>
-          <h2>Replay the previous line</h2>
-          <p>
-            Press <kbd>&larr;</kbd> (Left Arrow) to jump back to the previous
-            subtitle and hear it again. When there is no earlier subtitle, the
-            key performs the player's normal rewind.
-          </p>
-        </div>
-      </div>
-
-      <h2 class="welcome-section-title">Make it yours</h2>
-
-      <div class="welcome-card">
-        <div class="card-icon"><i class="fas fa-sliders"></i></div>
-        <div>
-          <h2>Open the settings</h2>
-          <p>
-            Click the Sublens icon in the Chrome toolbar to choose your subtitle
-            (source) and translation languages, toggle the behaviors above, and
-            enable or disable Sublens on Netflix, YouTube and Prime Video
-            independently.
-          </p>
-        </div>
-      </div>
-
-      <div class="welcome-card">
-        <div class="card-icon"><i class="fab fa-youtube"></i></div>
-        <div>
-          <h2>On YouTube</h2>
-          <p>
-            Turn captions on with the player's CC button. Both manual and
-            auto-generated captions are supported on
-            <code>youtube.com/watch</code> pages.
-          </p>
-        </div>
-      </div>
-
-      <div class="welcome-card">
-        <div class="card-icon"><i class="fab fa-amazon"></i></div>
-        <div>
-          <h2>On Prime Video</h2>
-          <p>
-            Turn subtitles on in the player. Titles with image-based (bitmap)
-            subtitles are not supported yet and show Amazon's native captions
-            instead.
-          </p>
-        </div>
-      </div>
-
-      <footer class="welcome-footer">
-        <p>
+        <p class="page-footer-note">
           Happy learning! Questions or ideas? Use the feedback button in the
-          bottom-right corner, or visit
-          <a href="https://getsublens.com/">getsublens.com</a>.
+          bottom-right corner.
         </p>
-      </footer>
-    </div>
+      </div>
+    </main>
 
+    <div data-site-footer></div>
+
+    <script src="assets/js/config.js" defer></script>
+    <script src="assets/js/layout.js" defer></script>
+    <script src="assets/js/support-modal.js" defer></script>
     <script src="assets/js/feedback-widget.js" defer></script>
   </body>
 </html>

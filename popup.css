@@ -48,6 +48,7 @@ body {
   flex: 1;
   min-width: 0;
   margin: 0;
+  line-height: 1;
   font-size: 20px;
   font-weight: 800;
   letter-spacing: 0.4px;
@@ -60,9 +61,9 @@ body {
 }
 
 .nse-version {
-  align-self: flex-start;
   flex-shrink: 0;
   font-size: 10px;
+  line-height: 1.4;
   color: var(--nse-text-secondary);
   background: var(--nse-bg-2);
   padding: 2px 7px;
@@ -316,6 +317,7 @@ body {
 .nse-footer {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   justify-content: center;
   gap: 6px 16px;
   padding: 12px 18px 14px;
@@ -343,4 +345,293 @@ body {
   width: 11px;
   height: 11px;
   flex-shrink: 0;
+}
+
+.nse-support-button {
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  gap: 6px;
+  flex-shrink: 0;
+  padding: 6px 11px;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: bold;
+  line-height: 1;
+  color: var(--nse-blue);
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 6px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.nse-support-button:hover {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: rgba(56, 189, 248, 0.55);
+  transform: translateY(-1px);
+}
+
+.nse-support-button:active {
+  transform: scale(0.98);
+}
+
+.nse-support-button:focus-visible {
+  outline: 2px solid var(--nse-blue);
+  outline-offset: 2px;
+}
+
+.nse-support-button-icon {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
+
+body.nse-support-open {
+  overflow: hidden;
+}
+
+.nse-support-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.nse-support-modal[hidden] {
+  display: none;
+}
+
+.nse-support-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  animation: nse-support-fade 0.16s ease;
+}
+
+.nse-support-card {
+  position: relative;
+  width: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 18px;
+  background:
+    radial-gradient(420px 200px at 20% -10%, rgba(56, 189, 248, 0.1), transparent 70%),
+    var(--nse-bg-1);
+  border: 1px solid var(--nse-border);
+  border-radius: 8px;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04), 0 16px 40px rgba(0, 0, 0, 0.6);
+  animation: nse-support-in 0.18s ease;
+}
+
+@keyframes nse-support-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes nse-support-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.nse-support-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.nse-support-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  color: var(--nse-text-primary);
+}
+
+.nse-support-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  padding: 0;
+  color: var(--nse-text-secondary);
+  background: var(--nse-bg-2);
+  border: 1px solid var(--nse-border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+.nse-support-close:hover {
+  color: var(--nse-text-primary);
+  background: var(--nse-bg-3);
+  border-color: rgba(56, 189, 248, 0.4);
+}
+
+.nse-support-close:focus-visible {
+  outline: 2px solid var(--nse-blue);
+  outline-offset: 2px;
+}
+
+.nse-support-close svg {
+  width: 13px;
+  height: 13px;
+}
+
+.nse-support-text {
+  margin: 0 0 12px;
+  font-size: 11px;
+  line-height: 1.55;
+  color: var(--nse-text-secondary);
+}
+
+.nse-support-lead {
+  color: var(--nse-text-primary);
+}
+
+.nse-support-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.nse-support-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 12px;
+  color: var(--nse-text-primary);
+  text-decoration: none;
+  background: var(--nse-bg-2);
+  border: 1px solid var(--nse-border);
+  border-radius: 8px;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.nse-support-option:hover {
+  background: var(--nse-bg-3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  transform: translateY(-1px);
+}
+
+.nse-support-option:active {
+  transform: scale(0.99);
+}
+
+.nse-support-option:focus-visible {
+  outline: 2px solid var(--nse-blue);
+  outline-offset: 2px;
+}
+
+.nse-support-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  color: var(--nse-blue);
+  background: rgba(56, 189, 248, 0.14);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 6px;
+}
+
+.nse-support-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.nse-support-github:hover {
+  border-color: rgba(56, 189, 248, 0.55);
+}
+
+.nse-support-coffee .nse-support-icon {
+  color: #34d399;
+  background: rgba(52, 211, 153, 0.14);
+  border-color: rgba(52, 211, 153, 0.3);
+}
+
+.nse-support-coffee:hover {
+  border-color: rgba(52, 211, 153, 0.55);
+}
+
+.nse-support-review .nse-support-icon {
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.14);
+  border-color: rgba(251, 191, 36, 0.3);
+}
+
+.nse-support-review:hover {
+  border-color: rgba(251, 191, 36, 0.55);
+}
+
+.nse-support-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.nse-support-name {
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 1.3;
+  color: var(--nse-text-primary);
+}
+
+.nse-support-desc {
+  font-size: 10.5px;
+  line-height: 1.45;
+  color: var(--nse-text-secondary);
+}
+
+.nse-support-arrow {
+  display: flex;
+  flex-shrink: 0;
+  color: var(--nse-text-secondary);
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.nse-support-arrow svg {
+  width: 13px;
+  height: 13px;
+}
+
+.nse-support-option:hover .nse-support-arrow {
+  color: var(--nse-text-primary);
+  transform: translate(2px, -2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nse-support-scrim,
+  .nse-support-card {
+    animation: none;
+  }
+
+  .nse-support-option:hover .nse-support-arrow {
+    transform: none;
+  }
 }

@@ -29,6 +29,8 @@ function attachVideoListeners(video) {
   video.dataset.nseListenersAttached = "true";
   video.addEventListener("pause", onVideoPause);
   video.addEventListener("play", blurUnheldOverlays);
+  video.addEventListener("seeking", onVideoSeeking);
+  video.addEventListener("timeupdate", onVideoTimeUpdate);
 }
 
 function detachVideoListeners(video) {
@@ -36,6 +38,8 @@ function detachVideoListeners(video) {
   delete video.dataset.nseListenersAttached;
   video.removeEventListener("pause", onVideoPause);
   video.removeEventListener("play", blurUnheldOverlays);
+  video.removeEventListener("seeking", onVideoSeeking);
+  video.removeEventListener("timeupdate", onVideoTimeUpdate);
 }
 
 function findStyleSource(lineEl) {
@@ -74,6 +78,7 @@ function toDocumentRect(rect) {
   return {
     top: rect.top + offsetY,
     left: rect.left + offsetX,
+    right: rect.left + offsetX + rect.width,
     bottom: rect.bottom + offsetY,
     width: rect.width,
     height: rect.height
@@ -88,49 +93,210 @@ function findControlsElement() {
   return null;
 }
 
-function getControlsReservedHeight() {
+function getControlsReservedHeight(frame) {
+  const maxReserved = frame.height * MAX_CONTROLS_RESERVED_RATIO;
   const el = findControlsElement();
   if (el) {
     const height = el.getBoundingClientRect().height;
-    if (height > 0) maxControlsHeight = Math.max(maxControlsHeight, height);
+    if (height > 0 && height <= maxReserved) maxControlsHeight = Math.max(maxControlsHeight, height);
   }
-  if (maxControlsHeight > 0) return maxControlsHeight;
-  if (PLATFORM.controlsReservedHeightRatio) {
-    const video = getVideo();
-    if (video) {
-      const ratioHeight = video.getBoundingClientRect().height * PLATFORM.controlsReservedHeightRatio;
-      if (ratioHeight > FALLBACK_CONTROLS_HEIGHT) return ratioHeight;
-    }
+  let reserved = FALLBACK_CONTROLS_HEIGHT;
+  if (maxControlsHeight > 0) {
+    reserved = maxControlsHeight;
+  } else if (PLATFORM.controlsReservedHeightRatio) {
+    reserved = Math.max(FALLBACK_CONTROLS_HEIGHT, frame.height * PLATFORM.controlsReservedHeightRatio);
   }
-  return FALLBACK_CONTROLS_HEIGHT;
+  reserved += frame.height * (PLATFORM.controlsGapRatio ?? 0);
+  return Math.min(reserved, maxReserved);
 }
 
-function getPinnedBottom() {
+function measureNativeLine(lineEl) {
+  const boxRect = lineEl.getBoundingClientRect();
+  const range = document.createRange();
+  range.selectNodeContents(lineEl);
+  const textRect = range.getBoundingClientRect();
+  const hasText = textRect.width > 0 && textRect.height > 0;
+  const hasBox = boxRect.width > 0 && boxRect.height > 0;
+  if (!hasText && !hasBox) return null;
+  const rect = hasText ? textRect : boxRect;
+  return { rect, align: hasText && hasBox ? getNativeAlignment(textRect, boxRect) : "center" };
+}
+
+function getNativeAlignment(textRect, boxRect) {
+  if (boxRect.width - textRect.width <= NATIVE_ALIGN_TOLERANCE_PX) return "center";
+  const leftGap = Math.abs(textRect.left - boxRect.left);
+  const rightGap = Math.abs(boxRect.right - textRect.right);
+  if (leftGap <= NATIVE_ALIGN_TOLERANCE_PX && rightGap > NATIVE_ALIGN_TOLERANCE_PX) return "left";
+  if (rightGap <= NATIVE_ALIGN_TOLERANCE_PX && leftGap > NATIVE_ALIGN_TOLERANCE_PX) return "right";
+  return "center";
+}
+
+function getVisibleVideoRect(video) {
+  const rect = video.getBoundingClientRect();
+  let { top, left, right, bottom } = rect;
+  const clipX = (clip) => {
+    left = Math.max(left, clip.left);
+    right = Math.min(right, clip.right);
+  };
+  const clipY = (clip) => {
+    top = Math.max(top, clip.top);
+    bottom = Math.min(bottom, clip.bottom);
+  };
+
+  let el = video.parentElement;
+  for (let depth = 0; el && el !== document.body && depth < FRAME_CLIP_MAX_DEPTH; depth++) {
+    const style = getComputedStyle(el);
+    const clipsX = style.overflowX !== "visible";
+    const clipsY = style.overflowY !== "visible";
+    if (clipsX || clipsY) {
+      const clip = el.getBoundingClientRect();
+      if (clipsX) clipX(clip);
+      if (clipsY) clipY(clip);
+    }
+    el = el.parentElement;
+  }
+
+  const player = PLATFORM.playerFrameSelector ? video.closest(PLATFORM.playerFrameSelector) : null;
+  if (player) {
+    const clip = player.getBoundingClientRect();
+    clipX(clip);
+    clipY(clip);
+  }
+
+  return { top, left, bottom, width: right - left, height: bottom - top };
+}
+
+function getLayoutFrame() {
   const video = getVideo();
   if (!video) return null;
-  return toDocumentRect(video.getBoundingClientRect()).bottom - getControlsReservedHeight();
+  const rect = getVisibleVideoRect(video);
+  if (rect.width < MIN_VIDEO_SIZE_PX || rect.height < MIN_VIDEO_SIZE_PX) return null;
+  return toDocumentRect(rect);
 }
 
-function positionOverlayGroup(lines) {
-  const connected = lines.filter((line) => line.lineEl.isConnected);
-  if (connected.length === 0) return;
+function getNativeSignature(lineEl, measured) {
+  const fontSize = getComputedStyle(findStyleSource(lineEl)).getPropertyValue("font-size");
+  const { rect, align } = measured;
+  const anchor = align === "left" ? rect.left : align === "right" ? rect.right : rect.left + rect.width / 2;
+  return `${fontSize}|${align}|${Math.round(anchor)}`;
+}
 
-  const rects = connected.map((line) => ({ line, rect: toDocumentRect(line.lineEl.getBoundingClientRect()) }));
-  const naturalBottommost = Math.max(...rects.map(({ rect }) => rect.bottom));
-  const pinnedBottom = getPinnedBottom();
-  const delta = pinnedBottom !== null ? Math.min(0, pinnedBottom - naturalBottommost) : 0;
+function hasNativeGeometryChanged() {
+  for (const line of activeLines) {
+    if (line.overlay.classList.contains("nse-unplaced") || !line.lineEl.isConnected) continue;
+    const measured = measureNativeLine(line.lineEl);
+    if (measured && getNativeSignature(line.lineEl, measured) !== line.nativeSignature) return true;
+  }
+  return false;
+}
 
-  for (const { line, rect } of rects) {
-    line.overlay.style.top = `${rect.bottom + delta}px`;
-    line.overlay.style.left = `${rect.left}px`;
-    line.overlay.style.width = "auto";
-    line.overlay.style.height = "auto";
-    line.overlay.style.transform = "translateY(-100%)";
+function getLayoutKey(frame) {
+  const box = [frame.left, frame.top, frame.width, frame.height].map(Math.round).join(",");
+  return document.fullscreenElement ? `${box}:fs` : box;
+}
+
+function isLayoutFrozen() {
+  if (isInteractionLocked() || dragActive || translationPending) return true;
+  return activeLines.some((line) => line.overlay.matches(":hover"));
+}
+
+function applyOverlayFont(overlay, lineEl, maxWidth) {
+  copyComputedStyles(overlay, findStyleSource(lineEl));
+  const width = overlay.offsetWidth;
+  if (width === 0 || width <= maxWidth) return width;
+  const fontSize = parseFloat(overlay.style.getPropertyValue("font-size"));
+  if (Number.isNaN(fontSize)) return width;
+  overlay.style.setProperty("font-size", `${(fontSize * maxWidth) / width}px`);
+  return overlay.offsetWidth;
+}
+
+function layoutOverlays() {
+  if (activeLines.length === 0) {
+    layoutPending = false;
+    return;
+  }
+  const frame = getLayoutFrame();
+  if (!frame) {
+    layoutPending = true;
+    return;
+  }
+  const key = getLayoutKey(frame);
+  if (key !== lastLayoutKey) {
+    lastLayoutKey = key;
+    maxControlsHeight = 0;
+    layoutSettleUntil = performance.now() + LAYOUT_SETTLE_MS;
+  }
+
+  const frozen = isLayoutFrozen();
+  const entries = [];
+  for (const line of activeLines) {
+    if (frozen && !line.overlay.classList.contains("nse-unplaced")) continue;
+    if (!line.lineEl.isConnected) continue;
+    const measured = measureNativeLine(line.lineEl);
+    if (!measured) continue;
+    entries.push({
+      line,
+      rect: toDocumentRect(measured.rect),
+      align: measured.align,
+      signature: getNativeSignature(line.lineEl, measured)
+    });
+  }
+  layoutPending = frozen || entries.length < activeLines.length;
+  if (entries.length === 0) return;
+
+  entries.sort((a, b) => a.rect.top - b.rect.top);
+  const sidePadding = Math.max(OVERLAY_MIN_SIDE_PADDING_PX, frame.width * OVERLAY_SIDE_PADDING_RATIO);
+  const maxWidth = Math.max(0, frame.width - sidePadding * 2);
+  for (const entry of entries) {
+    entry.width = applyOverlayFont(entry.line.overlay, entry.line.lineEl, maxWidth);
+    entry.height = entry.line.overlay.offsetHeight;
+  }
+
+  const nativeBottom = Math.max(...entries.map((entry) => entry.rect.bottom));
+  const pinnedBottom = frame.bottom - getControlsReservedHeight(frame);
+  const inBottomBand = nativeBottom >= frame.top + frame.height * BOTTOM_BAND_RATIO;
+  const anchorBottom = PLATFORM.snapToBottomBand && inBottomBand
+    ? pinnedBottom
+    : Math.min(nativeBottom, pinnedBottom);
+
+  let upperLimit = Infinity;
+  for (let i = entries.length - 1; i >= 0; i--) {
+    const entry = entries[i];
+    const below = entries[i + 1];
+    const adjacent = below && below.rect.top - entry.rect.bottom <= LINE_ADJACENT_GAP_PX;
+    const bottom = adjacent
+      ? upperLimit
+      : Math.min(anchorBottom - (nativeBottom - entry.rect.bottom), upperLimit);
+    let preferredLeft = entry.rect.left + entry.rect.width / 2 - entry.width / 2;
+    if (entry.align === "left") preferredLeft = entry.rect.left;
+    else if (entry.align === "right") preferredLeft = entry.rect.right - entry.width;
+    const minLeft = frame.left + sidePadding;
+    const maxLeft = frame.right - sidePadding - entry.width;
+    const left = Math.max(minLeft, Math.min(preferredLeft, maxLeft));
+
+    const overlay = entry.line.overlay;
+    overlay.style.top = `${bottom}px`;
+    overlay.style.left = `${left}px`;
+    overlay.style.width = "auto";
+    overlay.style.height = "auto";
+    overlay.style.transform = "translateY(-100%)";
+    overlay.classList.remove("nse-unplaced");
+    entry.line.nativeSignature = entry.signature;
+    upperLimit = bottom - entry.height;
   }
 }
 
 function repositionAllOverlays() {
-  positionOverlayGroup(activeLines);
+  layoutSettleUntil = performance.now() + LAYOUT_SETTLE_MS;
+  layoutOverlays();
+}
+
+function checkOverlayLayout() {
+  if (activeLines.length === 0) return;
+  const frame = getLayoutFrame();
+  const keyChanged = !!frame && getLayoutKey(frame) !== lastLayoutKey;
+  const settling = performance.now() < layoutSettleUntil;
+  if (keyChanged || layoutPending || settling || hasNativeGeometryChanged()) layoutOverlays();
 }
 
 function buildTokens(text) {
@@ -149,7 +315,7 @@ function buildTokens(text) {
 function createOverlay(lineEl) {
   log("creating overlay for line", lineEl);
   const overlay = document.createElement("div");
-  overlay.className = "nse-overlay";
+  overlay.className = "nse-overlay nse-unplaced";
   copyComputedStyles(overlay, findStyleSource(lineEl));
 
   overlay.addEventListener("mouseenter", () => {
@@ -202,7 +368,6 @@ function reconcileLines(lineContainers) {
         line.lastText = text;
         textChanged = true;
       }
-      copyComputedStyles(line.overlay, findStyleSource(lineEl));
       newActiveLines.push(line);
     } else {
       log("reconcileLines: new/changed text", JSON.stringify(text));
@@ -223,7 +388,8 @@ function reconcileLines(lineContainers) {
 
   activeLines = newActiveLines;
   const layoutChanged = hasNewCue || hasRemovedCue || textChanged;
-  if (!PLATFORM.repositionOnlyOnChange || layoutChanged) positionOverlayGroup(activeLines);
+  const settling = performance.now() < layoutSettleUntil;
+  if (!PLATFORM.repositionOnlyOnChange || layoutChanged || settling || hasNativeGeometryChanged()) layoutOverlays();
 
   const textBoundary = !!PLATFORM.cueBoundaryOnTextChange && textChanged;
   if (hasRemovedCue || textBoundary) markCueEnded();
@@ -237,6 +403,7 @@ function removeAllOverlays() {
     if (line.lineEl) line.lineEl.style.visibility = "";
   }
   activeLines = [];
+  layoutPending = false;
 }
 
 function getOrderedOverlays() {

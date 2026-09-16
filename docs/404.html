@@ -5,57 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Page not found - Sublens</title>
     <meta name="robots" content="noindex, follow" />
-    <link rel="icon" href="assets/icons/sublens-logo.png" type="image/png" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="assets/css/welcome.css" />
-    <style>
-      .nf {
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        padding: 24px;
-      }
-      .nf img {
-        width: 88px;
-        height: 88px;
-        filter: drop-shadow(0 12px 20px rgba(2, 132, 199, 0.22));
-      }
-      .nf h1 {
-        font-size: 4rem;
-        margin: 24px 0 4px;
-      }
-      .nf p {
-        color: var(--text-secondary);
-        margin-bottom: 26px;
-      }
-      .nf a {
-        background: var(--accent);
-        color: #fff;
-        padding: 12px 28px;
-        border-radius: 8px;
-        font-weight: 600;
-        text-decoration: none;
-        box-shadow: var(--shadow-sm);
-        transition: background 0.2s ease, transform 0.2s ease;
-      }
-      .nf a:hover {
-        background: var(--accent-hover);
-        transform: translateY(-1px);
-      }
-    </style>
+    <meta name="theme-color" content="#1a1b1e" />
+    <link rel="icon" href="/assets/icons/sublens-logo.png" type="image/png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" />
+    <link rel="stylesheet" href="/assets/css/site.css" />
   </head>
+
   <body>
-    <div class="nf">
-      <img src="assets/icons/sublens-logo.png" alt="Sublens logo" width="88" height="88" />
-      <h1>404</h1>
+    <main class="not-found">
+      <img class="page-logo" src="/assets/icons/sublens-logo.png" alt="Sublens logo" width="84" height="84" />
+      <h1 class="gradient-text">404</h1>
       <p>This page does not exist.</p>
-      <a href="https://getsublens.com/">Back to home</a>
-    </div>
+      <div class="not-found-actions">
+        <a class="btn btn-primary" href="/"><i class="fas fa-house"></i>Back to home</a>
+        <button type="button" class="btn btn-soft" data-support-open aria-haspopup="dialog">
+          <i class="fas fa-heart"></i>Support this project
+        </button>
+      </div>
+    </main>
+
+    <script src="/assets/js/config.js" defer></script>
+    <script src="/assets/js/support-modal.js" defer></script>
   </body>
 </html>

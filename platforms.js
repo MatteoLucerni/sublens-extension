@@ -60,7 +60,8 @@ const NSE_PLATFORMS = {
     allowContainerTextFallback: false,
     repositionOnlyOnChange: true,
     cueBoundaryOnTextChange: true,
-    controlsReservedHeightRatio: 0.18,
+    controlsReservedHeightRatio: 0.21,
+    snapToBottomBand: true,
     pauseBeforeCueSec: 0.2,
     areCaptionsEnabled: () => {
       try {

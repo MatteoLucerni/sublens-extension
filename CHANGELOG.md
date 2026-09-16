@@ -5,6 +5,11 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.5.0]
+
+### Changed
+- Prime Video: subtitles shown in the lower part of the video are now pinned to a fixed baseline above the controls area (as on YouTube), so their height no longer changes between lines depending on whether the controls were visible when the line appeared (previously 165 to 200 px from the bottom at a 911 px tall player). The reserved controls area grows from 18% to 21% of the video height (minimum 110 px), which keeps the baseline at or above the position Prime itself uses for captions while the controls are visible.
+
 ## [1.4.3]
 
 ### Fixed

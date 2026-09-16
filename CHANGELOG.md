@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 - Popup: a **Support** button in the header opens a support dialog with three ways to help the project: buy a coffee on Ko-fi, contribute on GitHub, or leave a review on the Chrome Web Store. The dialog closes with the close button, a click on the backdrop, the Escape key, or after picking an option.
+
+### Changed
+- Popup: the version badge moved from the header to the footer, next to the footer links. The header logo, title and Support button are now vertically centered on the same line.
 - Website: the same support dialog is available on getsublens.com, from a **Support** button in the navigation bar and a **Support this project** button in the footer of the landing, getting-started, privacy and 404 pages (`docs/assets/js/support-modal.js`).
 
 ## [1.5.0]

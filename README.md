@@ -64,7 +64,7 @@ Built around a platform adapter (`platforms.js`) that isolates every platform-sp
 
 ### Toolbar Settings Popup
 
-Click the toolbar icon to open the settings popup: the language selects, the platform toggles, and five behavior toggles tucked under "Show advanced options" to keep the default view simple. Every control has a "?" tooltip explaining its effect. A footer links out to **Give Feedback**, the **Changelog**, and the **Website**.
+Click the toolbar icon to open the settings popup: the language selects, the platform toggles, and five behavior toggles tucked under "Show advanced options" to keep the default view simple. Every control has a "?" tooltip explaining its effect. A footer links out to **Give Feedback**, the **Changelog**, and the **Website**, and shows the installed version.
 
 ### Support the Project
 

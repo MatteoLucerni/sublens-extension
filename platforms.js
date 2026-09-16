@@ -31,6 +31,8 @@ const NSE_PLATFORMS = {
     cueRootSelector: ".caption-window",
     usesBackgroundSeek: false,
     repositionOnlyOnChange: true,
+    snapToBottomBand: true,
+    controlsGapRatio: 0.03,
     processDebounceMs: 180,
     areCaptionsEnabled: () => {
       const button = document.querySelector("#movie_player .ytp-subtitles-button");

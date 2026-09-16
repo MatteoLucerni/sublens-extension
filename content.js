@@ -278,6 +278,7 @@ function startExtension() {
   if (nseStarted) return;
   nseStarted = true;
   log("startExtension");
+  if (!layoutWatchTimer) layoutWatchTimer = setInterval(checkOverlayLayout, LAYOUT_CHECK_INTERVAL_MS);
   init();
   showOnboardingIfFirstRun();
 }
@@ -295,6 +296,8 @@ function stopExtension() {
     containerWatchdog = null;
   }
   teardownVideo();
+  clearInterval(layoutWatchTimer);
+  layoutWatchTimer = null;
   cancelSelection();
   removePopup();
   removeAllOverlays();

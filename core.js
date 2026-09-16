@@ -6,6 +6,14 @@ function log(...args) {
 const SELECTOR_CHAIN = PLATFORM.subtitleSelectors;
 const CONTROLS_SELECTOR_CHAIN = PLATFORM.controlsSelectors;
 const FALLBACK_CONTROLS_HEIGHT = 110;
+const MAX_CONTROLS_RESERVED_RATIO = 0.3;
+const MIN_VIDEO_SIZE_PX = 40;
+const BOTTOM_BAND_RATIO = 0.6;
+const OVERLAY_SIDE_PADDING_RATIO = 0.02;
+const OVERLAY_MIN_SIDE_PADDING_PX = 8;
+const LINE_ADJACENT_GAP_PX = 2;
+const LAYOUT_CHECK_INTERVAL_MS = 250;
+const LAYOUT_SETTLE_MS = 1000;
 const BLUR_RATIO = 0.24;
 const MIN_BLUR_PX = 6;
 const MAX_BLUR_PX = 22;
@@ -36,6 +44,10 @@ const USER_SEEK_MIN_SEC = 1;
 let activeLines = [];
 let currentContainer = null;
 let maxControlsHeight = 0;
+let lastLayoutKey = "";
+let layoutPending = false;
+let layoutSettleUntil = 0;
+let layoutWatchTimer = null;
 let videoCache = null;
 
 let extensionPaused = false;

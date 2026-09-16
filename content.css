@@ -12,6 +12,10 @@
   user-select: none;
 }
 
+.nse-overlay.nse-unplaced {
+  visibility: hidden;
+}
+
 .nse-overlay.revealed {
   filter: none;
 }

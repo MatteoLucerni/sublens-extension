@@ -5,6 +5,21 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.4.0]
+
+### Changed
+- Subtitle overlay positioning rewritten for robustness on all platforms:
+  - Each line is centered on the real text of the native caption (measured with a DOM `Range`) instead of the left edge of its container. On YouTube, where the caption line box is wider than the text, overlays were shifted to the left.
+  - Overlays stay inside the video: a line wider than the video is shrunk to fit and clamped between the video edges.
+  - Multi-line subtitles are stacked from their own measured heights, so lines no longer overlap or leave gaps.
+  - The overlay position never changes while you hover a subtitle, drag a selection or have the translation popup open; any pending update is applied once the interaction ends.
+  - YouTube: subtitles shown in the lower part of the video are pinned to a fixed baseline above the controls, so their height no longer depends on whether the controls were visible when the line appeared.
+
+### Fixed
+- After entering or leaving fullscreen, resizing the window or switching YouTube theater mode, overlays kept their old position and font size (sometimes ending up outside the player) until the next subtitle line. A layout watcher now detects video size/position changes and re-lays out the overlays, including the copied font size, while the player settles.
+- New overlays are hidden until they have a valid position, so they can no longer flash in the top-left corner when the native caption has no size yet (e.g. while its container is hidden).
+- A player controls element measured taller than 30% of the video is ignored, and the reserved controls height is re-measured whenever the video layout changes.
+
 ## [1.3.13]
 
 ### Fixed

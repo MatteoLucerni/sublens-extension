@@ -14,6 +14,24 @@ function releaseInteraction() {
   if (wasPlayingBeforePause) getVideo()?.play();
 }
 
+function isClickInsidePlayer(e) {
+  const video = getVideo();
+  if (!video) return false;
+  const rect = getVisibleVideoRect(video);
+  return (
+    e.clientX >= rect.left &&
+    e.clientX <= rect.left + rect.width &&
+    e.clientY >= rect.top &&
+    e.clientY <= rect.bottom
+  );
+}
+
+function consumePlayerClick(e) {
+  if (!isClickInsidePlayer(e)) return;
+  e.preventDefault();
+  e.stopPropagation();
+}
+
 function stopAccumulating() {
   clearTimeout(selectionTimer);
   selectionTimer = null;
@@ -98,6 +116,7 @@ function collectRange(startSpan, endSpan) {
 
 function onSelectionOutsideClick(e) {
   if (e.target.closest(".nse-word")) return;
+  consumePlayerClick(e);
   cancelSelection();
   if (!isPopupOpen()) releaseInteraction();
 }
@@ -548,6 +567,7 @@ function onOutsideClick(e) {
   if (e.target.closest(".nse-word")) return;
   const popup = document.getElementById("nse-popup");
   if (popup && popup.contains(e.target)) return;
+  consumePlayerClick(e);
   removePopup();
 }
 

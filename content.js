@@ -69,12 +69,17 @@ function hasImageSubtitles(container) {
   return !!container.querySelector("svg, img");
 }
 
+function filterIgnoredLines(lines) {
+  if (!PLATFORM.isIgnoredLine) return lines;
+  return lines.filter((lineEl) => !PLATFORM.isIgnoredLine(lineEl));
+}
+
 function getLineContainers(container) {
-  const matches = container.querySelectorAll(PLATFORM.lineContainerSelector);
-  if (matches.length > 0) return Array.from(matches);
+  const matches = filterIgnoredLines(Array.from(container.querySelectorAll(PLATFORM.lineContainerSelector)));
+  if (matches.length > 0) return matches;
   if (PLATFORM.lineContainerFallbackSelector) {
-    const fallback = container.querySelectorAll(PLATFORM.lineContainerFallbackSelector);
-    if (fallback.length > 0) return Array.from(fallback);
+    const fallback = filterIgnoredLines(Array.from(container.querySelectorAll(PLATFORM.lineContainerFallbackSelector)));
+    if (fallback.length > 0) return fallback;
   }
   if (PLATFORM.allowContainerTextFallback === false) return [];
   return container.textContent.trim() ? [container] : [];
@@ -235,8 +240,7 @@ function syncSubtitleContainer() {
     if (currentContainer || activeLines.length > 0) {
       removeAllOverlays();
       currentContainer = null;
-      cueHistory = [];
-      cueIndex = -1;
+      resetCueHistory();
     }
     return;
   }
@@ -249,8 +253,7 @@ function syncSubtitleContainer() {
   }
   if (currentContainer && currentContainer !== found) {
     removeAllOverlays();
-    cueHistory = [];
-    cueIndex = -1;
+    resetCueHistory();
   }
   watchContainer(found);
 }
@@ -280,6 +283,7 @@ function startExtension() {
   if (nseStarted) return;
   nseStarted = true;
   log("startExtension");
+  if (!layoutWatchTimer) layoutWatchTimer = setInterval(checkOverlayLayout, LAYOUT_CHECK_INTERVAL_MS);
   init();
   showOnboardingIfFirstRun();
 }
@@ -297,13 +301,14 @@ function stopExtension() {
     containerWatchdog = null;
   }
   teardownVideo();
+  clearInterval(layoutWatchTimer);
+  layoutWatchTimer = null;
   cancelSelection();
   removePopup();
   removeAllOverlays();
   document.getElementById("nse-onboard")?.remove();
   currentContainer = null;
-  cueHistory = [];
-  cueIndex = -1;
+  resetCueHistory();
 }
 
 function applyEnabledState() {
@@ -369,7 +374,6 @@ window.addEventListener("yt-navigate-finish", () => {
   log("yt-navigate-finish", location.href);
   if (!nseStarted) return;
   removeAllOverlays();
-  cueHistory = [];
-  cueIndex = -1;
+  resetCueHistory();
   syncSubtitleContainer();
 });

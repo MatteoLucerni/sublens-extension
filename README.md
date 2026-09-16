@@ -44,7 +44,11 @@ Hovering a subtitle pauses the video so you have time to read or look up a word,
 
 ### Replay the Previous Subtitle
 
-Press the **Left Arrow** key to jump back to the start of the previous subtitle line and pause at its end, instead of the player's default rewind. When there is no earlier subtitle to jump back to (subtitles off, or nothing played yet), the key falls back to the player's native rewind, so it never feels broken. If you manually pause during the replay, the scheduled auto-pause at the end of the line is cancelled.
+Press the **Left Arrow** key to jump back to the start of the previous subtitle line and pause at its end, instead of the player's default rewind. The jump only happens when the previous subtitle disappeared less than 30 seconds of playback ago; otherwise (subtitles off, nothing played yet, after a manual seek, or after switching video/episode) the key falls back to the player's native rewind, so it never sends you to a stale subtitle. On YouTube, Netflix and Prime Video the extension also reads the player's captions state directly, so the jump is disabled as soon as captions are turned off. If you manually pause during the replay, the scheduled auto-pause at the end of the line is cancelled.
+
+### Stable Overlay Positioning
+
+Overlays are centered on the real text of the native captions, kept inside the video (long lines shrink to fit), stacked without overlaps, and re-laid out automatically after fullscreen, window resize or YouTube theater mode. While you hover a subtitle, select words or read the translation popup, the overlay never moves under your cursor.
 
 ### Language Selection
 
@@ -56,7 +60,7 @@ Independent **Enable on Netflix** / **Enable on YouTube** / **Enable on Prime Vi
 
 ### Netflix, YouTube & Prime Video Support
 
-Built around a platform adapter (`platforms.js`) that isolates every platform-specific detail, so the same overlay, blur, translation and navigation logic runs on all three sites. On YouTube, both manual and auto-generated (rollup) captions are supported on `youtube.com/watch` pages; the `>>` speaker-change markers YouTube adds are stripped before words become clickable, the overlay gets a semi-transparent background so white captions stay readable over bright scenes, and the overlay position stays stable while the player controls show or hide. On Prime Video (`primevideo.com`), captions are read from the player's `.atvwebplayersdk-captions-text` lines and the extension drives the largest of the player's several `<video>` elements; titles that use image-based (bitmap) subtitles fall back to native rendering.
+Built around a platform adapter (`platforms.js`) that isolates every platform-specific detail, so the same overlay, blur, translation and navigation logic runs on all three sites. On YouTube, both manual and auto-generated (rollup) captions are supported on `youtube.com/watch` pages; the `>>` speaker-change markers YouTube adds are stripped before words become clickable, the overlay gets a semi-transparent background so white captions stay readable over bright scenes, and the overlay stays pinned to a stable baseline above the player controls whether they are shown or hidden. On Prime Video (`primevideo.com`), captions are read from the player's `.atvwebplayersdk-captions-text` lines and the extension drives the largest of the player's several `<video>` elements; titles that use image-based (bitmap) subtitles fall back to native rendering.
 
 ### Toolbar Settings Popup
 
@@ -134,11 +138,13 @@ subtitles-translate-extension
 ├── cues.js                Cue history + Left Arrow back-jump navigation
 ├── interaction.js         Word/phrase selection (click/Ctrl+Cmd+click/drag) + translation popup
 ├── content.js             Entry point: subtitle discovery, onboarding, init + event wiring
+├── netflix-bridge.js      Netflix-only MAIN-world script: reports whether captions are on to the content scripts
 ├── content.css            Styles for the subtitle overlay and dictionary popup
 ├── background.js          Service worker: platform-aware player seek + Google Translate requests
 ├── popup.html/css/js      Toolbar action popup with the settings controls
 ├── build.ps1              Packages the extension into a versioned zip for the Chrome Web Store
 ├── CHANGELOG.md           Version history
+├── CLAUDE.md              Project instructions for Claude Code (architecture, conventions, versioning rules)
 ├── manifest.json          Extension manifest (MV3)
 └── README.md
 ```

@@ -3,7 +3,7 @@
   "name": "Sublens - Translate & Learn from Subtitles",
   "short_name": "Sublens",
   "description": "Turn Netflix, YouTube & Prime Video subtitles into instant word translations, dictionary lookups & pronunciation.",
-  "version": "1.3.10",
+  "version": "1.5.0",
   "icons": {
     "16": "icons/icon16.png",
     "32": "icons/icon32.png",
@@ -25,6 +25,12 @@
       "matches": ["https://www.netflix.com/*", "https://www.youtube.com/*", "https://www.primevideo.com/*"],
       "js": ["env.js", "settings.js", "platforms.js", "core.js", "overlay.js", "cues.js", "interaction.js", "content.js"],
       "css": ["content.css"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://www.netflix.com/*"],
+      "js": ["netflix-bridge.js"],
+      "world": "MAIN",
       "run_at": "document_idle"
     }
   ],

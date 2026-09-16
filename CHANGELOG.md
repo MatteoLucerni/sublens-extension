@@ -5,6 +5,12 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.3.11]
+
+### Fixed
+- Back-arrow subtitle jump is now much stricter about when it overrides the player's native rewind. It no longer jumps when captions are turned off in the YouTube player, when the previous subtitle disappeared more than 10 seconds of playback ago, after you seek or scrub manually, or after the video/episode changes. In all these cases ArrowLeft falls back to the native rewind, so it never sends you back to an old subtitle (e.g. near the start of the video) or one from a different video.
+- A scheduled end-of-line pause from a back-arrow replay is cancelled when you seek elsewhere, so it no longer pauses the video right after a manual seek.
+
 ## [1.3.10]
 
 ### Fixed

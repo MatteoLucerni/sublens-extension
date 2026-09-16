@@ -44,7 +44,7 @@ Hovering a subtitle pauses the video so you have time to read or look up a word,
 
 ### Replay the Previous Subtitle
 
-Press the **Left Arrow** key to jump back to the start of the previous subtitle line and pause at its end, instead of the player's default rewind. When there is no earlier subtitle to jump back to (subtitles off, or nothing played yet), the key falls back to the player's native rewind, so it never feels broken. If you manually pause during the replay, the scheduled auto-pause at the end of the line is cancelled.
+Press the **Left Arrow** key to jump back to the start of the previous subtitle line and pause at its end, instead of the player's default rewind. The jump only happens when the previous subtitle disappeared less than 10 seconds of playback ago; otherwise (subtitles off, nothing played yet, after a manual seek, or after switching video/episode) the key falls back to the player's native rewind, so it never sends you to a stale subtitle. If you manually pause during the replay, the scheduled auto-pause at the end of the line is cancelled.
 
 ### Language Selection
 

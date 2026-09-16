@@ -29,6 +29,8 @@ function attachVideoListeners(video) {
   video.dataset.nseListenersAttached = "true";
   video.addEventListener("pause", onVideoPause);
   video.addEventListener("play", blurUnheldOverlays);
+  video.addEventListener("seeking", onVideoSeeking);
+  video.addEventListener("timeupdate", onVideoTimeUpdate);
 }
 
 function detachVideoListeners(video) {
@@ -36,6 +38,8 @@ function detachVideoListeners(video) {
   delete video.dataset.nseListenersAttached;
   video.removeEventListener("pause", onVideoPause);
   video.removeEventListener("play", blurUnheldOverlays);
+  video.removeEventListener("seeking", onVideoSeeking);
+  video.removeEventListener("timeupdate", onVideoTimeUpdate);
 }
 
 function findStyleSource(lineEl) {

@@ -26,6 +26,11 @@ const NSE_PLATFORMS = {
     usesBackgroundSeek: false,
     repositionOnlyOnChange: true,
     processDebounceMs: 180,
+    areCaptionsEnabled: () => {
+      const button = document.querySelector("#movie_player .ytp-subtitles-button");
+      if (!button) return true;
+      return button.getAttribute("aria-pressed") === "true";
+    },
     cleanLineText: (text) =>
       text
         .split("\n")

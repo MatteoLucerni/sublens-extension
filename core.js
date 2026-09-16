@@ -29,6 +29,9 @@ const CUE_HISTORY_EPSILON_SEC = 0.05;
 const PAUSE_BEFORE_NEXT_CUE_SEC = 0.05;
 const PAUSE_SCHEDULE_SAFETY_MS = 15000;
 const PAUSE_CONFIRM_USER_MS = 600;
+const CUE_HISTORY_MAX_AGE_SEC = 10;
+const CUE_JUMP_SEEK_GRACE_MS = 3000;
+const USER_SEEK_MIN_SEC = 1;
 
 let activeLines = [];
 let currentContainer = null;
@@ -50,6 +53,9 @@ let ttsRequestId = 0;
 
 let cueHistory = [];
 let cueIndex = -1;
+let cueHistoryMediaKey = null;
+let cueJumpSeekUntil = 0;
+let lastKnownVideoTime = 0;
 let suppressHistoryCapture = false;
 let suppressHistoryCaptureTimer = null;
 let pauseScheduleCleanup = null;

@@ -235,8 +235,7 @@ function syncSubtitleContainer() {
     if (currentContainer || activeLines.length > 0) {
       removeAllOverlays();
       currentContainer = null;
-      cueHistory = [];
-      cueIndex = -1;
+      resetCueHistory();
     }
     return;
   }
@@ -249,8 +248,7 @@ function syncSubtitleContainer() {
   }
   if (currentContainer && currentContainer !== found) {
     removeAllOverlays();
-    cueHistory = [];
-    cueIndex = -1;
+    resetCueHistory();
   }
   watchContainer(found);
 }
@@ -302,8 +300,7 @@ function stopExtension() {
   removeAllOverlays();
   document.getElementById("nse-onboard")?.remove();
   currentContainer = null;
-  cueHistory = [];
-  cueIndex = -1;
+  resetCueHistory();
 }
 
 function applyEnabledState() {
@@ -369,7 +366,6 @@ window.addEventListener("yt-navigate-finish", () => {
   log("yt-navigate-finish", location.href);
   if (!nseStarted) return;
   removeAllOverlays();
-  cueHistory = [];
-  cueIndex = -1;
+  resetCueHistory();
   syncSubtitleContainer();
 });

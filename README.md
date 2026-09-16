@@ -144,6 +144,7 @@ subtitles-translate-extension
 ├── popup.html/css/js      Toolbar action popup with the settings controls
 ├── build.ps1              Packages the extension into a versioned zip for the Chrome Web Store
 ├── CHANGELOG.md           Version history
+├── CLAUDE.md              Project instructions for Claude Code (architecture, conventions, versioning rules)
 ├── manifest.json          Extension manifest (MV3)
 └── README.md
 ```

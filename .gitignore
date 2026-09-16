@@ -16,8 +16,5 @@ desktop.ini
 # Logs
 *.log
 
-# Local-only project instructions for Claude Code
-CLAUDE.md
-
 # Local-only Claude Code settings (per-machine permission overrides)
 .claude/settings.local.json

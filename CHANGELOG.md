@@ -5,6 +5,12 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.6.2]
+
+### Fixed
+- YouTube: on some pages the whole player (video, controls and progress bar) was hidden and replaced by a blurred strip. When the captions container did not exist yet at startup, the structural fallback picked the player itself as the subtitle container and the whole player was treated as one subtitle line. YouTube and Prime Video no longer use the structural fallback or the container text fallback (`allowStructuralFallback: false`, `allowContainerTextFallback: false`); the extension attaches as soon as the real captions container appears.
+- The container watchdog now runs at most every 200 ms even while the page mutates continuously (it was a pure debounce, so on YouTube it could never fire during playback).
+
 ## [1.6.1]
 
 ### Changed

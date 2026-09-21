@@ -35,6 +35,8 @@ const NSE_PLATFORMS = {
     controlsGapRatio: 0.03,
     playerFrameSelector: "#movie_player",
     usesImageSubtitleGuard: false,
+    allowContainerTextFallback: false,
+    allowStructuralFallback: false,
     isIgnoredLine: (lineEl) => !!lineEl.closest(".caption-window")?.querySelector("svg, img"),
     processDebounceMs: 180,
     areCaptionsEnabled: () => {
@@ -58,6 +60,7 @@ const NSE_PLATFORMS = {
     usesBackgroundSeek: false,
     usesImageSubtitleGuard: false,
     allowContainerTextFallback: false,
+    allowStructuralFallback: false,
     repositionOnlyOnChange: true,
     cueBoundaryOnTextChange: true,
     controlsReservedHeightRatio: 0.21,

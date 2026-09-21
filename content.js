@@ -36,6 +36,7 @@ function findSubtitleContainer() {
     log("container found via selector", canonical);
     return canonical;
   }
+  if (PLATFORM.allowStructuralFallback === false) return null;
   const fallback = findStructuralFallback();
   if (fallback) log("container found via structural fallback", fallback);
   return fallback;
@@ -264,10 +265,13 @@ function init() {
   if (existing) watchContainer(existing);
 
   if (!containerWatchdog) {
-    let debounceTimer = null;
+    let syncTimer = null;
     containerWatchdog = new MutationObserver(() => {
-      clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(syncSubtitleContainer, 200);
+      if (syncTimer) return;
+      syncTimer = setTimeout(() => {
+        syncTimer = null;
+        syncSubtitleContainer();
+      }, 200);
     });
     containerWatchdog.observe(document.body, { childList: true, subtree: true });
   }

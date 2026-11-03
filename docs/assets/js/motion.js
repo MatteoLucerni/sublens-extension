@@ -177,7 +177,10 @@
       });
       return el;
     };
-    host.append(layer(false), layer(true));
+    const lensWindow = document.createElement("div");
+    lensWindow.className = "lens-window";
+    lensWindow.append(layer(true));
+    host.append(layer(false), lensWindow);
   }
 
   function initLens(host) {
@@ -185,7 +188,12 @@
     ring.className = "lens-ring";
     host.append(ring);
 
+    const lensWindow = host.querySelector(".lens-window");
+    const inner = lensWindow ? lensWindow.firstElementChild : null;
     const target = host.closest("section, main") || host.parentElement;
+    let width = 0;
+    let height = 0;
+    let radius = 0;
     let px = 0;
     let py = 0;
     let hover = false;
@@ -194,21 +202,43 @@
     let raf = 0;
     let visible = true;
 
+    function measure() {
+      width = host.offsetWidth;
+      height = host.offsetHeight;
+      radius = ring.offsetWidth / 2;
+      if (lensWindow) {
+        host.style.setProperty("--hw", `${width}px`);
+        host.style.setProperty("--hh", `${height}px`);
+      }
+    }
+
+    function apply() {
+      const ox = (x - radius).toFixed(1);
+      const oy = (y - radius).toFixed(1);
+      ring.style.transform = `translate3d(${ox}px, ${oy}px, 0)`;
+      if (lensWindow) {
+        lensWindow.style.transform = `translate3d(${ox}px, ${oy}px, 0)`;
+        inner.style.transform = `translate3d(${-ox}px, ${-oy}px, 0)`;
+      } else {
+        host.style.setProperty("--lx", `${x.toFixed(1)}px`);
+        host.style.setProperty("--ly", `${y.toFixed(1)}px`);
+      }
+    }
+
     function tick(now) {
       raf = 0;
-      const rect = host.getBoundingClientRect();
       let tx;
       let ty;
       if (hover) {
-        tx = px - rect.left;
-        ty = py - rect.top;
+        tx = px;
+        ty = py;
       } else if (motion) {
         const t = now / 1000;
-        tx = rect.width * (0.5 + 0.34 * Math.sin(t * 0.31));
-        ty = rect.height * (0.5 + 0.26 * Math.sin(t * 0.47 + 1.3));
+        tx = width * (0.5 + 0.34 * Math.sin(t * 0.31));
+        ty = height * (0.5 + 0.26 * Math.sin(t * 0.47 + 1.3));
       } else {
-        tx = rect.width / 2;
-        ty = rect.height / 2;
+        tx = width / 2;
+        ty = height / 2;
       }
       if (x === null) {
         x = tx;
@@ -217,8 +247,7 @@
       const k = motion ? 0.09 : 1;
       x += (tx - x) * k;
       y += (ty - y) * k;
-      host.style.setProperty("--lx", `${x.toFixed(1)}px`);
-      host.style.setProperty("--ly", `${y.toFixed(1)}px`);
+      apply();
       if (visible && !document.hidden && (motion || hover)) raf = window.requestAnimationFrame(tick);
     }
 
@@ -228,10 +257,11 @@
 
     target.addEventListener("pointermove", e => {
       if (e.pointerType !== "mouse") return;
+      const rect = host.getBoundingClientRect();
       hover = true;
       host.classList.add("is-live");
-      px = e.clientX;
-      py = e.clientY;
+      px = e.clientX - rect.left;
+      py = e.clientY - rect.top;
       start();
     });
 
@@ -244,6 +274,7 @@
     if (hasIO) {
       new IntersectionObserver(entries => {
         visible = entries[0].isIntersecting;
+        host.classList.toggle("is-offscreen", !visible);
         if (visible) start();
       }).observe(host);
     }
@@ -251,6 +282,10 @@
     document.addEventListener("visibilitychange", () => {
       if (!document.hidden) start();
     });
+
+    measure();
+    if ("ResizeObserver" in window) new ResizeObserver(measure).observe(host);
+    else window.addEventListener("resize", measure, { passive: true });
 
     if (motion) host.classList.add("is-live");
     start();
@@ -265,6 +300,12 @@
     const counter = grid.querySelector("[data-story-counter]");
     if (!stage || !list || !steps.length) return;
     let current = -1;
+
+    if (hasIO) {
+      new IntersectionObserver(entries => {
+        stage.classList.toggle("is-offscreen", !entries[0].isIntersecting);
+      }).observe(stage);
+    }
 
     register(grid, vh => {
       let focus = vh * 0.5;
@@ -372,6 +413,22 @@
     if (host.hasAttribute("data-lens-rows")) buildLensRows(host);
     initLens(host);
   });
+
+  const fabZones = [...document.querySelectorAll(".hero, .cta-panel, .site-footer")];
+  if (fabZones.length && hasIO) {
+    const visibleZones = new Set();
+    const fabObserver = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) visibleZones.add(entry.target);
+          else visibleZones.delete(entry.target);
+        });
+        root.classList.toggle("fab-hidden", visibleZones.size > 0);
+      },
+      { rootMargin: "-20% 0px -25% 0px" }
+    );
+    fabZones.forEach(zone => fabObserver.observe(zone));
+  }
 
   initStory();
   initStatement();

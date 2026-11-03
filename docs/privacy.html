@@ -10,22 +10,20 @@
     />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://getsublens.com/privacy.html" />
-    <meta name="theme-color" content="#1a1b1e" />
+    <meta name="theme-color" content="#0c0d10" />
     <link rel="icon" href="assets/icons/sublens-logo.png" type="image/png" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" />
+    <link rel="preload" href="assets/fonts/poppins-700-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="assets/css/site.css" />
   </head>
 
   <body>
     <div data-site-nav></div>
 
-    <main class="page">
+    <main class="page" id="main">
       <div class="container container-narrow prose">
         <header class="page-header">
-          <img class="page-logo" src="assets/icons/sublens-logo.png" alt="Sublens logo" width="84" height="84" />
+          <span class="page-logo-wrap"><img class="page-logo" src="assets/icons/sublens-logo.png" alt="Sublens logo" width="84" height="84" /></span>
           <h1 class="page-title">Privacy Policy</h1>
           <p class="page-subtitle muted">Last updated: June 28, 2026</p>
         </header>
@@ -124,5 +122,6 @@
     <script src="assets/js/layout.js" defer></script>
     <script src="assets/js/support-modal.js" defer></script>
     <script src="assets/js/feedback-widget.js" defer></script>
+    <script src="assets/js/motion.js" defer></script>
   </body>
 </html>

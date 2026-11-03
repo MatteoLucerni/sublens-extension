@@ -9,33 +9,31 @@
       content="Welcome to Sublens. Learn how to reveal subtitles, translate words, hear pronunciations and replay lines on Netflix, YouTube and Prime Video."
     />
     <meta name="robots" content="noindex, follow" />
-    <meta name="theme-color" content="#1a1b1e" />
+    <meta name="theme-color" content="#0c0d10" />
     <link rel="icon" href="assets/icons/sublens-logo.png" type="image/png" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" />
+    <link rel="preload" href="assets/fonts/poppins-700-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="assets/css/site.css" />
   </head>
 
   <body>
     <div data-site-nav></div>
 
-    <main class="page">
+    <main class="page" id="main">
       <div class="container container-narrow">
         <header class="page-header">
-          <img class="page-logo fade-in" src="assets/icons/sublens-logo.png" alt="Sublens logo" width="84" height="84" />
-          <h1 class="page-title fade-in delay-1">Welcome to Sub<span class="gradient-text">lens</span></h1>
-          <p class="page-subtitle fade-in delay-2">
+          <span class="page-logo-wrap"><img class="page-logo" src="assets/icons/sublens-logo.png" alt="Sublens logo" width="84" height="84" /></span>
+          <h1 class="page-title">Welcome to Sub<span class="gradient-text">lens</span></h1>
+          <p class="page-subtitle">
             You are ready to turn subtitles into a language lesson. Here is how
             it works.
           </p>
         </header>
 
-        <h2 class="page-section-title">The basics</h2>
-        <div class="card-list">
-          <article class="card card-row">
-            <div class="card-icon"><i class="fas fa-eye-slash"></i></div>
+        <h2 class="page-section-title" data-reveal>The basics</h2>
+        <div class="card-list" data-reveal-group>
+          <article class="card card-row spotlight">
+            <div class="card-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-eye-off" /></svg></div>
             <div>
               <h3>Reveal a blurred subtitle</h3>
               <p>
@@ -46,8 +44,8 @@
             </div>
           </article>
 
-          <article class="card card-row">
-            <div class="card-icon"><i class="fas fa-language"></i></div>
+          <article class="card card-row spotlight">
+            <div class="card-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-languages" /></svg></div>
             <div>
               <h3>Translate a word or phrase</h3>
               <p>
@@ -59,8 +57,8 @@
             </div>
           </article>
 
-          <article class="card card-row">
-            <div class="card-icon"><i class="fas fa-volume-high"></i></div>
+          <article class="card card-row spotlight">
+            <div class="card-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-volume" /></svg></div>
             <div>
               <h3>Hear the pronunciation</h3>
               <p>
@@ -71,8 +69,8 @@
             </div>
           </article>
 
-          <article class="card card-row">
-            <div class="card-icon"><i class="fas fa-arrow-rotate-left"></i></div>
+          <article class="card card-row spotlight">
+            <div class="card-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-rewind" /></svg></div>
             <div>
               <h3>Replay the previous line</h3>
               <p>
@@ -84,10 +82,10 @@
           </article>
         </div>
 
-        <h2 class="page-section-title">Make it yours</h2>
-        <div class="card-list">
-          <article class="card card-row">
-            <div class="card-icon"><i class="fas fa-sliders"></i></div>
+        <h2 class="page-section-title" data-reveal>Make it yours</h2>
+        <div class="card-list" data-reveal-group>
+          <article class="card card-row spotlight">
+            <div class="card-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-sliders" /></svg></div>
             <div>
               <h3>Open the settings</h3>
               <p>
@@ -99,8 +97,8 @@
             </div>
           </article>
 
-          <article class="card card-row">
-            <div class="card-icon"><i class="fab fa-youtube"></i></div>
+          <article class="card card-row spotlight">
+            <div class="card-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-youtube" /></svg></div>
             <div>
               <h3>On YouTube</h3>
               <p>
@@ -111,8 +109,8 @@
             </div>
           </article>
 
-          <article class="card card-row">
-            <div class="card-icon"><i class="fab fa-amazon"></i></div>
+          <article class="card card-row spotlight">
+            <div class="card-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-tv" /></svg></div>
             <div>
               <h3>On Prime Video</h3>
               <p>
@@ -137,5 +135,6 @@
     <script src="assets/js/layout.js" defer></script>
     <script src="assets/js/support-modal.js" defer></script>
     <script src="assets/js/feedback-widget.js" defer></script>
+    <script src="assets/js/motion.js" defer></script>
   </body>
 </html>

@@ -5,29 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Page not found - Sublens</title>
     <meta name="robots" content="noindex, follow" />
-    <meta name="theme-color" content="#1a1b1e" />
+    <meta name="theme-color" content="#0c0d10" />
     <link rel="icon" href="/assets/icons/sublens-logo.png" type="image/png" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" />
+    <link rel="preload" href="/assets/fonts/poppins-700-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="/assets/css/site.css" />
   </head>
 
   <body>
-    <main class="not-found">
-      <img class="page-logo" src="/assets/icons/sublens-logo.png" alt="Sublens logo" width="84" height="84" />
-      <h1 class="gradient-text">404</h1>
-      <p>This page does not exist.</p>
+    <main class="not-found" id="main">
+      <div class="nf-lens" data-lens aria-hidden="true">
+        <p class="nf-code nf-blur">404</p>
+        <p class="nf-code nf-sharp">404</p>
+      </div>
+      <h1 class="nf-title"><span class="visually-hidden">404: </span>This page does not exist.</h1>
       <div class="not-found-actions">
-        <a class="btn btn-primary" href="/"><i class="fas fa-house"></i>Back to home</a>
+        <a class="btn btn-primary" href="/" data-magnetic><svg class="icon" aria-hidden="true"><use href="/assets/icons/sprite.svg#i-home" /></svg>Back to home</a>
         <button type="button" class="btn btn-soft" data-support-open aria-haspopup="dialog">
-          <i class="fas fa-heart"></i>Support this project
+          <svg class="icon" aria-hidden="true"><use href="/assets/icons/sprite.svg#i-heart" /></svg>Support this project
         </button>
       </div>
     </main>
 
     <script src="/assets/js/config.js" defer></script>
     <script src="/assets/js/support-modal.js" defer></script>
+    <script src="/assets/js/motion.js" defer></script>
   </body>
 </html>

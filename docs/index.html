@@ -15,7 +15,7 @@
     <meta name="author" content="Matteo Lucerni" />
     <meta name="robots" content="index, follow" />
     <meta name="googlebot" content="index, follow" />
-    <meta name="theme-color" content="#1a1b1e" />
+    <meta name="theme-color" content="#0c0d10" />
     <link rel="canonical" href="https://getsublens.com/" />
 
     <meta property="og:title" content="Sublens - Translate & Learn from Subtitles" />
@@ -37,10 +37,8 @@
     <meta name="twitter:image" content="https://getsublens.com/assets/icons/sublens-logo.png" />
 
     <link rel="icon" href="assets/icons/sublens-logo.png" type="image/png" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" />
+    <link rel="preload" href="assets/fonts/poppins-700-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="assets/css/site.css" />
 
     <script type="application/ld+json">
@@ -111,63 +109,37 @@
   <body>
     <div data-site-nav></div>
 
-    <main>
-      <section class="hero">
-        <div class="container hero-grid">
-          <div>
-            <span class="hero-badge fade-in"><i class="fas fa-circle-check"></i>Free, open source, no tracking</span>
-            <h1 class="fade-in delay-1">Sub<span class="gradient-text">lens</span></h1>
-            <p class="hero-tagline fade-in delay-1">Translate &amp; learn from subtitles</p>
-            <p class="hero-lead fade-in delay-2">
-              Blur subtitles until you want to read them, then click,
-              Ctrl/Cmd+click or drag-select any word for instant translation,
-              dictionary definitions and pronunciation.
-            </p>
-            <div class="hero-actions fade-in delay-3">
-              <a class="btn btn-primary btn-lg" data-link="store" target="_blank" rel="noopener noreferrer">
-                <i class="fab fa-chrome"></i>Add to Chrome
-              </a>
-              <a class="btn btn-ghost btn-lg" href="#how-it-works">How it works</a>
-            </div>
-            <div class="hero-platforms fade-in delay-4">
-              Works on
-              <span><i class="fas fa-film"></i>Netflix</span>
-              <span><i class="fab fa-youtube"></i>YouTube</span>
-              <span><i class="fab fa-amazon"></i>Prime Video</span>
-            </div>
+    <main id="main">
+      <section class="hero" data-tone="blue">
+        <div class="hero-lens" data-lens data-lens-rows aria-hidden="true"></div>
+        <div class="container hero-content">
+          <span class="hero-badge"><svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-check" /></svg>Free, open source, no tracking</span>
+          <h1 class="hero-title" aria-label="Sublens"><span class="char" aria-hidden="true">S</span><span class="char" aria-hidden="true">u</span><span class="char" aria-hidden="true">b</span><span class="char" aria-hidden="true">l</span><span class="char" aria-hidden="true">e</span><span class="char" aria-hidden="true">n</span><span class="char" aria-hidden="true">s</span></h1>
+          <p class="hero-tagline">Translate &amp; learn from subtitles</p>
+          <p class="hero-lead">
+            Blur subtitles until you want to read them, then click,
+            Ctrl/Cmd+click or drag-select any word for instant translation,
+            dictionary definitions and pronunciation.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary btn-lg" data-link="store" data-magnetic target="_blank" rel="noopener noreferrer">
+              <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-chrome" /></svg>Add to Chrome
+            </a>
+            <a class="btn btn-ghost btn-lg" href="#how-it-works">How it works</a>
           </div>
-
-          <div class="demo fade-in delay-2" aria-hidden="true">
-            <div class="demo-scene"></div>
-            <span class="demo-label"><i class="fas fa-closed-captioning"></i>Spanish subtitles</span>
-            <div class="demo-stack">
-              <div class="demo-popup">
-                <div class="demo-popup-head">
-                  <span>estación</span>
-                  <i class="fas fa-volume-high"></i>
-                </div>
-                <div class="demo-translation">station</div>
-                <div class="demo-entries">
-                  <div><em>noun</em>station, season, stop</div>
-                </div>
-              </div>
-              <div class="demo-subtitle">
-                <span>¿Dónde está la <span class="demo-selected">estación</span> de tren?</span>
-                <span class="demo-line-blurred">Está al final de la calle.</span>
-              </div>
-            </div>
-            <div class="demo-controls">
-              <i class="fas fa-pause"></i>
-              <span class="demo-progress"></span>
-              <span>12:48</span>
-            </div>
+          <div class="hero-platforms">
+            Works on
+            <span><svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-film" /></svg>Netflix</span>
+            <span><svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-youtube" /></svg>YouTube</span>
+            <span><svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-tv" /></svg>Prime Video</span>
           </div>
         </div>
+        <a class="scroll-cue" href="#features">Scroll</a>
       </section>
 
-      <section class="section section-alt" id="features">
+      <section class="section story" id="features" data-tone="green">
         <div class="container">
-          <div class="section-head">
+          <div class="section-head" data-reveal>
             <span class="eyebrow">Features</span>
             <h2 class="section-title">Everything you need to learn while watching</h2>
             <p class="section-subtitle">
@@ -175,102 +147,175 @@
               lesson, without leaving the player.
             </p>
           </div>
-          <div class="grid grid-3">
-            <article class="card">
-              <div class="card-icon"><i class="fas fa-eye-slash"></i></div>
-              <h3>Subtitle blur</h3>
-              <p>
-                Turn on subtitle blur to test your listening first (off by
-                default). Hover a line to reveal it when you need help.
-              </p>
-            </article>
-            <article class="card">
-              <div class="card-icon"><i class="fas fa-language"></i></div>
-              <h3>Click to translate</h3>
-              <p>
-                Click a word for its translation and dictionary entry,
-                Ctrl/Cmd+click to add more words, or click-and-drag to select a
-                whole phrase.
-              </p>
-            </article>
-            <article class="card">
-              <div class="card-icon"><i class="fas fa-volume-high"></i></div>
-              <h3>Pronunciation</h3>
-              <p>
-                Hear the selected word or phrase in the subtitle language, with
-                a speaker button to replay it. Auto-play can be turned off in
-                the settings.
-              </p>
-            </article>
-            <article class="card">
-              <div class="card-icon"><i class="fas fa-pause"></i></div>
-              <h3>Auto-pause on hover</h3>
-              <p>
-                Hovering a subtitle pauses the video so you have time to read,
-                and pausing reveals every blurred line at once.
-              </p>
-            </article>
-            <article class="card">
-              <div class="card-icon"><i class="fas fa-arrow-rotate-left"></i></div>
-              <h3>Replay the last line</h3>
-              <p>
-                Press the Left Arrow key to jump back to the previous subtitle
-                and hear it again, instead of the player's default rewind.
-              </p>
-            </article>
-            <article class="card">
-              <div class="card-icon"><i class="fas fa-sliders"></i></div>
-              <h3>Your languages, your rules</h3>
+
+          <div class="story-grid" data-story>
+            <div class="story-visual">
+              <div class="story-stage-wrap">
+                <div class="story-stage" data-step="3" aria-hidden="true">
+                  <div class="player">
+                    <div class="player-scene"><span class="scene-sun"></span><span class="scene-hills"></span></div>
+                    <span class="player-label"><svg class="icon"><use href="assets/icons/sprite.svg#i-captions" /></svg>Spanish subtitles</span>
+                    <span class="player-counter"><b data-story-counter>03</b>&nbsp;/ 05</span>
+                    <div class="player-center">
+                      <span class="pc pc-pause"><svg class="icon icon-fill"><use href="assets/icons/sprite.svg#i-pause" /></svg></span>
+                      <span class="pc pc-rewind"><svg class="icon"><use href="assets/icons/sprite.svg#i-rewind" /></svg></span>
+                    </div>
+                    <div class="player-subs">
+                      <div class="popup">
+                        <div class="popup-head">
+                          <span>estación</span>
+                          <span class="popup-audio"><span class="bars"><i></i><i></i><i></i><i></i><i></i></span><svg class="icon"><use href="assets/icons/sprite.svg#i-volume" /></svg></span>
+                        </div>
+                        <div class="popup-translation">station</div>
+                        <div class="popup-entries"><em>noun</em>station, season, stop</div>
+                      </div>
+                      <p class="sub sub-prev">Perdone, una pregunta.</p>
+                      <p class="sub sub-main">¿Dónde está la <span class="sub-word">estación</span> de tren?</p>
+                      <p class="sub sub-next">Está al final de la calle.</p>
+                    </div>
+                    <span class="player-cursor"><svg class="icon"><use href="assets/icons/sprite.svg#i-pointer" /></svg></span>
+                    <span class="player-key"><svg class="icon"><use href="assets/icons/sprite.svg#i-arrow-left" /></svg></span>
+                    <div class="player-controls">
+                      <span class="pcl-toggle">
+                        <svg class="icon icon-fill pcl-pause"><use href="assets/icons/sprite.svg#i-pause" /></svg>
+                        <svg class="icon icon-fill pcl-play"><use href="assets/icons/sprite.svg#i-play" /></svg>
+                      </span>
+                      <span class="player-progress"><i></i></span>
+                      <span class="player-time"><span>12:48</span><span>12:44</span></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <ol class="story-steps">
+              <li class="story-step" data-story-step>
+                <span class="story-step-index">01</span>
+                <span class="card-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-eye-off" /></svg></span>
+                <h3>Subtitle blur</h3>
+                <p>
+                  Turn on subtitle blur to test your listening first (off by
+                  default). Hover a line to reveal it when you need help.
+                </p>
+              </li>
+              <li class="story-step" data-story-step>
+                <span class="story-step-index">02</span>
+                <span class="card-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-pause" /></svg></span>
+                <h3>Auto-pause on hover</h3>
+                <p>
+                  Hovering a subtitle pauses the video so you have time to read,
+                  and pausing reveals every blurred line at once.
+                </p>
+              </li>
+              <li class="story-step" data-story-step>
+                <span class="story-step-index">03</span>
+                <span class="card-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-languages" /></svg></span>
+                <h3>Click to translate</h3>
+                <p>
+                  Click a word for its translation and dictionary entry,
+                  Ctrl/Cmd+click to add more words, or click-and-drag to select a
+                  whole phrase.
+                </p>
+              </li>
+              <li class="story-step" data-story-step>
+                <span class="story-step-index">04</span>
+                <span class="card-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-volume" /></svg></span>
+                <h3>Pronunciation</h3>
+                <p>
+                  Hear the selected word or phrase in the subtitle language, with
+                  a speaker button to replay it. Auto-play can be turned off in
+                  the settings.
+                </p>
+              </li>
+              <li class="story-step" data-story-step>
+                <span class="story-step-index">05</span>
+                <span class="card-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-rewind" /></svg></span>
+                <h3>Replay the last line</h3>
+                <p>
+                  Press the Left Arrow key to jump back to the previous subtitle
+                  and hear it again, instead of the player's default rewind.
+                </p>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-tight" data-tone="green">
+        <div class="container">
+          <article class="bento spotlight" data-reveal>
+            <div class="bento-copy">
+              <span class="card-icon"><svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-sliders" /></svg></span>
+              <h3 class="bento-title">Your languages, your rules</h3>
               <p>
                 Pick the subtitle language or auto-detect it, choose your
                 translation language, and toggle Sublens on Netflix, YouTube
                 and Prime Video independently.
               </p>
-            </article>
-          </div>
+            </div>
+            <div class="bento-visual" aria-hidden="true">
+              <div class="word-roll">
+                <span class="word-roll-label">Translate</span>
+                <span class="word-roll-window">
+                  <span class="word-roll-track"><span>station</span><span>estación</span><span>gare</span><span>Bahnhof</span><span>stazione</span><span>estação</span><span>station</span></span>
+                </span>
+              </div>
+              <div class="toggles">
+                <div class="toggle-row"><svg class="icon"><use href="assets/icons/sprite.svg#i-film" /></svg>Netflix<span class="switch"></span></div>
+                <div class="toggle-row"><svg class="icon"><use href="assets/icons/sprite.svg#i-youtube" /></svg>YouTube<span class="switch"></span></div>
+                <div class="toggle-row"><svg class="icon"><use href="assets/icons/sprite.svg#i-tv" /></svg>Prime Video<span class="switch"></span></div>
+              </div>
+            </div>
+          </article>
         </div>
       </section>
 
-      <section class="section" id="how-it-works">
+      <section class="section statement" data-tone="violet">
         <div class="container">
-          <div class="section-head">
+          <p class="statement-text" data-words data-accent="6 7">Learn languages from the shows you already watch.</p>
+        </div>
+      </section>
+
+      <section class="section" id="how-it-works" data-tone="blue">
+        <div class="container">
+          <div class="section-head" data-reveal>
             <span class="eyebrow">How it works</span>
             <h2 class="section-title">Three steps, no setup</h2>
           </div>
-          <div class="grid grid-3">
-            <div class="step">
-              <div class="step-number">1</div>
+          <ol class="steps" data-steps>
+            <li class="step">
+              <span class="step-number">1</span>
               <h3>Install Sublens</h3>
               <p>Add the extension to Chrome. There is nothing to configure to get started.</p>
-            </div>
-            <div class="step">
-              <div class="step-number">2</div>
+            </li>
+            <li class="step">
+              <span class="step-number">2</span>
               <h3>Press play</h3>
               <p>
                 Open any title with subtitles on Netflix, YouTube or Prime
                 Video. On YouTube, turn captions on with the CC button.
               </p>
-            </div>
-            <div class="step">
-              <div class="step-number">3</div>
+            </li>
+            <li class="step">
+              <span class="step-number">3</span>
               <h3>Click any word</h3>
               <p>
                 Hover to reveal a line, then click a word for its translation,
                 definition and pronunciation.
               </p>
-            </div>
-          </div>
+            </li>
+          </ol>
         </div>
       </section>
 
-      <section class="section section-alt" id="faq">
+      <section class="section" id="faq" data-tone="green">
         <div class="container">
-          <div class="section-head">
+          <div class="section-head" data-reveal>
             <span class="eyebrow">FAQ</span>
             <h2 class="section-title">Frequently asked questions</h2>
             <p class="section-subtitle">Everything you might want to know before installing.</p>
           </div>
-          <div class="faq-list">
+          <div class="faq-list" data-reveal-group>
             <details class="faq-item">
               <summary>Is Sublens free?</summary>
               <p>
@@ -315,17 +360,27 @@
         </div>
       </section>
 
-      <section class="section cta">
+      <section class="section" data-tone="blue">
         <div class="container">
-          <h2 class="section-title">Start learning from what you already watch</h2>
-          <p class="section-subtitle">Free, private, and works right inside the player.</p>
-          <div class="cta-actions">
-            <a class="btn btn-primary btn-lg" data-link="store" target="_blank" rel="noopener noreferrer">
-              <i class="fab fa-chrome"></i>Add Sublens to Chrome
-            </a>
-            <button type="button" class="btn btn-soft btn-lg" data-support-open aria-haspopup="dialog">
-              <i class="fas fa-heart"></i>Support the project
-            </button>
+          <div class="cta-panel" data-iris>
+            <div class="iris" aria-hidden="true">
+              <span class="iris-core"></span>
+              <span class="iris-ring"></span>
+              <span class="iris-ring"></span>
+              <span class="iris-shutter"></span>
+            </div>
+            <div class="cta-inner">
+              <h2 class="section-title">Start learning from what you already watch</h2>
+              <p class="section-subtitle">Free, private, and works right inside the player.</p>
+              <div class="cta-actions">
+                <a class="btn btn-primary btn-lg" data-link="store" data-magnetic target="_blank" rel="noopener noreferrer">
+                  <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-chrome" /></svg>Add Sublens to Chrome
+                </a>
+                <button type="button" class="btn btn-soft btn-lg" data-support-open aria-haspopup="dialog">
+                  <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-heart" /></svg>Support the project
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -337,5 +392,6 @@
     <script src="assets/js/layout.js" defer></script>
     <script src="assets/js/support-modal.js" defer></script>
     <script src="assets/js/feedback-widget.js" defer></script>
+    <script src="assets/js/motion.js" defer></script>
   </body>
 </html>

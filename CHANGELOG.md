@@ -5,6 +5,11 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.6.3]
+
+### Changed
+- Prime Video: blurred subtitles no longer stay pinned above the player controls during playback. While blurred they follow Prime Video's own caption position (lower when the controls are hidden, moving up when the controls appear); once revealed (on pause or hover, or while the translation popup is open) they are pinned to the fixed baseline above the controls, so the clickable words do not move, until they are blurred again (new `pinOnlyWhenRevealed` platform flag).
+
 ## [1.6.2]
 
 ### Fixed

@@ -174,18 +174,25 @@ function getLayoutFrame() {
   return toDocumentRect(rect);
 }
 
-function getNativeSignature(lineEl, measured) {
+function isOverlayPinned() {
+  if (!PLATFORM.pinOnlyWhenRevealed) return true;
+  return activeLines.some((line) => line.overlay.classList.contains("revealed"));
+}
+
+function getNativeSignature(lineEl, measured, pinned) {
   const fontSize = getComputedStyle(findStyleSource(lineEl)).getPropertyValue("font-size");
   const { rect, align } = measured;
   const anchor = align === "left" ? rect.left : align === "right" ? rect.right : rect.left + rect.width / 2;
-  return `${fontSize}|${align}|${Math.round(anchor)}`;
+  const vertical = pinned ? "pinned" : Math.round(rect.bottom);
+  return `${fontSize}|${align}|${Math.round(anchor)}|${vertical}`;
 }
 
 function hasNativeGeometryChanged() {
+  const pinned = isOverlayPinned();
   for (const line of activeLines) {
     if (line.overlay.classList.contains("nse-unplaced") || !line.lineEl.isConnected) continue;
     const measured = measureNativeLine(line.lineEl);
-    if (measured && getNativeSignature(line.lineEl, measured) !== line.nativeSignature) return true;
+    if (measured && getNativeSignature(line.lineEl, measured, pinned) !== line.nativeSignature) return true;
   }
   return false;
 }
@@ -228,6 +235,7 @@ function layoutOverlays() {
   }
 
   const frozen = isLayoutFrozen();
+  const pinned = isOverlayPinned();
   const entries = [];
   for (const line of activeLines) {
     if (frozen && !line.overlay.classList.contains("nse-unplaced")) continue;
@@ -238,7 +246,7 @@ function layoutOverlays() {
       line,
       rect: toDocumentRect(measured.rect),
       align: measured.align,
-      signature: getNativeSignature(line.lineEl, measured)
+      signature: getNativeSignature(line.lineEl, measured, pinned)
     });
   }
   layoutPending = frozen || entries.length < activeLines.length;
@@ -255,9 +263,9 @@ function layoutOverlays() {
   const nativeBottom = Math.max(...entries.map((entry) => entry.rect.bottom));
   const pinnedBottom = frame.bottom - getControlsReservedHeight(frame);
   const inBottomBand = nativeBottom >= frame.top + frame.height * BOTTOM_BAND_RATIO;
-  const anchorBottom = PLATFORM.snapToBottomBand && inBottomBand
-    ? pinnedBottom
-    : Math.min(nativeBottom, pinnedBottom);
+  let anchorBottom = Math.min(nativeBottom, pinnedBottom);
+  if (!pinned) anchorBottom = Math.min(nativeBottom, frame.bottom);
+  else if (PLATFORM.snapToBottomBand && inBottomBand) anchorBottom = pinnedBottom;
 
   let upperLimit = Infinity;
   for (let i = entries.length - 1; i >= 0; i--) {

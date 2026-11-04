@@ -65,6 +65,7 @@ const NSE_PLATFORMS = {
     cueBoundaryOnTextChange: true,
     controlsReservedHeightRatio: 0.21,
     snapToBottomBand: true,
+    pinOnlyWhenRevealed: true,
     pauseBeforeCueSec: 0.2,
     areCaptionsEnabled: () => {
       try {

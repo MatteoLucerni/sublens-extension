@@ -4,6 +4,10 @@ function revealAllOverlays() {
 }
 
 function blurUnheldOverlays() {
+  if (isBackButtonHovered()) {
+    syncBackButtonReveal();
+    return;
+  }
   for (const line of activeLines) {
     if (line.overlay.dataset.hovered === "true") continue;
     if (isPopupOpen()) continue;
@@ -211,7 +215,7 @@ function getLayoutKey(frame) {
 }
 
 function isLayoutFrozen() {
-  if (isInteractionLocked() || dragActive || translationPending) return true;
+  if (isInteractionLocked() || dragActive || translationPending || isBackButtonHovered()) return true;
   return activeLines.some((line) => line.overlay.matches(":hover"));
 }
 
@@ -346,18 +350,15 @@ function createOverlay(lineEl) {
     if (settings.autoPauseOnHover) pauseForInteraction();
   });
 
-  overlay.addEventListener("mouseleave", () => {
+  overlay.addEventListener("mouseleave", (e) => {
     delete overlay.dataset.hovered;
-    if (isPopupOpen() || selectionStart !== null || translationPending) return;
-    if (settings.autoPauseOnHover) releaseInteraction();
-    if (!getVideo()?.paused) overlay.classList.remove("revealed");
-    syncBackButtonReveal();
+    endSubtitleHover(e);
   });
 
   overlay.addEventListener("mousedown", onWordMouseDown);
   overlay.addEventListener("click", onWordClick);
 
-  if (isPopupOpen() || getVideo()?.paused) overlay.classList.add("revealed");
+  if (isPopupOpen() || isBackButtonHovered() || getVideo()?.paused) overlay.classList.add("revealed");
 
   getAppendTarget().appendChild(overlay);
   return overlay;
@@ -450,7 +451,10 @@ function createBackButton() {
   const path = document.createElementNS(svgNs, "path");
   path.setAttribute("d", "M6 6h2v12H6zm3.5 6 8.5 6V6z");
   icon.appendChild(path);
-  button.appendChild(icon);
+  const circle = document.createElement("span");
+  circle.className = "nse-back-icon";
+  circle.appendChild(icon);
+  button.appendChild(circle);
 
   for (const type of ["pointerdown", "mousedown", "pointerup", "mouseup", "dblclick"]) {
     button.addEventListener(type, stopPlayerEvent);
@@ -459,8 +463,33 @@ function createBackButton() {
     stopPlayerEvent(e);
     jumpToPreviousCue();
   });
-  button.addEventListener("mouseleave", updateBackButton);
+  button.addEventListener("mouseenter", () => {
+    button.dataset.hovered = "true";
+    revealAllOverlays();
+    if (settings.autoPauseOnHover) pauseForInteraction();
+  });
+  button.addEventListener("mouseleave", (e) => {
+    delete button.dataset.hovered;
+    updateBackButton();
+    endSubtitleHover(e);
+  });
   return button;
+}
+
+function isBackButtonHovered() {
+  return backButton?.dataset.hovered === "true";
+}
+
+function isSubtitleHoverTarget(el) {
+  return el instanceof Element && !!el.closest(".nse-overlay, .nse-back-btn");
+}
+
+function endSubtitleHover(e) {
+  if (isSubtitleHoverTarget(e.relatedTarget)) return;
+  if (isPopupOpen() || selectionStart !== null || translationPending) return;
+  if (settings.autoPauseOnHover) releaseInteraction();
+  if (!getVideo()?.paused) blurUnheldOverlays();
+  syncBackButtonReveal();
 }
 
 function hideBackButton() {
@@ -513,7 +542,8 @@ function updateBackButton() {
   backButton.style.setProperty("--nse-blur", `${blur}px`);
   const left = Math.max(frame.left + OVERLAY_MIN_SIDE_PADDING_PX, bounds.rect.left - BACK_BUTTON_GAP_PX - size);
   const top = bounds.rect.top + bounds.rect.height / 2 - size / 2;
-  backButton.style.width = `${size}px`;
+  backButton.style.setProperty("--nse-back-size", `${size}px`);
+  backButton.style.width = `${size + BACK_BUTTON_GAP_PX}px`;
   backButton.style.height = `${size}px`;
   backButton.style.left = `${left}px`;
   backButton.style.top = `${top}px`;

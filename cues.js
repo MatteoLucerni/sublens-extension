@@ -200,6 +200,8 @@ async function jumpToPreviousCue() {
   }
   if (restart) target.endTime = null;
 
+  extensionPaused = false;
+  wasPlayingBeforePause = false;
   video.play().catch((err) => log("jumpToPreviousCue: video.play() rejected", err));
   updateBackButton();
 

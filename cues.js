@@ -6,6 +6,7 @@ function resetCueHistory() {
   cueHistory = [];
   cueIndex = -1;
   cueHistoryMediaKey = null;
+  cueRestartable = false;
 }
 
 function getCueLastSeenTime(entry) {
@@ -28,8 +29,13 @@ function markCueEnded() {
   if (!video) return;
   const entry = cueHistory[cueIndex];
   if (!entry || entry.endTime != null) return;
+  if (video.seeking || video.currentTime - entry.time < CUE_MIN_DURATION_SEC) return;
   entry.endTime = video.currentTime;
   log("markCueEnded: endTime", entry.endTime, "for cue started at", entry.time);
+  if (!pauseOnCueEnd) return;
+  clearPauseSchedule();
+  video.pause();
+  log("markCueEnded: paused at end of restarted cue");
 }
 
 function recordCueStart() {
@@ -53,6 +59,7 @@ function recordCueStart() {
   const knownIndex = cueHistory.findIndex(
     (entry) => Math.abs(entry.time - time) < CUE_HISTORY_EPSILON_SEC
   );
+  cueRestartable = true;
   if (knownIndex !== -1) {
     cueIndex = knownIndex;
     log("recordCueStart: replaying known cue", time, "cueIndex", cueIndex);
@@ -82,10 +89,11 @@ function onVideoSeeking(e) {
 }
 
 function isPauseScheduled() {
-  return pauseScheduleTimer !== null || pauseScheduleCleanup !== null;
+  return pauseScheduleTimer !== null || pauseScheduleCleanup !== null || pauseOnCueEnd;
 }
 
 function clearPauseSchedule() {
+  pauseOnCueEnd = false;
   if (pauseScheduleCleanup) {
     pauseScheduleCleanup();
     pauseScheduleCleanup = null;
@@ -136,9 +144,25 @@ function getPreviousCue(video) {
   return target;
 }
 
-function hasPreviousCue() {
+function getRestartableCue(video) {
+  if (!cueRestartable || activeLines.length === 0) return null;
+  if (cueHistoryMediaKey !== getCueMediaKey(video)) return null;
+  const entry = cueHistory[cueIndex];
+  if (!entry || entry.endTime != null) return null;
+  if (video.currentTime <= entry.time + CUE_HISTORY_EPSILON_SEC) return null;
+  return entry;
+}
+
+function getBackTarget(video) {
+  const current = getRestartableCue(video);
+  if (current) return { entry: current, restart: true };
+  const previous = getPreviousCue(video);
+  return previous ? { entry: previous, restart: false } : null;
+}
+
+function hasBackTarget() {
   const video = getVideo();
-  return !!video && getPreviousCue(video) !== null;
+  return !!video && getBackTarget(video) !== null;
 }
 
 async function jumpToPreviousCue() {
@@ -148,14 +172,16 @@ async function jumpToPreviousCue() {
     log("jumpToPreviousCue: no video element found, aborting");
     return;
   }
-  const target = getPreviousCue(video);
-  if (!target) {
-    log("jumpToPreviousCue: no valid earlier cue available, aborting");
+  const backTarget = getBackTarget(video);
+  if (!backTarget) {
+    log("jumpToPreviousCue: no valid cue available, aborting");
     return;
   }
 
-  cueIndex -= 1;
-  log("jumpToPreviousCue: target", target, "new cueIndex", cueIndex);
+  const { entry: target, restart } = backTarget;
+  if (!restart) cueIndex -= 1;
+  cueRestartable = false;
+  log("jumpToPreviousCue: target", target, "restart", restart, "new cueIndex", cueIndex);
 
   cancelSelection();
   removePopup();
@@ -172,10 +198,15 @@ async function jumpToPreviousCue() {
     cueJumpSeekUntil = performance.now() + CUE_JUMP_SEEK_GRACE_MS;
     video.currentTime = target.time;
   }
+  if (restart) target.endTime = null;
 
   video.play().catch((err) => log("jumpToPreviousCue: video.play() rejected", err));
+  updateBackButton();
 
-  if (target.endTime != null) {
+  if (restart) {
+    clearPauseSchedule();
+    pauseOnCueEnd = true;
+  } else if (target.endTime != null) {
     schedulePauseBeforeTime(target.endTime);
   } else {
     video.pause();

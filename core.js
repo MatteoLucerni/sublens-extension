@@ -42,6 +42,11 @@ const PAUSE_CONFIRM_USER_MS = 600;
 const CUE_HISTORY_MAX_AGE_SEC = 30;
 const CUE_JUMP_SEEK_GRACE_MS = 3000;
 const USER_SEEK_MIN_SEC = 1;
+const CUE_MIN_DURATION_SEC = 0.3;
+const BACK_BUTTON_GAP_PX = 10;
+const BACK_BUTTON_MIN_SIZE_PX = 24;
+const BACK_BUTTON_MAX_SIZE_PX = 40;
+const BACK_BUTTON_SIZE_RATIO = 0.8;
 
 let activeLines = [];
 let currentContainer = null;
@@ -74,6 +79,9 @@ let suppressHistoryCapture = false;
 let suppressHistoryCaptureTimer = null;
 let pauseScheduleCleanup = null;
 let pauseScheduleTimer = null;
+let pauseOnCueEnd = false;
+let cueRestartable = false;
+let backButton = null;
 
 let settings = { ...NSE_SETTINGS_DEFAULTS };
 

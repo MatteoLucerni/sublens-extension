@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [1.6.3]
 
+### Added
+- A small previous-subtitle button on the left of the subtitle, on Netflix, YouTube and Prime Video. It does the same as the Left Arrow key, is semi-transparent until hovered, is blurred together with the subtitles (and revealed with them, or when hovered), and only appears when a replay is possible. It can be turned off with the new **Previous subtitle button** toggle in the popup's advanced options (`showPreviousSubtitleButton`, default on).
+
 ### Changed
+- Left Arrow: when a subtitle is on screen, the first press now restarts that line from its beginning (pausing at its end) instead of jumping to the previous line. Pressing again steps back to the previous line, and further presses keep stepping back as before.
 - Prime Video: blurred subtitles no longer stay pinned above the player controls during playback. While blurred they follow Prime Video's own caption position (lower when the controls are hidden, moving up when the controls appear); once revealed (on pause or hover, or while the translation popup is open) they are pinned to the fixed baseline above the controls, so the clickable words do not move, until they are blurred again (new `pinOnlyWhenRevealed` platform flag).
 
 ## [1.6.2]

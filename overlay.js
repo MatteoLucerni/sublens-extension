@@ -1,5 +1,6 @@
 function revealAllOverlays() {
   for (const line of activeLines) line.overlay.classList.add("revealed");
+  syncBackButtonReveal();
 }
 
 function blurUnheldOverlays() {
@@ -8,6 +9,13 @@ function blurUnheldOverlays() {
     if (isPopupOpen()) continue;
     line.overlay.classList.remove("revealed");
   }
+  syncBackButtonReveal();
+}
+
+function syncBackButtonReveal() {
+  if (!backButton) return;
+  const revealed = activeLines.some((line) => line.overlay.classList.contains("revealed"));
+  backButton.classList.toggle("revealed", revealed);
 }
 
 function onVideoPause(e) {
@@ -297,14 +305,19 @@ function layoutOverlays() {
 function repositionAllOverlays() {
   layoutSettleUntil = performance.now() + LAYOUT_SETTLE_MS;
   layoutOverlays();
+  updateBackButton();
 }
 
 function checkOverlayLayout() {
-  if (activeLines.length === 0) return;
+  if (activeLines.length === 0) {
+    hideBackButton();
+    return;
+  }
   const frame = getLayoutFrame();
   const keyChanged = !!frame && getLayoutKey(frame) !== lastLayoutKey;
   const settling = performance.now() < layoutSettleUntil;
   if (keyChanged || layoutPending || settling || hasNativeGeometryChanged()) layoutOverlays();
+  updateBackButton();
 }
 
 function buildTokens(text) {
@@ -329,6 +342,7 @@ function createOverlay(lineEl) {
   overlay.addEventListener("mouseenter", () => {
     overlay.dataset.hovered = "true";
     overlay.classList.add("revealed");
+    syncBackButtonReveal();
     if (settings.autoPauseOnHover) pauseForInteraction();
   });
 
@@ -337,6 +351,7 @@ function createOverlay(lineEl) {
     if (isPopupOpen() || selectionStart !== null || translationPending) return;
     if (settings.autoPauseOnHover) releaseInteraction();
     if (!getVideo()?.paused) overlay.classList.remove("revealed");
+    syncBackButtonReveal();
   });
 
   overlay.addEventListener("mousedown", onWordMouseDown);
@@ -402,6 +417,7 @@ function reconcileLines(lineContainers) {
   const textBoundary = !!PLATFORM.cueBoundaryOnTextChange && textChanged;
   if (hasRemovedCue || textBoundary) markCueEnded();
   if (hasNewCue || textBoundary) recordCueStart();
+  updateBackButton();
 }
 
 function removeAllOverlays() {
@@ -412,6 +428,95 @@ function removeAllOverlays() {
   }
   activeLines = [];
   layoutPending = false;
+  updateBackButton();
+}
+
+function stopPlayerEvent(e) {
+  e.preventDefault();
+  e.stopPropagation();
+}
+
+function createBackButton() {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "nse-back-btn";
+  button.tabIndex = -1;
+  button.hidden = true;
+
+  const svgNs = "http://www.w3.org/2000/svg";
+  const icon = document.createElementNS(svgNs, "svg");
+  icon.setAttribute("viewBox", "0 0 24 24");
+  icon.setAttribute("aria-hidden", "true");
+  const path = document.createElementNS(svgNs, "path");
+  path.setAttribute("d", "M6 6h2v12H6zm3.5 6 8.5 6V6z");
+  icon.appendChild(path);
+  button.appendChild(icon);
+
+  for (const type of ["pointerdown", "mousedown", "pointerup", "mouseup", "dblclick"]) {
+    button.addEventListener(type, stopPlayerEvent);
+  }
+  button.addEventListener("click", (e) => {
+    stopPlayerEvent(e);
+    jumpToPreviousCue();
+  });
+  button.addEventListener("mouseleave", updateBackButton);
+  return button;
+}
+
+function hideBackButton() {
+  if (backButton) backButton.hidden = true;
+}
+
+function getPlacedOverlayBounds() {
+  let top = Infinity;
+  let left = Infinity;
+  let bottom = -Infinity;
+  let lastHeight = 0;
+  for (const line of activeLines) {
+    const overlay = line.overlay;
+    if (!overlay.isConnected || overlay.classList.contains("nse-unplaced")) continue;
+    const rect = overlay.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) continue;
+    top = Math.min(top, rect.top);
+    left = Math.min(left, rect.left);
+    if (rect.bottom > bottom) lastHeight = rect.height;
+    bottom = Math.max(bottom, rect.bottom);
+  }
+  if (bottom === -Infinity) return null;
+  return { rect: toDocumentRect({ top, left, bottom, width: 0, height: bottom - top }), lineHeight: lastHeight };
+}
+
+function updateBackButton() {
+  const video = getVideo();
+  const target = settings.showPreviousSubtitleButton && video ? getBackTarget(video) : null;
+  const bounds = target ? getPlacedOverlayBounds() : null;
+  const frame = bounds ? getLayoutFrame() : null;
+  if (!target || !bounds || !frame) {
+    hideBackButton();
+    return;
+  }
+
+  if (!backButton) backButton = createBackButton();
+  reparentToCurrentTarget(backButton);
+  const label = target.restart ? "Replay subtitle (Left arrow)" : "Previous subtitle (Left arrow)";
+  backButton.title = label;
+  backButton.setAttribute("aria-label", label);
+  syncBackButtonReveal();
+  const wasHidden = backButton.hidden;
+  backButton.hidden = false;
+  if (!wasHidden && backButton.matches(":hover")) return;
+
+  const size = Math.round(
+    Math.min(BACK_BUTTON_MAX_SIZE_PX, Math.max(BACK_BUTTON_MIN_SIZE_PX, bounds.lineHeight * BACK_BUTTON_SIZE_RATIO))
+  );
+  const blur = Math.min(MAX_BLUR_PX, Math.max(MIN_BLUR_PX, size * BLUR_RATIO));
+  backButton.style.setProperty("--nse-blur", `${blur}px`);
+  const left = Math.max(frame.left + OVERLAY_MIN_SIDE_PADDING_PX, bounds.rect.left - BACK_BUTTON_GAP_PX - size);
+  const top = bounds.rect.top + bounds.rect.height / 2 - size / 2;
+  backButton.style.width = `${size}px`;
+  backButton.style.height = `${size}px`;
+  backButton.style.left = `${left}px`;
+  backButton.style.top = `${top}px`;
 }
 
 function getOrderedOverlays() {

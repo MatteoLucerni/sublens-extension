@@ -3,6 +3,7 @@ const NSE_SETTINGS_DEFAULTS = {
   youtubeEnabled: true,
   primeVideoEnabled: true,
   jumpToPreviousSubtitleOnBack: true,
+  showPreviousSubtitleButton: true,
   autoPauseOnHover: true,
   subtitleBlurEnabled: false,
   autoRemoveBlurOnPause: true,

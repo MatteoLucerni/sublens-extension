@@ -333,7 +333,7 @@ function onGlobalKeydown(e) {
     if (tag === "INPUT" || tag === "TEXTAREA") return;
   }
   if (!getVideo()) return;
-  if (!hasPreviousCue()) return;
+  if (!hasBackTarget()) return;
 
   e.preventDefault();
   e.stopPropagation();
@@ -353,6 +353,7 @@ nseGetSettings().then((loaded) => {
 nseOnSettingsChanged((changed) => {
   Object.assign(settings, changed);
   if ("subtitleBlurEnabled" in changed) applyBlurSettingToAllOverlays();
+  if ("showPreviousSubtitleButton" in changed) updateBackButton();
   if ("netflixEnabled" in changed || "youtubeEnabled" in changed || "primeVideoEnabled" in changed) applyEnabledState();
 });
 

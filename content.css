@@ -43,6 +43,66 @@ html.nse-platform-primevideo .nse-overlay {
   padding: 0 0.4em;
 }
 
+.nse-back-btn {
+  position: absolute;
+  z-index: 2147483646;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  pointer-events: all;
+  filter: blur(var(--nse-blur, 6px));
+  transition: filter 0.15s ease;
+}
+
+.nse-back-btn.revealed,
+.nse-back-btn:hover {
+  filter: none;
+}
+
+.nse-blur-disabled .nse-back-btn {
+  filter: none !important;
+}
+
+.nse-back-btn[hidden] {
+  display: none !important;
+}
+
+.nse-back-icon {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: var(--nse-back-size, 28px);
+  height: var(--nse-back-size, 28px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 50%;
+  background: rgba(10, 10, 10, 0.55);
+  color: #fff;
+  opacity: 0.55;
+  transition: opacity 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+}
+
+.nse-back-btn:hover .nse-back-icon {
+  opacity: 1;
+  color: #38bdf8;
+  background: rgba(20, 20, 20, 0.95);
+}
+
+.nse-back-icon svg {
+  display: block;
+  width: 55%;
+  height: 55%;
+  fill: currentColor;
+  pointer-events: none;
+}
+
 .nse-word {
   cursor: pointer;
 }

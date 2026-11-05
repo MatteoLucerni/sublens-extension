@@ -1,13 +1,25 @@
 function revealAllOverlays() {
   for (const line of activeLines) line.overlay.classList.add("revealed");
+  syncBackButtonReveal();
 }
 
 function blurUnheldOverlays() {
+  if (isBackButtonHovered()) {
+    syncBackButtonReveal();
+    return;
+  }
   for (const line of activeLines) {
     if (line.overlay.dataset.hovered === "true") continue;
     if (isPopupOpen()) continue;
     line.overlay.classList.remove("revealed");
   }
+  syncBackButtonReveal();
+}
+
+function syncBackButtonReveal() {
+  if (!backButton) return;
+  const revealed = activeLines.some((line) => line.overlay.classList.contains("revealed"));
+  backButton.classList.toggle("revealed", revealed);
 }
 
 function onVideoPause(e) {
@@ -174,18 +186,25 @@ function getLayoutFrame() {
   return toDocumentRect(rect);
 }
 
-function getNativeSignature(lineEl, measured) {
+function isOverlayPinned() {
+  if (!PLATFORM.pinOnlyWhenRevealed) return true;
+  return activeLines.some((line) => line.overlay.classList.contains("revealed"));
+}
+
+function getNativeSignature(lineEl, measured, pinned) {
   const fontSize = getComputedStyle(findStyleSource(lineEl)).getPropertyValue("font-size");
   const { rect, align } = measured;
   const anchor = align === "left" ? rect.left : align === "right" ? rect.right : rect.left + rect.width / 2;
-  return `${fontSize}|${align}|${Math.round(anchor)}`;
+  const vertical = pinned ? "pinned" : Math.round(rect.bottom);
+  return `${fontSize}|${align}|${Math.round(anchor)}|${vertical}`;
 }
 
 function hasNativeGeometryChanged() {
+  const pinned = isOverlayPinned();
   for (const line of activeLines) {
     if (line.overlay.classList.contains("nse-unplaced") || !line.lineEl.isConnected) continue;
     const measured = measureNativeLine(line.lineEl);
-    if (measured && getNativeSignature(line.lineEl, measured) !== line.nativeSignature) return true;
+    if (measured && getNativeSignature(line.lineEl, measured, pinned) !== line.nativeSignature) return true;
   }
   return false;
 }
@@ -196,7 +215,7 @@ function getLayoutKey(frame) {
 }
 
 function isLayoutFrozen() {
-  if (isInteractionLocked() || dragActive || translationPending) return true;
+  if (isInteractionLocked() || dragActive || translationPending || isBackButtonHovered()) return true;
   return activeLines.some((line) => line.overlay.matches(":hover"));
 }
 
@@ -228,6 +247,7 @@ function layoutOverlays() {
   }
 
   const frozen = isLayoutFrozen();
+  const pinned = isOverlayPinned();
   const entries = [];
   for (const line of activeLines) {
     if (frozen && !line.overlay.classList.contains("nse-unplaced")) continue;
@@ -238,7 +258,7 @@ function layoutOverlays() {
       line,
       rect: toDocumentRect(measured.rect),
       align: measured.align,
-      signature: getNativeSignature(line.lineEl, measured)
+      signature: getNativeSignature(line.lineEl, measured, pinned)
     });
   }
   layoutPending = frozen || entries.length < activeLines.length;
@@ -255,9 +275,9 @@ function layoutOverlays() {
   const nativeBottom = Math.max(...entries.map((entry) => entry.rect.bottom));
   const pinnedBottom = frame.bottom - getControlsReservedHeight(frame);
   const inBottomBand = nativeBottom >= frame.top + frame.height * BOTTOM_BAND_RATIO;
-  const anchorBottom = PLATFORM.snapToBottomBand && inBottomBand
-    ? pinnedBottom
-    : Math.min(nativeBottom, pinnedBottom);
+  let anchorBottom = Math.min(nativeBottom, pinnedBottom);
+  if (!pinned) anchorBottom = Math.min(nativeBottom, frame.bottom);
+  else if (PLATFORM.snapToBottomBand && inBottomBand) anchorBottom = pinnedBottom;
 
   let upperLimit = Infinity;
   for (let i = entries.length - 1; i >= 0; i--) {
@@ -289,14 +309,19 @@ function layoutOverlays() {
 function repositionAllOverlays() {
   layoutSettleUntil = performance.now() + LAYOUT_SETTLE_MS;
   layoutOverlays();
+  updateBackButton();
 }
 
 function checkOverlayLayout() {
-  if (activeLines.length === 0) return;
+  if (activeLines.length === 0) {
+    hideBackButton();
+    return;
+  }
   const frame = getLayoutFrame();
   const keyChanged = !!frame && getLayoutKey(frame) !== lastLayoutKey;
   const settling = performance.now() < layoutSettleUntil;
   if (keyChanged || layoutPending || settling || hasNativeGeometryChanged()) layoutOverlays();
+  updateBackButton();
 }
 
 function buildTokens(text) {
@@ -321,20 +346,19 @@ function createOverlay(lineEl) {
   overlay.addEventListener("mouseenter", () => {
     overlay.dataset.hovered = "true";
     overlay.classList.add("revealed");
+    syncBackButtonReveal();
     if (settings.autoPauseOnHover) pauseForInteraction();
   });
 
-  overlay.addEventListener("mouseleave", () => {
+  overlay.addEventListener("mouseleave", (e) => {
     delete overlay.dataset.hovered;
-    if (isPopupOpen() || selectionStart !== null || translationPending) return;
-    if (settings.autoPauseOnHover) releaseInteraction();
-    if (!getVideo()?.paused) overlay.classList.remove("revealed");
+    endSubtitleHover(e);
   });
 
   overlay.addEventListener("mousedown", onWordMouseDown);
   overlay.addEventListener("click", onWordClick);
 
-  if (isPopupOpen() || getVideo()?.paused) overlay.classList.add("revealed");
+  if (isPopupOpen() || isBackButtonHovered() || getVideo()?.paused) overlay.classList.add("revealed");
 
   getAppendTarget().appendChild(overlay);
   return overlay;
@@ -394,6 +418,7 @@ function reconcileLines(lineContainers) {
   const textBoundary = !!PLATFORM.cueBoundaryOnTextChange && textChanged;
   if (hasRemovedCue || textBoundary) markCueEnded();
   if (hasNewCue || textBoundary) recordCueStart();
+  updateBackButton();
 }
 
 function removeAllOverlays() {
@@ -404,6 +429,124 @@ function removeAllOverlays() {
   }
   activeLines = [];
   layoutPending = false;
+  updateBackButton();
+}
+
+function stopPlayerEvent(e) {
+  e.preventDefault();
+  e.stopPropagation();
+}
+
+function createBackButton() {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "nse-back-btn";
+  button.tabIndex = -1;
+  button.hidden = true;
+
+  const svgNs = "http://www.w3.org/2000/svg";
+  const icon = document.createElementNS(svgNs, "svg");
+  icon.setAttribute("viewBox", "0 0 24 24");
+  icon.setAttribute("aria-hidden", "true");
+  const path = document.createElementNS(svgNs, "path");
+  path.setAttribute("d", "M6 6h2v12H6zm3.5 6 8.5 6V6z");
+  icon.appendChild(path);
+  const circle = document.createElement("span");
+  circle.className = "nse-back-icon";
+  circle.appendChild(icon);
+  button.appendChild(circle);
+
+  for (const type of ["pointerdown", "mousedown", "pointerup", "mouseup", "dblclick"]) {
+    button.addEventListener(type, stopPlayerEvent);
+  }
+  button.addEventListener("click", (e) => {
+    stopPlayerEvent(e);
+    jumpToPreviousCue();
+  });
+  button.addEventListener("mouseenter", () => {
+    button.dataset.hovered = "true";
+    revealAllOverlays();
+    if (settings.autoPauseOnHover) pauseForInteraction();
+  });
+  button.addEventListener("mouseleave", (e) => {
+    delete button.dataset.hovered;
+    updateBackButton();
+    endSubtitleHover(e);
+  });
+  return button;
+}
+
+function isBackButtonHovered() {
+  return backButton?.dataset.hovered === "true";
+}
+
+function isSubtitleHoverTarget(el) {
+  return el instanceof Element && !!el.closest(".nse-overlay, .nse-back-btn");
+}
+
+function endSubtitleHover(e) {
+  if (isSubtitleHoverTarget(e.relatedTarget)) return;
+  if (isPopupOpen() || selectionStart !== null || translationPending) return;
+  if (settings.autoPauseOnHover) releaseInteraction();
+  if (!getVideo()?.paused) blurUnheldOverlays();
+  syncBackButtonReveal();
+}
+
+function hideBackButton() {
+  if (backButton) backButton.hidden = true;
+}
+
+function getPlacedOverlayBounds() {
+  let top = Infinity;
+  let left = Infinity;
+  let bottom = -Infinity;
+  let lastHeight = 0;
+  for (const line of activeLines) {
+    const overlay = line.overlay;
+    if (!overlay.isConnected || overlay.classList.contains("nse-unplaced")) continue;
+    const rect = overlay.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) continue;
+    top = Math.min(top, rect.top);
+    left = Math.min(left, rect.left);
+    if (rect.bottom > bottom) lastHeight = rect.height;
+    bottom = Math.max(bottom, rect.bottom);
+  }
+  if (bottom === -Infinity) return null;
+  return { rect: toDocumentRect({ top, left, bottom, width: 0, height: bottom - top }), lineHeight: lastHeight };
+}
+
+function updateBackButton() {
+  const video = getVideo();
+  const target = settings.showPreviousSubtitleButton && video ? getBackTarget(video) : null;
+  const bounds = target ? getPlacedOverlayBounds() : null;
+  const frame = bounds ? getLayoutFrame() : null;
+  if (!target || !bounds || !frame) {
+    hideBackButton();
+    return;
+  }
+
+  if (!backButton) backButton = createBackButton();
+  reparentToCurrentTarget(backButton);
+  const label = target.restart ? "Replay subtitle (Left arrow)" : "Previous subtitle (Left arrow)";
+  backButton.title = label;
+  backButton.setAttribute("aria-label", label);
+  syncBackButtonReveal();
+  const wasHidden = backButton.hidden;
+  backButton.hidden = false;
+  if (!wasHidden && backButton.matches(":hover")) return;
+
+  const size = Math.round(
+    Math.min(BACK_BUTTON_MAX_SIZE_PX, Math.max(BACK_BUTTON_MIN_SIZE_PX, bounds.lineHeight * BACK_BUTTON_SIZE_RATIO))
+  );
+  const blur = Math.min(MAX_BLUR_PX, Math.max(MIN_BLUR_PX, size * BLUR_RATIO));
+  backButton.style.setProperty("--nse-blur", `${blur}px`);
+  const left = Math.max(frame.left + OVERLAY_MIN_SIDE_PADDING_PX, bounds.rect.left - BACK_BUTTON_GAP_PX - size);
+  const top = bounds.rect.top + bounds.rect.height / 2 - size / 2;
+  backButton.style.setProperty("--nse-back-size", `${size}px`);
+  backButton.style.width = `${size + BACK_BUTTON_GAP_PX}px`;
+  backButton.style.height = `${size}px`;
+  backButton.style.left = `${left}px`;
+  backButton.style.top = `${top}px`;
 }
 
 function getOrderedOverlays() {

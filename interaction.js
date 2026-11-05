@@ -115,7 +115,7 @@ function collectRange(startSpan, endSpan) {
 }
 
 function onSelectionOutsideClick(e) {
-  if (e.target.closest(".nse-word")) return;
+  if (e.target.closest(".nse-word, .nse-back-btn")) return;
   consumePlayerClick(e);
   cancelSelection();
   if (!isPopupOpen()) releaseInteraction();
@@ -564,7 +564,7 @@ function removePopup() {
 
 function onOutsideClick(e) {
   if (suppressClickAfterDrag) return;
-  if (e.target.closest(".nse-word")) return;
+  if (e.target.closest(".nse-word, .nse-back-btn")) return;
   const popup = document.getElementById("nse-popup");
   if (popup && popup.contains(e.target)) return;
   consumePlayerClick(e);

@@ -3,6 +3,7 @@ const TOGGLE_KEYS = [
   "youtubeEnabled",
   "primeVideoEnabled",
   "jumpToPreviousSubtitleOnBack",
+  "showPreviousSubtitleButton",
   "autoPauseOnHover",
   "subtitleBlurEnabled",
   "autoRemoveBlurOnPause",
